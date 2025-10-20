@@ -20,7 +20,7 @@
           to="/employer"
           class="px-6 py-3 bg-white border border-indigo-600 text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
         >
-          Je cherche un talent
+          Trouvez un talent
         </RouterLink>
       </div>
 
