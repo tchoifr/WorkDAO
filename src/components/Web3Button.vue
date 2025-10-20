@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { useWalletStore } from '@/store/walletStore'
+import { useWalletStore } from '../store/walletStore'
 
 const wallet = useWalletStore()
 
