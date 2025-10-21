@@ -11,7 +11,7 @@
       to="/"
       class="text-2xl font-extrabold tracking-wide text-[#00BFFF] drop-shadow-[0_0_6px_#00BFFF]"
     >
-      WorkDAO
+<img :src="logo" alt="Logo" class="h-10" />
     </RouterLink>
 
     <!-- Liens desktop -->
@@ -98,6 +98,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import logo from '../assets/logo.png'
 
 const menuOpen = ref(false)
 const route = useRoute()
