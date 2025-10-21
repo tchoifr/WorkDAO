@@ -1,11 +1,11 @@
 <template>
   <div
-    :class="[ 
+    :class="[
       'flex min-h-screen transition-colors duration-500',
       darkMode ? 'dark bg-[#0a2431] text-gray-100' : 'bg-gray-100 text-gray-800'
     ]"
   >
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR (DESKTOP) -->
     <aside
       class="w-64 border-r shadow-md hidden md:flex flex-col justify-between transition-all duration-500"
       :class="darkMode 
@@ -52,7 +52,7 @@
         </nav>
       </div>
 
-      <!-- WALLET BALANCE -->
+      <!-- BUDGET -->
       <div
         class="border-t p-4 text-center transition"
         :class="darkMode 
@@ -69,7 +69,7 @@
     </aside>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 overflow-y-auto">
+    <main class="flex-1 overflow-y-auto pb-20 md:pb-0">
       <header
         class="p-6 flex justify-between items-center shadow-sm border-b"
         :class="darkMode 
@@ -91,11 +91,34 @@
         />
       </transition>
     </main>
+
+    <!-- NAVIGATION MOBILE SCROLLABLE -->
+    <nav
+      class="fixed bottom-0 left-0 right-0 border-t shadow-md md:hidden z-50"
+      :class="darkMode ? 'bg-[#0a2431] border-[#00BFFF]/30 text-gray-200' : 'bg-white border-gray-200 text-gray-700'"
+    >
+      <div
+        class="flex overflow-x-auto no-scrollbar snap-x snap-mandatory px-2 py-2 space-x-4 justify-start"
+      >
+        <button
+          v-for="item in menu"
+          :key="item.key"
+          @click="activeSection = item.key"
+          class="flex flex-col items-center justify-center text-xs flex-shrink-0 min-w-[70px] snap-center"
+          :class="activeSection === item.key
+            ? (darkMode ? 'text-[#00BFFF] scale-110' : 'text-indigo-600 scale-110')
+            : (darkMode ? 'text-gray-400' : 'text-gray-500')"
+        >
+          <span class="text-2xl mb-1">{{ item.icon }}</span>
+          <span>{{ item.label }}</span>
+        </button>
+      </div>
+    </nav>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, provide } from "vue" // ✅ provide ajouté ici
+import { ref, computed, watch, provide } from "vue"
 import avatar from "../assets/avatar.webp"
 import DashboardOverview from "../components/employerDashboard/DashboardOverview.vue"
 import PostJob from "../components/employerDashboard/PostJob.vue"
@@ -105,22 +128,21 @@ import Payments from "../components/employerDashboard/Payments.vue"
 import Messages from "../components/employerDashboard/Messages.vue"
 import Settings from "../components/employerDashboard/Settings.vue"
 
-// 🌓 DARK MODE
+// 🌗 DARK MODE
 const darkMode = ref(localStorage.getItem("darkMode") === "true")
 watch(darkMode, (v) => localStorage.setItem("darkMode", v ? "true" : "false"))
-
-// ✅ On partage le darkMode à tous les composants enfants (DashboardOverview, etc.)
 provide("darkMode", darkMode)
 
 const menu = [
-  { key: "dashboard", label: "Vue d’ensemble", icon: "🏠" },
-  { key: "post", label: "Créer une annonce", icon: "📝" },
-  { key: "jobs", label: "Mes annonces", icon: "📋" },
-  { key: "apps", label: "Candidatures", icon: "👥" },
-  { key: "payments", label: "Paiements", icon: "💰" },
+  { key: "dashboard", label: "Overview", icon: "🏠" },
+  { key: "post", label: "Create Job", icon: "📝" },
+  { key: "jobs", label: "Posted Jobs", icon: "📋" },
+  { key: "apps", label: "Applications", icon: "👥" },
+  { key: "payments", label: "Payments", icon: "💰" },
   { key: "messages", label: "Messages", icon: "💬" },
-  { key: "settings", label: "Paramètres", icon: "⚙️" },
+  { key: "settings", label: "Settings", icon: "⚙️" },
 ]
+
 
 const activeSection = ref("dashboard")
 const balance = ref(3100.25)
@@ -129,27 +151,24 @@ const jobs = ref([
   {
     id: 1,
     title: "Développeur Solidity Senior",
-    description:
-      "Nous recherchons un développeur Solidity expérimenté pour créer un smart contract ERC-721 complexe pour notre plateforme NFT.",
+    description: "Création d’un smart contract ERC-721 complexe pour une DApp NFT.",
     budget: 800,
     duration: "10 jours",
     status: "Ouverte",
-    skills: ["Solidity", "Hardhat", "Ethereum", "IPFS", "React Web3"],
+    skills: ["Solidity", "Hardhat", "Ethereum", "React"],
     postedAt: "2025-10-15",
     contractType: "Freelance / Remote",
-    hash: "0x9cfa23b...f82b1",
   },
   {
     id: 2,
     title: "UI/UX Designer Web3",
-    description: "Mission de design pour une DApp Web3 moderne et intuitive.",
+    description: "Mission design pour une DApp Web3 moderne et intuitive.",
     budget: 500,
     duration: "7 jours",
     status: "En cours",
-    skills: ["Figma", "TailwindCSS", "UI/UX", "Web3 Design", "Responsive"],
+    skills: ["Figma", "TailwindCSS", "UI/UX", "Responsive"],
     postedAt: "2025-10-10",
-    contractType: "Freelance / Télétravail total",
-    hash: "0xa7fbe01...de25c",
+    contractType: "Freelance / Télétravail",
   },
 ])
 
@@ -158,9 +177,8 @@ const applications = ref([
     id: 1,
     jobId: 1,
     freelancer: "Lucas Bernard",
-    avatar: avatar,
-    proposal:
-      "Je peux livrer un smart contract ERC-721 complet avec audit de sécurité sous 8 jours.",
+    avatar,
+    proposal: "Je peux livrer un smart contract complet avec audit en 8 jours.",
     bid: 780,
     status: "En attente",
   },
@@ -168,8 +186,8 @@ const applications = ref([
     id: 2,
     jobId: 1,
     freelancer: "Emma Laurent",
-    avatar: avatar,
-    proposal: "Audit complet du code Solidity et intégration front-end React.",
+    avatar,
+    proposal: "Audit du code Solidity et intégration front-end React.",
     bid: 800,
     status: "Acceptée",
   },
@@ -203,9 +221,16 @@ const currentTitle = computed(() => {
   opacity: 0;
 }
 
-@media (max-width: 768px) {
-  aside {
-    display: none;
-  }
+/* Nav mobile — masquer la scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+button {
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 </style>

@@ -116,62 +116,86 @@
     </div>
 
     <!-- ✅ DERNIÈRES CANDIDATURES -->
+<div
+  class="p-6 rounded-xl shadow-lg transition"
+  :class="darkMode
+    ? 'bg-[#0a2431] border border-[#00BFFF]/30 hover:border-[#00BFFF]/60'
+    : 'bg-white border border-gray-200'"
+>
+  <h2
+    :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-700'"
+    class="text-lg font-semibold mb-4"
+  >
+    👥 Dernières candidatures reçues
+  </h2>
+
+  <div
+    v-if="applications.length"
+    :class="darkMode ? 'divide-gray-700' : 'divide-gray-200'"
+    class="divide-y"
+  >
     <div
-      class="p-6 rounded-xl shadow-lg transition"
-      :class="darkMode
-        ? 'bg-[#0a2431] border border-[#00BFFF]/30 hover:border-[#00BFFF]/60'
-        : 'bg-white'"
+      v-for="app in applications.slice(0, 3)"
+      :key="app.id"
+      class="py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0 transition"
+      :class="darkMode ? 'hover:bg-[#0d2f42]' : 'hover:bg-gray-50'"
     >
-      <h2 :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-700'" class="text-lg font-semibold mb-4">
-        👥 Dernières candidatures reçues
-      </h2>
-
-      <div v-if="applications.length" :class="darkMode ? 'divide-gray-700' : 'divide-gray-200'" class="divide-y">
-        <div
-          v-for="app in applications.slice(0, 3)"
-          :key="app.id"
-          class="py-4 flex justify-between items-center transition"
-          :class="darkMode ? 'hover:bg-[#0d2f42]' : 'hover:bg-gray-50'"
-        >
-          <div class="flex items-center">
-            <img
-              :src="app.avatar"
-              alt="avatar"
-              class="w-10 h-10 rounded-full object-cover border mr-3"
-              :class="darkMode ? 'border-[#00BFFF]/30' : 'border-gray-300'"
-            />
-            <div>
-              <p :class="darkMode ? 'text-gray-100' : 'text-gray-800'" class="font-semibold">
-                {{ app.freelancer }}
-              </p>
-              <p :class="darkMode ? 'text-gray-400' : 'text-gray-500'" class="text-sm truncate max-w-xs">
-                {{ app.proposal }}
-              </p>
-            </div>
-          </div>
-
-          <div class="text-right">
-            <p :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-600'" class="font-semibold">
-              {{ app.bid }} $WORK
-            </p>
-            <span
-              class="text-xs font-semibold px-2 py-1 rounded-full"
-              :class="{
-                'bg-yellow-100 text-yellow-700': !darkMode && app.status === 'En attente',
-                'bg-green-100 text-green-700': !darkMode && app.status === 'Acceptée',
-                'bg-red-100 text-red-700': !darkMode && app.status === 'Refusée',
-                'bg-[#00BFFF]/10 text-[#00BFFF]': darkMode
-              }"
-            >
-              {{ app.status }}
-            </span>
-          </div>
+      <!-- Colonne gauche -->
+      <div class="flex items-start sm:items-center">
+        <img
+          :src="app.avatar"
+          alt="avatar"
+          class="w-12 h-12 sm:w-10 sm:h-10 rounded-full object-cover border mr-3 flex-shrink-0"
+          :class="darkMode ? 'border-[#00BFFF]/30' : 'border-gray-300'"
+        />
+        <div class="flex flex-col">
+          <p
+            :class="darkMode ? 'text-gray-100' : 'text-gray-800'"
+            class="font-semibold text-sm sm:text-base"
+          >
+            {{ app.freelancer }}
+          </p>
+          <p
+            :class="darkMode ? 'text-gray-400' : 'text-gray-500'"
+            class="text-xs sm:text-sm leading-snug mt-1 break-words max-w-[250px] sm:max-w-xs"
+          >
+            {{ app.proposal }}
+          </p>
         </div>
       </div>
-      <p v-else :class="darkMode ? 'text-gray-400' : 'text-gray-500'" class="text-sm">
-        Aucune candidature reçue pour le moment.
-      </p>
+
+      <!-- Colonne droite -->
+      <div class="text-left sm:text-right sm:mt-0 mt-2">
+        <p
+          :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-600'"
+          class="font-semibold text-sm sm:text-base"
+        >
+          {{ app.bid }} $WORK
+        </p>
+        <span
+          class="inline-block mt-1 text-xs font-semibold px-2 py-1 rounded-full"
+          :class="{
+            'bg-yellow-100 text-yellow-700': !darkMode && app.status === 'En attente',
+            'bg-green-100 text-green-700': !darkMode && app.status === 'Acceptée',
+            'bg-red-100 text-red-700': !darkMode && app.status === 'Refusée',
+            'bg-[#00BFFF]/10 text-[#00BFFF]': darkMode
+          }"
+        >
+          {{ app.status }}
+        </span>
+      </div>
     </div>
+  </div>
+
+  <p
+    v-else
+    :class="darkMode ? 'text-gray-400' : 'text-gray-500'"
+    class="text-sm"
+  >
+    Aucune candidature reçue pour le moment.
+  </p>
+</div>
+
 
     <!-- ✅ ACTIVITÉ RÉCENTE -->
     <div

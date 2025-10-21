@@ -5,7 +5,7 @@
       darkMode ? 'dark bg-gray-900 text-gray-100' : 'bg-gray-100 text-gray-800'
     ]"
   >
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR (DESKTOP) -->
     <aside
       class="w-64 border-r shadow-md hidden md:flex flex-col justify-between"
       :class="darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
@@ -47,7 +47,6 @@
         </nav>
       </div>
 
-      <!-- WALLET BALANCE -->
       <div
         class="border-t p-4 text-center"
         :class="darkMode ? 'bg-[#0a2431] border-[#00BFFF]/30' : 'bg-indigo-50 border-gray-200'"
@@ -60,7 +59,7 @@
     </aside>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 overflow-y-auto">
+    <main class="flex-1 overflow-y-auto pb-20 md:pb-0">
       <header
         class="p-6 flex justify-between items-center shadow-sm border-b"
         :class="darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'"
@@ -70,7 +69,6 @@
         </h1>
       </header>
 
-      <!-- CONTENU DYNAMIQUE -->
       <transition name="fade" mode="out-in">
         <component
           :is="currentComponent"
@@ -82,6 +80,29 @@
         />
       </transition>
     </main>
+
+    <!-- NAVIGATION MOBILE SCROLLABLE -->
+    <nav
+      class="fixed bottom-0 left-0 right-0 border-t shadow-md md:hidden z-50"
+      :class="darkMode ? 'bg-gray-800 border-gray-700 text-gray-200' : 'bg-white border-gray-200 text-gray-700'"
+    >
+      <div
+        class="flex overflow-x-auto no-scrollbar snap-x snap-mandatory px-2 py-2 space-x-4 justify-start"
+      >
+        <button
+          v-for="item in menu"
+          :key="item.key"
+          @click="activeSection = item.key"
+          class="flex flex-col items-center justify-center text-xs flex-shrink-0 min-w-[70px] snap-center"
+          :class="activeSection === item.key
+            ? (darkMode ? 'text-[#00BFFF] scale-110' : 'text-indigo-600 scale-110')
+            : (darkMode ? 'text-gray-400' : 'text-gray-500')"
+        >
+          <span class="text-2xl mb-1">{{ item.icon }}</span>
+          <span>{{ item.label }}</span>
+        </button>
+      </div>
+    </nav>
   </div>
 </template>
 
@@ -95,8 +116,8 @@ import MyProjects from "../components/freelanceDashboard/MyProjects.vue"
 import Payments from "../components/freelanceDashboard/Payments.vue"
 import BadgesNFT from "../components/freelanceDashboard/BadgesNFT.vue"
 import Settings from "../components/freelanceDashboard/Settings.vue"
-import crypto from "../assets/crypto.webp"
 import Parcours from "../components/freelanceDashboard/Parcours.vue"
+import crypto from "../assets/crypto.webp"
 
 const darkMode = ref(localStorage.getItem("darkMode") === "true")
 provide("darkMode", darkMode)
@@ -104,13 +125,13 @@ watch(darkMode, (v) => localStorage.setItem("darkMode", v ? "true" : "false"))
 
 const menu = [
   { key: "dashboard", label: "Dashboard", icon: "🏠" },
-  { key: "find", label: "Find Missions", icon: "🔍" },
+  { key: "find", label: "Find", icon: "🔍" },
   { key: "messages", label: "Messages", icon: "💬" },
-  { key: "projects", label: "My Projects", icon: "💼" },
+  { key: "projects", label: "Projects", icon: "💼" },
   { key: "payments", label: "Payments", icon: "💰" },
-  { key: "nft", label: "NFT Badges", icon: "🏅" },
+  { key: "nft", label: "NFTs", icon: "🏅" },
   { key: "settings", label: "Settings", icon: "⚙️" },
-  { key: "parcours", label: "Career Path", icon: "🧭" },
+  { key: "parcours", label: "Career", icon: "🧭" },
 ]
 
 const activeSection = ref("dashboard")
@@ -166,9 +187,16 @@ const currentTitle = computed(() => {
   opacity: 0;
 }
 
-@media (max-width: 768px) {
-  aside {
-    display: none;
-  }
+/* Supprimer la scrollbar horizontale visible sur mobile */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+button {
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 </style>
