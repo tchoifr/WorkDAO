@@ -1,84 +1,194 @@
 <template>
-  <section class="p-6">
-    <h2 class="text-xl font-semibold text-indigo-700 mb-6">💰 Paiements & Escrow</h2>
-
-    <!-- Paiements en cours -->
+  <section class="p-6 transition-colors duration-500">
+       <!-- 🕒 Paiements en cours -->
     <div class="mb-8">
-      <h3 class="text-lg font-semibold text-gray-800 mb-3">🕒 Paiements en cours</h3>
+      <h3
+        class="text-lg font-semibold mb-3"
+        :class="darkMode ? 'text-[#00BFFF]' : 'text-gray-800'"
+      >
+        🕒 Paiements en cours
+      </h3>
+
       <div
         v-for="p in paymentsInProgress"
         :key="p.id"
-        class="bg-white rounded-lg shadow p-5 mb-3 border-l-4 border-yellow-400"
+        class="rounded-lg shadow p-5 mb-3 border-l-4 transition"
+        :class="darkMode
+          ? 'bg-[#0a2431] border-l-yellow-400 border border-[#00BFFF]/30 hover:border-[#00BFFF]/60'
+          : 'bg-white border-l-yellow-400 hover:shadow-lg'"
       >
         <div class="flex justify-between items-center">
           <div>
-            <p class="font-medium text-gray-800">{{ p.mission }}</p>
-            <p class="text-sm text-gray-500">Freelance : {{ p.freelancer }}</p>
+            <p
+              class="font-medium"
+              :class="darkMode ? 'text-gray-100' : 'text-gray-800'"
+            >
+              {{ p.mission }}
+            </p>
+            <p
+              class="text-sm"
+              :class="darkMode ? 'text-gray-400' : 'text-gray-500'"
+            >
+              Freelance : {{ p.freelancer }}
+            </p>
           </div>
-          <p class="text-yellow-600 font-semibold">{{ p.amount }} $WORK</p>
+          <p
+            class="font-semibold"
+            :class="darkMode ? 'text-yellow-300' : 'text-yellow-600'"
+          >
+            {{ p.amount }} $WORK
+          </p>
         </div>
-        <p class="text-xs text-gray-400 mt-2">Statut : En validation blockchain</p>
+        <p
+          class="text-xs mt-2"
+          :class="darkMode ? 'text-gray-400' : 'text-gray-400'"
+        >
+          Statut : En validation blockchain
+        </p>
       </div>
     </div>
 
-    <!-- Paiements terminés -->
+    <!-- ✅ Paiements effectués -->
     <div class="mb-8">
-      <h3 class="text-lg font-semibold text-gray-800 mb-3">✅ Paiements effectués</h3>
+      <h3
+        class="text-lg font-semibold mb-3"
+        :class="darkMode ? 'text-[#00BFFF]' : 'text-gray-800'"
+      >
+        ✅ Paiements effectués
+      </h3>
+
       <div
         v-for="p in paymentsCompleted"
         :key="p.id"
-        class="bg-white rounded-lg shadow p-5 mb-3 border-l-4 border-green-400"
+        class="rounded-lg shadow p-5 mb-3 border-l-4 transition"
+        :class="darkMode
+          ? 'bg-[#0a2431] border-l-green-400 border border-[#00BFFF]/30 hover:border-[#00BFFF]/60'
+          : 'bg-white border-l-green-400 hover:shadow-lg'"
       >
         <div class="flex justify-between items-center">
           <div>
-            <p class="font-medium text-gray-800">{{ p.mission }}</p>
-            <p class="text-sm text-gray-500">Freelance : {{ p.freelancer }}</p>
+            <p
+              class="font-medium"
+              :class="darkMode ? 'text-gray-100' : 'text-gray-800'"
+            >
+              {{ p.mission }}
+            </p>
+            <p
+              class="text-sm"
+              :class="darkMode ? 'text-gray-400' : 'text-gray-500'"
+            >
+              Freelance : {{ p.freelancer }}
+            </p>
           </div>
-          <p class="text-green-600 font-semibold">{{ p.amount }} $WORK</p>
+          <p
+            class="font-semibold"
+            :class="darkMode ? 'text-green-300' : 'text-green-600'"
+          >
+            {{ p.amount }} $WORK
+          </p>
         </div>
-        <p class="text-xs text-gray-400 mt-2">Effectué le {{ p.date }}</p>
+        <p
+          class="text-xs mt-2"
+          :class="darkMode ? 'text-gray-400' : 'text-gray-400'"
+        >
+          Effectué le {{ p.date }}
+        </p>
       </div>
     </div>
 
-    <!-- Paiements en attente -->
+    <!-- ⏳ Paiements en attente -->
     <div class="mb-8">
-      <h3 class="text-lg font-semibold text-gray-800 mb-3">⏳ Paiements en attente</h3>
+      <h3
+        class="text-lg font-semibold mb-3"
+        :class="darkMode ? 'text-[#00BFFF]' : 'text-gray-800'"
+      >
+        ⏳ Paiements en attente
+      </h3>
+
       <div
         v-for="p in paymentsPending"
         :key="p.id"
-        class="bg-white rounded-lg shadow p-5 mb-3 border-l-4 border-indigo-400"
+        class="rounded-lg shadow p-5 mb-3 border-l-4 transition"
+        :class="darkMode
+          ? 'bg-[#0a2431] border-l-[#00BFFF] border border-[#00BFFF]/30 hover:border-[#00BFFF]/60'
+          : 'bg-white border-l-indigo-400 hover:shadow-lg'"
       >
         <div class="flex justify-between items-center">
           <div>
-            <p class="font-medium text-gray-800">{{ p.mission }}</p>
-            <p class="text-sm text-gray-500">Freelance : {{ p.freelancer }}</p>
+            <p
+              class="font-medium"
+              :class="darkMode ? 'text-gray-100' : 'text-gray-800'"
+            >
+              {{ p.mission }}
+            </p>
+            <p
+              class="text-sm"
+              :class="darkMode ? 'text-gray-400' : 'text-gray-500'"
+            >
+              Freelance : {{ p.freelancer }}
+            </p>
           </div>
-          <p class="text-indigo-600 font-semibold">{{ p.amount }} $WORK</p>
+          <p
+            class="font-semibold"
+            :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-600'"
+          >
+            {{ p.amount }} $WORK
+          </p>
         </div>
-        <p class="text-xs text-gray-400 mt-2">Créé le {{ p.date }}</p>
+        <p
+          class="text-xs mt-2"
+          :class="darkMode ? 'text-gray-400' : 'text-gray-400'"
+        >
+          Créé le {{ p.date }}
+        </p>
       </div>
     </div>
 
-    <!-- Messages liés aux paiements -->
+    <!-- 💬 Historique des messages -->
     <div>
-      <h3 class="text-lg font-semibold text-gray-800 mb-3">💬 Historique de messages</h3>
-      <div class="bg-white rounded-lg shadow divide-y">
+      <h3
+        class="text-lg font-semibold mb-3"
+        :class="darkMode ? 'text-[#00BFFF]' : 'text-gray-800'"
+      >
+        💬 Historique de messages
+      </h3>
+
+      <div
+        class="rounded-lg shadow divide-y transition"
+        :class="darkMode
+          ? 'bg-[#0a2431] divide-gray-700 border border-[#00BFFF]/30 hover:border-[#00BFFF]/60'
+          : 'bg-white divide-gray-200'"
+      >
         <div
           v-for="msg in messages"
           :key="msg.id"
-          class="p-4 flex justify-between items-start hover:bg-gray-50 transition"
+          class="p-4 flex justify-between items-start transition"
+          :class="darkMode ? 'hover:bg-[#0d2f42]' : 'hover:bg-gray-50'"
         >
           <div>
-            <p class="text-sm text-gray-800"><b>{{ msg.from }}</b> : {{ msg.text }}</p>
-            <p class="text-xs text-gray-400 mt-1">{{ msg.date }}</p>
+            <p
+              class="text-sm"
+              :class="darkMode ? 'text-gray-100' : 'text-gray-800'"
+            >
+              <b>{{ msg.from }}</b> : {{ msg.text }}
+            </p>
+            <p
+              class="text-xs mt-1"
+              :class="darkMode ? 'text-gray-400' : 'text-gray-400'"
+            >
+              {{ msg.date }}
+            </p>
           </div>
           <span
-            :class="{
-              'text-green-600': msg.type === 'confirmation',
-              'text-yellow-600': msg.type === 'alert',
-              'text-red-600': msg.type === 'error'
-            }"
             class="font-semibold text-xs uppercase"
+            :class="{
+              'text-green-400': darkMode && msg.type === 'confirmation',
+              'text-yellow-300': darkMode && msg.type === 'alert',
+              'text-red-400': darkMode && msg.type === 'error',
+              'text-green-600': !darkMode && msg.type === 'confirmation',
+              'text-yellow-600': !darkMode && msg.type === 'alert',
+              'text-red-600': !darkMode && msg.type === 'error'
+            }"
           >
             {{ msg.type }}
           </span>
@@ -89,7 +199,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, inject } from "vue"
+
+// ✅ Récupère le darkMode depuis EmployerDashboard.vue
+const darkMode = inject("darkMode", false)
 
 // ✅ Paiements effectués
 const paymentsCompleted = ref([
