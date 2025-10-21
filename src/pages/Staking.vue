@@ -1,35 +1,65 @@
 <template>
-  <section class="container mx-auto px-4 py-20 text-center">
-    <h1 class="text-4xl font-bold mb-6 text-indigo-600">💎 Staking WorkDAO</h1>
-    <p class="text-gray-700 max-w-2xl mx-auto mb-8">
-      Connecte ton wallet pour participer au <b>staking</b> du token
-      <span class="text-indigo-600">$WORK</span>.
-    </p>
+  <section
+    class="relative min-h-screen flex flex-col items-center justify-center text-center px-6 py-24 text-white overflow-hidden"
+  >
+    <!-- Image de fond -->
+    <img
+      src="../assets/staking.jpg"
+      alt="Staking WorkDAO"
+      class="absolute inset-0 w-full h-full object-cover object-center"
+    />
 
-    <!-- Bouton principal -->
-    <div v-if="!walletConnected">
-      <button
-        @click="showWalletModal = true"
-        class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition"
+    <!-- Overlay bleu foncé translucide -->
+    <div
+      class="absolute inset-0 bg-gradient-to-b from-black/70 via-[#031d28]/80 to-[#0a2431]/90"
+    ></div>
+
+    <!-- Contenu principal -->
+    <div class="relative z-10 max-w-4xl">
+      <h1
+        class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight text-[#38BDF8] drop-shadow-[0_0_10px_#38BDF8]"
       >
-        🔗 Connecter mon wallet
-      </button>
+        💎 Staking WorkDAO
+      </h1>
+
+      <p class="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto mb-12 leading-relaxed">
+        Connecte ton wallet pour participer au
+        <b>staking</b> du token
+        <span class="text-[#00BFFF] font-semibold">$WORK</span> et gagner des
+        récompenses.
+      </p>
+
+      <!-- Bouton principal (connexion) -->
+      <div v-if="!walletConnected">
+        <button
+          @click="showWalletModal = true"
+          class="px-8 py-3 bg-[#00BFFF] hover:bg-[#1ec6ff] text-black font-semibold rounded-full text-lg transition shadow-[0_0_15px_#00BFFF]"
+        >
+          🔗 Connecter mon wallet
+        </button>
+      </div>
+
+      <!-- Interface de staking -->
+      <ExchangePanel
+        v-else
+        :wallet-type="walletType"
+        :user-address="userAddress"
+        @disconnect="disconnectWallet"
+        class="mt-10"
+      />
+
+      <!-- Modale de connexion -->
+      <WalletModal
+        v-if="showWalletModal"
+        @close="showWalletModal = false"
+        @connected="handleWalletConnected"
+      />
     </div>
 
-    <!-- Interface staking / échange -->
-    <ExchangePanel
-      v-else
-      :wallet-type="walletType"
-      :user-address="userAddress"
-      @disconnect="disconnectWallet"
-    />
-
-    <!-- Modale -->
-    <WalletModal
-      v-if="showWalletModal"
-      @close="showWalletModal = false"
-      @connected="handleWalletConnected"
-    />
+    <!-- Effet de dégradé bas -->
+    <div
+      class="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#031d28] to-transparent"
+    ></div>
   </section>
 </template>
 
@@ -59,7 +89,17 @@ function disconnectWallet() {
 
 <style scoped>
 section {
-  background: linear-gradient(to bottom right, #f9fafc, #eef2ff);
-  min-height: 100vh;
+  animation: fadeIn 1.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

@@ -216,4 +216,8 @@ const currentTitle = computed(() => {
     display: none;
   }
 }
+#navBar{
+  position: relative !important;
+}
+
 </style>

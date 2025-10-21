@@ -1,53 +1,85 @@
 <template>
-  <section class="bg-white text-gray-800">
-    <div class="container mx-auto px-4 py-20 flex flex-col items-center text-center">
-      <h1 class="text-4xl md:text-6xl font-bold mb-6">
+  <section
+    class="relative h-screen flex items-center justify-center text-center text-white overflow-hidden"
+  >
+    <!-- Image de fond -->
+    <img
+      src="../assets/header.jpg"
+      alt="Fond WorkDAO"
+      class="absolute inset-0 w-full h-full object-cover object-center"
+    />
+
+    <!-- Overlay dégradé bleu néon -->
+    <div
+      class="absolute inset-0 bg-gradient-to-b from-black/70 via-[#031d28]/80 to-[#0a2431]/90"
+    ></div>
+
+    <!-- Contenu principal -->
+    <div class="relative z-10 px-6 max-w-5xl">
+      <h1
+        class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight text-[#38BDF8] drop-shadow-[0_0_10px_#38BDF8]"
+      >
         Rejoignez la révolution du travail Web3
       </h1>
-      <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl">
-        WorkDAO connecte freelances et entreprises dans un écosystème décentralisé, 
-        transparent et sans intermédiaires. Gagnez, collaborez et gouvernez avec la blockchain.
+
+      <p class="text-lg md:text-2xl text-gray-200 mb-10 leading-relaxed">
+        WorkDAO connecte freelances et entreprises dans un écosystème décentralisé,  
+        transparent et sans intermédiaires. <br />
+        Gagnez, collaborez et gouvernez avec la blockchain.
       </p>
 
       <div class="flex flex-wrap justify-center gap-4">
         <RouterLink
           to="/freelance"
-          class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition"
+          class="px-8 py-3 border border-[#00BFFF] text-[#00BFFF] hover:bg-[#00BFFF] hover:text-black font-semibold rounded-full text-lg transition shadow-[0_0_10px_#00BFFF]"
         >
-          Je suis Freelance
+          🚀 Je suis Freelance
         </RouterLink>
+
         <RouterLink
           to="/employer"
-          class="px-6 py-3 bg-white border border-indigo-600 text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
+          class="px-8 py-3 border border-[#00BFFF] text-[#00BFFF] hover:bg-[#00BFFF] hover:text-black font-semibold rounded-full text-lg transition shadow-[0_0_10px_#00BFFF]"
         >
-          Trouvez un talent
+          👥 Trouvez un talent
         </RouterLink>
       </div>
-
-     <img
-  src="/public/illustration-workdar.svg"
-  alt="Illustration Web3"
-  class="mt-16 w-full max-w-3xl"
-/>
-
     </div>
 
-    <div class="bg-indigo-50 py-16 mt-10">
-      <div class="container mx-auto px-6 text-center">
-        <h2 class="text-3xl font-semibold mb-8">Pourquoi choisir WorkDAO ?</h2>
-        <div class="grid md:grid-cols-3 gap-8">
-          <div>
-            <h3 class="text-xl font-bold mb-2 text-indigo-700">🌍 Décentralisé</h3>
-            <p>Plus d’intermédiaires : vos paiements sont sécurisés via smart contracts.</p>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold mb-2 text-indigo-700">💰 Transparent</h3>
-            <p>Chaque mission, chaque transaction est vérifiable sur la blockchain.</p>
-          </div>
-          <div>
-            <h3 class="text-xl font-bold mb-2 text-indigo-700">🪙 Récompensé</h3>
-            <p>Gagnez des tokens $WORK pour chaque mission ou contribution à la DAO.</p>
-          </div>
+    <!-- Dégradé de bas de page -->
+    <div
+      class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#031d28] to-transparent"
+    ></div>
+  </section>
+
+  <!-- Section suivante -->
+  <section class="bg-[#031d28] text-white py-20">
+    <div class="container mx-auto px-6 text-center">
+      <h2
+        class="text-3xl font-bold mb-12 text-[#38BDF8] drop-shadow-[0_0_6px_#38BDF8]"
+      >
+        Pourquoi choisir WorkDAO ?
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-10">
+        <div
+          class="bg-[#0a2431] p-6 rounded-xl shadow-lg border border-[#00BFFF]/30 hover:border-[#00BFFF]/60 transition"
+        >
+          <h3 class="text-xl font-bold mb-2 text-[#00BFFF]">🌍 Décentralisé</h3>
+          <p>Plus d’intermédiaires : vos paiements sont sécurisés via smart contracts.</p>
+        </div>
+
+        <div
+          class="bg-[#0a2431] p-6 rounded-xl shadow-lg border border-[#00BFFF]/30 hover:border-[#00BFFF]/60 transition"
+        >
+          <h3 class="text-xl font-bold mb-2 text-[#00BFFF]">💰 Transparent</h3>
+          <p>Chaque mission et transaction est vérifiable sur la blockchain.</p>
+        </div>
+
+        <div
+          class="bg-[#0a2431] p-6 rounded-xl shadow-lg border border-[#00BFFF]/30 hover:border-[#00BFFF]/60 transition"
+        >
+          <h3 class="text-xl font-bold mb-2 text-[#00BFFF]">🪙 Récompensé</h3>
+          <p>Gagnez des tokens $WORK pour chaque mission ou contribution à la DAO.</p>
         </div>
       </div>
     </div>
@@ -57,3 +89,20 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 </script>
+
+<style scoped>
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+section:first-of-type {
+  animation: fadeIn 1s ease-out;
+}
+</style>
