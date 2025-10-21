@@ -1,5 +1,12 @@
 <template>
   <section class="p-6 transition-colors duration-500">
+    <h2
+      class="text-xl font-semibold mb-6"
+      :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-700'"
+    >
+      🧭 Career Path
+    </h2>
+
     <div
       class="rounded-lg shadow-lg p-6 space-y-6 border transition"
       :class="darkMode
@@ -9,15 +16,45 @@
 
       <!-- ABOUT -->
       <div>
-        <h3
-          class="text-lg font-semibold mb-2"
-          :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-700'"
+        <div class="flex justify-between items-center mb-2">
+          <h3
+            class="text-lg font-semibold"
+            :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-700'"
+          >
+            👤 About Me
+          </h3>
+
+          <!-- Edit Button -->
+          <button
+            @click="editingAbout = !editingAbout"
+            class="px-3 py-1 text-sm rounded font-semibold transition"
+            :class="darkMode
+              ? 'bg-[#00BFFF]/80 hover:bg-[#00BFFF] text-gray-900'
+              : 'bg-indigo-600 hover:bg-indigo-700 text-white'"
+          >
+            {{ editingAbout ? '💾 Save' : '✏️ Edit' }}
+          </button>
+        </div>
+
+        <!-- Textarea for editing -->
+        <div v-if="editingAbout">
+          <textarea
+            v-model="aboutText"
+            rows="4"
+            class="w-full mt-2 rounded px-3 py-2 border focus:outline-none transition"
+            :class="darkMode
+              ? 'bg-[#09202c] border-[#00BFFF]/30 text-gray-100 focus:border-[#00BFFF]'
+              : 'bg-white border-gray-300 text-gray-800 focus:border-indigo-500'"
+          ></textarea>
+        </div>
+
+        <!-- Display mode -->
+        <p
+          v-else
+          class="leading-relaxed"
+          :class="darkMode ? 'text-gray-300' : 'text-gray-700'"
         >
-          👤 About Me
-        </h3>
-        <p :class="darkMode ? 'text-gray-300' : 'text-gray-700'">
-          Passionate Web3 developer specialized in smart contract development and decentralized applications.
-          Experienced in Solidity, TypeScript, and blockchain integrations across Ethereum and Polygon networks.
+          {{ aboutText }}
         </p>
       </div>
 
@@ -146,7 +183,14 @@
 
 <script setup lang="ts">
 import { ref, inject } from "vue"
+
 const darkMode = inject("darkMode", false)
+
+// ✅ About Me text (modifiable)
+const aboutText = ref(
+  "Passionate Web3 developer specialized in smart contract development and decentralized applications. Experienced in Solidity, TypeScript, and blockchain integrations across Ethereum and Polygon networks."
+)
+const editingAbout = ref(false)
 
 // ✅ Fake base data
 const experiences = ref([
