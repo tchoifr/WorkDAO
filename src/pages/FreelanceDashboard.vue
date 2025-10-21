@@ -96,6 +96,7 @@ import Payments from "../components/freelanceDashboard/Payments.vue"
 import BadgesNFT from "../components/freelanceDashboard/BadgesNFT.vue"
 import Settings from "../components/freelanceDashboard/Settings.vue"
 import crypto from "../assets/crypto.webp"
+import Parcours from "../components/freelanceDashboard/Parcours.vue"
 
 const darkMode = ref(localStorage.getItem("darkMode") === "true")
 provide("darkMode", darkMode)
@@ -109,6 +110,7 @@ const menu = [
   { key: "payments", label: "Payments", icon: "💰" },
   { key: "nft", label: "NFT Badges", icon: "🏅" },
   { key: "settings", label: "Settings", icon: "⚙️" },
+  { key: "parcours", label: "Career Path", icon: "🧭" },
 ]
 
 const activeSection = ref("dashboard")
@@ -143,6 +145,7 @@ const currentComponent = computed(() => {
     case "payments": return Payments
     case "nft": return BadgesNFT
     case "settings": return Settings
+    case "parcours": return Parcours
     default: return DashboardStats
   }
 })
