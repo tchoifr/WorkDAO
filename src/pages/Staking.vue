@@ -33,7 +33,7 @@
       <div v-if="!walletConnected">
         <button
           @click="showWalletModal = true"
-          class="px-8 py-3 bg-[#00BFFF] hover:bg-[#1ec6ff] text-black font-semibold rounded-full text-lg transition shadow-[0_0_15px_#00BFFF]"
+          class="px-8 py-3 border border-[#00BFFF] text-[#00BFFF] hover:bg-[#00BFFF] hover:text-black font-semibold rounded-full text-lg transition shadow-[0_0_10px_#00BFFF]"
         >
           🔗 Connecter mon wallet
         </button>
