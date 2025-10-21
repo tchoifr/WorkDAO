@@ -27,7 +27,7 @@
         to="/dao"
         class="px-5 py-2 border border-[#00BFFF] text-[#00BFFF] hover:bg-[#00BFFF] hover:text-black font-semibold rounded-full text-sm transition shadow-[0_0_10px_#00BFFF]"
       >
-        ⚙️ DAO
+        🏛️ DAO
       </RouterLink>
 
       <RouterLink
