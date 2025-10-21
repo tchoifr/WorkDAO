@@ -9,7 +9,7 @@
         class="w-16 h-16 border-4 border-t-transparent border-[#00BFFF] rounded-full animate-spin drop-shadow-[0_0_15px_#00BFFF]"
       ></div>
       <p class="mt-6 text-[#38BDF8] font-semibold text-lg tracking-wide">
-        Chargement...
+        Loading...
       </p>
     </div>
   </div>

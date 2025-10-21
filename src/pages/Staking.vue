@@ -2,61 +2,62 @@
   <section
     class="relative min-h-screen flex flex-col items-center justify-center text-center px-6 py-24 text-white overflow-hidden"
   >
-    <!-- Image de fond -->
+    <!-- Background Image -->
     <img
       src="../assets/staking.jpg"
-      alt="Staking WorkDAO"
+      alt="WorkDAO Staking"
       class="absolute inset-0 w-full h-full object-cover object-center"
     />
 
-    <!-- Overlay bleu foncé translucide -->
+    <!-- Overlay -->
     <div
       class="absolute inset-0 bg-gradient-to-b from-black/70 via-[#031d28]/80 to-[#0a2431]/90"
     ></div>
 
-    <!-- Contenu principal -->
+    <!-- Main Content -->
     <div class="relative z-10 max-w-4xl">
+      <!-- Title -->
       <h1
         class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight text-[#38BDF8] drop-shadow-[0_0_10px_#38BDF8]"
+        v-html="texts.title"
+      ></h1>
+
+      <!-- Subtitle -->
+      <p
+        class="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto mb-12 leading-relaxed"
+        v-html="texts.subtitle"
+      ></p>
+
+      <!-- Governance Details -->
+      <div
+        class="bg-white/10 backdrop-blur-xl border border-[#00BFFF]/30 rounded-2xl shadow-[0_0_20px_#00BFFF40] p-8 text-gray-100 text-left space-y-4"
       >
-        💎 Staking WorkDAO
-      </h1>
+        <h2 class="text-2xl font-semibold text-[#00BFFF] mb-3">
+          {{ texts.sectionGovernance.title }}
+        </h2>
+        <p v-html="texts.sectionGovernance.description"></p>
 
-      <p class="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto mb-12 leading-relaxed">
-        Connecte ton wallet pour participer au
-        <b>staking</b> du token
-        <span class="text-[#00BFFF] font-semibold">$WORK</span> et gagner des
-        récompenses.
-      </p>
-
-      <!-- Bouton principal (connexion) -->
-      <div v-if="!walletConnected">
-        <button
-          @click="showWalletModal = true"
-          class="px-8 py-3 border border-[#00BFFF] text-[#00BFFF] hover:bg-[#00BFFF] hover:text-black font-semibold rounded-full text-lg transition shadow-[0_0_10px_#00BFFF]"
-        >
-          🔗 Connecter mon wallet
-        </button>
+        <ul class="list-disc ml-6 space-y-2">
+          <li v-for="(rule, i) in texts.sectionGovernance.list" :key="i" v-html="rule"></li>
+        </ul>
       </div>
 
-      <!-- Interface de staking -->
-      <ExchangePanel
-        v-else
-        :wallet-type="walletType"
-        :user-address="userAddress"
-        @disconnect="disconnectWallet"
-        class="mt-10"
-      />
+      <!-- Staking Info -->
+      <div
+        class="mt-12 bg-white/10 backdrop-blur-xl border border-[#00BFFF]/30 rounded-2xl shadow-[0_0_20px_#00BFFF40] p-8 text-gray-100 text-left space-y-4"
+      >
+        <h2 class="text-2xl font-semibold text-[#00BFFF] mb-3">
+          {{ texts.sectionRewards.title }}
+        </h2>
+        <p v-html="texts.sectionRewards.description"></p>
 
-      <!-- Modale de connexion -->
-      <WalletModal
-        v-if="showWalletModal"
-        @close="showWalletModal = false"
-        @connected="handleWalletConnected"
-      />
+        <ul class="list-disc ml-6 space-y-2">
+          <li v-for="(item, i) in texts.sectionRewards.list" :key="i" v-html="item"></li>
+        </ul>
+      </div>
     </div>
 
-    <!-- Effet de dégradé bas -->
+    <!-- Bottom Gradient -->
     <div
       class="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#031d28] to-transparent"
     ></div>
@@ -64,27 +65,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import WalletModal from '../components/stackins/WalletModal.vue'
-import ExchangePanel from '../components/stackins/ExchangePanel.vue'
+import { stakingTextsEn } from "../variables/pages/en/staking"
 
-const walletConnected = ref(false)
-const showWalletModal = ref(false)
-const walletType = ref('')
-const userAddress = ref('')
-
-function handleWalletConnected(payload: { type: string; address: string }) {
-  walletConnected.value = true
-  walletType.value = payload.type
-  userAddress.value = payload.address
-  showWalletModal.value = false
-}
-
-function disconnectWallet() {
-  walletConnected.value = false
-  walletType.value = ''
-  userAddress.value = ''
-}
+const { texts } = stakingTextsEn
 </script>
 
 <style scoped>
