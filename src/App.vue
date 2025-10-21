@@ -1,15 +1,37 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import Navbar from '../src/components/Navbar.vue'
 import Footer from '../src/components/Footer.vue'
+import Loader from '../src/components/Loader.vue'
+
+const loading = ref(true)
+const router = useRouter()
+
+onMounted(() => {
+  // Loader initial
+  setTimeout(() => (loading.value = false), 800)
+
+  // Router hooks : loader sur chaque changement de page
+  router.beforeEach((_to, _from, next) => {
+    loading.value = true
+    next()
+  })
+  router.afterEach(() => {
+    setTimeout(() => (loading.value = false), 500)
+  })
+})
 </script>
 
 <template>
-  <!-- Conteneur global -->
-  <div class="min-h-screen flex flex-col bg-[#0a0a0a] text-white">
+  <div class="min-h-screen flex flex-col bg-[#0a0a0a] text-white relative overflow-hidden">
+    <!-- Loader global -->
+    <Loader :visible="loading" />
+
     <!-- Navbar -->
     <Navbar />
 
-    <!-- Zone principale -->
+    <!-- Contenu principal -->
     <main class="flex-1 relative overflow-hidden">
       <router-view />
     </main>
@@ -20,7 +42,6 @@ import Footer from '../src/components/Footer.vue'
 </template>
 
 <style>
-/* Arrière-plan global : noir profond + dégradé subtil */
 body {
   margin: 0;
   background-color: #0a0a0a;
@@ -28,7 +49,6 @@ body {
   font-family: 'Inter', 'Segoe UI', sans-serif;
 }
 
-/* Optionnel : effet "lueur bleue" en fond général */
 body::before {
   content: "";
   position: fixed;
@@ -42,7 +62,6 @@ body::before {
   pointer-events: none;
 }
 
-/* Transition fluide entre pages */
 main {
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
