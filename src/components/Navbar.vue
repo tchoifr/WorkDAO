@@ -1,6 +1,10 @@
 <template>
-  <header id="navBar"
-    class="fixed top-0 left-0 w-full z-50 bg-white/10 backdrop-blur-lg py-4 px-6 shadow-md flex justify-between items-center"
+  <header
+    id="navBar"
+    :class="[
+      'w-full z-50 py-4 px-6 shadow-md flex justify-between items-center transition-all duration-300 backdrop-blur-lg',
+      isRelative ? 'relative bg-white/5' : 'fixed top-0 left-0 bg-white/10'
+    ]"
   >
     <!-- Logo -->
     <RouterLink
@@ -10,7 +14,7 @@
       WorkDAO
     </RouterLink>
 
-    <!-- Liens de navigation en forme de boutons -->
+    <!-- Liens desktop -->
     <nav class="hidden md:flex space-x-4">
       <RouterLink
         to="/"
@@ -41,7 +45,7 @@
       </RouterLink>
     </nav>
 
-    <!-- Menu mobile -->
+    <!-- Bouton mobile -->
     <button
       @click="menuOpen = !menuOpen"
       class="md:hidden text-[#00BFFF] focus:outline-none text-2xl"
@@ -49,11 +53,11 @@
       ☰
     </button>
 
-    <!-- Menu mobile déroulant -->
+    <!-- Menu mobile -->
     <transition name="fade">
       <div
         v-if="menuOpen"
-        class="absolute top-16 left-0 w-full bg-black/70 backdrop-blur-lg text-center py-6 flex flex-col gap-4 text-white"
+        class="absolute top-full left-0 w-full bg-black/80 backdrop-blur-lg text-center py-6 flex flex-col gap-4 text-white"
       >
         <RouterLink
           to="/"
@@ -92,10 +96,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { ref, computed } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 
 const menuOpen = ref(false)
+const route = useRoute()
+
+// ✅ Si on est sur une page Dashboard, on met la nav en "relative"
+const isRelative = computed(() =>
+  ['EmployerDashboard', 'FreelanceDashboard'].includes(route.name as string)
+)
 </script>
 
 <style scoped>

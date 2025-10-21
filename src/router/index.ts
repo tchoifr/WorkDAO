@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/pages/Home.vue'
-import FreelanceDashboard from '@/pages/FreelanceDashboard.vue'
-import EmployerDashboard from '@/pages/EmployerDashboard.vue'
-import DAO from '@/pages/DAO.vue'
-import Staking from '@/pages/Staking.vue'
+import Home from '../../src/pages/Home.vue'
+import FreelanceDashboard from '../../src/pages/FreelanceDashboard.vue'
+import EmployerDashboard from '../../src/pages/EmployerDashboard.vue'
+import DAO from '../../src/pages/DAO.vue'
+import Staking from '../../src/pages/Staking.vue'
 
 const routes = [
-  { path: '/', component: Home },
-  { path: '/freelance', component: FreelanceDashboard },
-  { path: '/employer', component: EmployerDashboard },
-  { path: '/dao', component: DAO },
-  { path: '/staking', component: Staking },
+  { path: '/', name: 'Home', component: Home },
+  { path: '/freelance', name: 'FreelanceDashboard', component: FreelanceDashboard },
+  { path: '/employer', name: 'EmployerDashboard', component: EmployerDashboard },
+  { path: '/dao', name: 'DAO', component: DAO },
+  { path: '/staking', name: 'Staking', component: Staking },
 ]
 
 export default createRouter({
