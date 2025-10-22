@@ -3,73 +3,49 @@
     class="min-h-screen flex flex-col justify-center items-center text-white bg-cover bg-center bg-no-repeat relative"
     :style="{ backgroundImage: `url(${background})` }"
   >
-    <!-- Overlay -->
     <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
 
-    <!-- Login Card -->
     <div
       class="relative z-10 bg-white/10 backdrop-blur-md shadow-xl rounded-2xl p-8 w-80 text-center flex flex-col items-center"
     >
       <div class="flex flex-col items-center mb-6">
         <img :src="logo" alt="Logo" class="w-14 h-14 mb-2" />
-        <h2 class="text-xl font-semibold text-[#00BFFF]">
-          {{ texts.title }}
-        </h2>
+        <h2 class="text-xl font-semibold text-[#00BFFF]">Connexion Web3</h2>
+        <p class="text-sm text-white/70 mt-2">Utilise ton wallet pour te connecter</p>
       </div>
 
-      <!-- Form -->
-      <form @submit.prevent="handleLogin" class="flex flex-col space-y-4 w-full">
-        <input
-          v-model="email"
-          type="email"
-          :placeholder="texts.emailPlaceholder"
-          class="px-4 py-2 rounded-md bg-white/20 focus:bg-white/30 text-white placeholder-gray-300 focus:outline-none"
-          required
-        />
-
-        <input
-          v-model="password"
-          type="password"
-          :placeholder="texts.passwordPlaceholder"
-          class="px-4 py-2 rounded-md bg-white/20 focus:bg-white/30 text-white placeholder-gray-300 focus:outline-none"
-          required
-        />
-
+      <div class="flex flex-col gap-4 w-full">
+        <!-- Connexion -->
         <button
-          type="submit"
-          class="bg-[#00BFFF] hover:bg-[#33CCFF] text-black font-semibold rounded-md py-2 transition shadow-[0_0_10px_#00BFFF]"
+          @click="connectWallet('login')"
+          class="w-full flex items-center justify-center gap-2 border border-[#00BFFF]/40 py-2 rounded-md hover:bg-[#00BFFF]/10 transition"
         >
-          {{ texts.loginButton }}
+          <!-- Icône wallet inline -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+               fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M3.75 7.5h12.75a2.25 2.25 0 0 1 2.25 2.25v7.5A2.25 2.25 0 0 1 16.5 19.5H6a2.25 2.25 0 0 1-2.25-2.25V7.5z" />
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M18 10.5h1.5a1.5 1.5 0 0 1 0 3H18v-3z" />
+          </svg>
+          <span>
+            {{ walletAddress ? formatAddress(walletAddress) : "Se connecter avec un wallet" }}
+          </span>
         </button>
-      </form>
 
-      <!-- Separator -->
-      <div class="flex items-center my-6 w-full">
-        <div class="flex-1 h-px bg-white/20"></div>
-        <span class="px-2 text-sm text-white/60">{{ texts.or }}</span>
-        <div class="flex-1 h-px bg-white/20"></div>
+        <!-- Création -->
+        <button
+          @click="connectWallet('register')"
+          class="w-full flex items-center justify-center gap-2 border border-green-400/40 py-2 rounded-md hover:bg-green-400/10 transition"
+        >
+          <!-- Icône “plus” inline -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
+               fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12M6 12h12" />
+          </svg>
+          <span>Créer un compte avec un wallet</span>
+        </button>
       </div>
-
-      <!-- Google Login -->
-      <button
-        @click="loginWithGoogle"
-        class="w-full flex items-center justify-center gap-2 border border-white/30 py-2 rounded-md hover:bg-white/10 transition"
-      >
-        <img
-          src="https://www.svgrepo.com/show/475656/google-color.svg"
-          alt="Google"
-          class="w-5 h-5"
-        />
-        <span>{{ texts.googleButton }}</span>
-      </button>
-
-      <!-- Register link -->
-      <p class="text-sm text-white/70 mt-6">
-        {{ texts.noAccount }}
-        <RouterLink to="/register" class="text-[#00BFFF] hover:underline">
-          {{ texts.createAccount }}
-        </RouterLink>
-      </p>
     </div>
   </div>
 </template>
@@ -78,28 +54,31 @@
 import { ref } from "vue"
 import logo from "../assets/logo.png"
 import background from "../assets/connect.jpg"
-import { loginTextsEn } from "../variables/pages/en/login"
 
-const { texts } = loginTextsEn
-
-const email = ref("")
-const password = ref("")
-
-const handleLogin = () => {
-  console.log("Login attempt:", email.value)
+declare global {
+  interface Window { ethereum?: any }
 }
 
-const loginWithGoogle = async () => {
+const walletAddress = ref<string | null>(null)
+
+const connectWallet = async (action: "login" | "register") => {
   try {
-    console.log("Google login...")
+    if (!window.ethereum) {
+      alert("MetaMask n'est pas installé. Veuillez l'ajouter à votre navigateur.")
+      return
+    }
+    const accounts = await window.ethereum.request({ method: "eth_requestAccounts" })
+    walletAddress.value = accounts[0]
+    console.log(`Wallet ${action}:`, accounts[0])
+    // TODO: call backend (login/register) avec l’adresse + éventuelle signature
   } catch (error) {
-    console.error("Google Auth Error:", error)
+    console.error("Erreur de connexion au wallet :", error)
   }
 }
+
+const formatAddress = (addr: string) => addr.slice(0, 6) + "..." + addr.slice(-4)
 </script>
 
 <style scoped>
-::placeholder {
-  color: #bbb;
-}
+::placeholder { color: #bbb; }
 </style>
