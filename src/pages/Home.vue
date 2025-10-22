@@ -1,4 +1,5 @@
 <template>
+  <!-- Hero Section -->
   <section
     class="relative h-screen flex items-center justify-center text-center text-white overflow-hidden"
   >
@@ -18,12 +19,12 @@
     <div class="relative z-10 px-6 max-w-5xl">
       <h1
         class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight text-[#38BDF8] drop-shadow-[0_0_10px_#38BDF8]"
-        v-html="header.title"
+        v-html="texts.header.title"
       ></h1>
 
       <p
         class="text-lg md:text-2xl text-gray-200 mb-10 leading-relaxed"
-        v-html="header.subtitle"
+        v-html="texts.header.subtitle"
       ></p>
 
       <div class="flex flex-wrap justify-center gap-4">
@@ -31,14 +32,14 @@
           to="/freelance"
           class="px-8 py-3 border border-[#00BFFF] text-[#00BFFF] hover:bg-[#00BFFF] hover:text-black font-semibold rounded-full text-lg transition shadow-[0_0_10px_#00BFFF]"
         >
-          {{ header.btnFreelancer }}
+          {{ texts.header.btnFreelancer }}
         </RouterLink>
 
         <RouterLink
           to="/employer"
           class="px-8 py-3 border border-[#00BFFF] text-[#00BFFF] hover:bg-[#00BFFF] hover:text-black font-semibold rounded-full text-lg transition shadow-[0_0_10px_#00BFFF]"
         >
-          {{ header.btnEmployer }}
+          {{ texts.header.btnEmployer }}
         </RouterLink>
       </div>
     </div>
@@ -55,12 +56,12 @@
       <h2
         class="text-3xl font-bold mb-12 text-[#38BDF8] drop-shadow-[0_0_6px_#38BDF8]"
       >
-        {{ features.title }}
+        {{ texts.features.title }}
       </h2>
 
       <div class="grid md:grid-cols-3 gap-10">
         <div
-          v-for="(item, i) in features.cards"
+          v-for="(item, i) in texts.features.cards"
           :key="i"
           class="bg-[#0a2431] p-6 rounded-xl shadow-lg border border-[#00BFFF]/30 hover:border-[#00BFFF]/60 transition"
         >
@@ -76,9 +77,17 @@
 
 <script setup lang="ts">
 import { RouterLink } from "vue-router"
+import { computed } from "vue"
+import { useLanguage } from "../store/useLanguage"
 import { homeTextsEn } from "../variables/pages/en/home"
+import { homeTextsFr } from "../variables/pages/fr/home"
 
-const { header, features } = homeTextsEn
+const { currentLang } = useLanguage()
+
+// ✅ Texte dynamique selon la langue sélectionnée
+const texts = computed(() =>
+  currentLang.value === "en" ? homeTextsEn : homeTextsFr
+)
 </script>
 
 <style scoped>

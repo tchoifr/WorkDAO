@@ -1,12 +1,10 @@
 export const loginTextsEn = {
   texts: {
-    title: "Sign In",
-    emailPlaceholder: "Email Address",
-    passwordPlaceholder: "Password",
-    loginButton: "Log In",
-    or: "or",
-    googleButton: "Sign in with Google",
-    noAccount: "Don't have an account?",
-    createAccount: "Create one",
+    title: "Web3 Connection",
+    subtitle: "Sign in or create an account using your decentralized wallet.",
+    walletButton: "Connect my wallet",
+    noWallet: "No wallet detected 🧐",
+    installWallet: "Install a wallet to continue:",
+    connected: "Connected:",
   },
 }

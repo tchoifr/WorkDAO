@@ -14,8 +14,8 @@
       <img :src="logo" alt="Logo" class="h-10" />
     </RouterLink>
 
-    <!-- Desktop Links -->
-    <nav class="hidden md:flex space-x-4">
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:flex space-x-4 items-center">
       <RouterLink
         v-for="(item, i) in navItems"
         :key="i"
@@ -24,6 +24,16 @@
       >
         {{ item.icon }} {{ item.label }}
       </RouterLink>
+
+      <!-- 🌍 Sélecteur de langue -->
+      <select
+        v-model="currentLang"
+        @change="setLanguage(currentLang)"
+        class="ml-4 bg-transparent border border-[#00BFFF]/50 text-[#00BFFF] text-sm rounded-md px-2 py-1 focus:outline-none cursor-pointer"
+      >
+        <option value="en">EN</option>
+        <option value="fr">FR</option>
+      </select>
     </nav>
 
     <!-- Mobile Menu Button -->
@@ -49,6 +59,18 @@
         >
           {{ item.icon }} {{ item.label }}
         </RouterLink>
+
+        <!-- 🌍 Sélecteur mobile -->
+        <div class="mt-4">
+          <select
+            v-model="currentLang"
+            @change="setLanguage(currentLang)"
+            class="bg-transparent border border-[#00BFFF]/50 text-[#00BFFF] text-sm rounded-md px-2 py-1 focus:outline-none cursor-pointer"
+          >
+            <option value="en">EN</option>
+            <option value="fr">FR</option>
+          </select>
+        </div>
       </div>
     </transition>
   </header>
@@ -58,14 +80,20 @@
 import { ref, computed } from "vue"
 import { RouterLink, useRoute } from "vue-router"
 import logo from "../assets/logo.png"
+import { useLanguage } from "../store/useLanguage"
 import { navbarTextsEn } from "../variables/components/en/navbar"
+import { navbarTextsFr } from "../variables/components/fr/navbar"
 
-const { navItems } = navbarTextsEn
-
-const menuOpen = ref(false)
 const route = useRoute()
+const menuOpen = ref(false)
+const { currentLang, setLanguage } = useLanguage()
 
-// ✅ Use relative layout on dashboard pages
+// 🧠 Sélection automatique du texte selon la langue
+const navItems = computed(() =>
+  currentLang.value === "en" ? navbarTextsEn.navItems : navbarTextsFr.navItems
+)
+
+// ✅ Layout relatif sur certaines pages
 const isRelative = computed(() =>
   ["EmployerDashboard", "FreelanceDashboard"].includes(route.name as string)
 )

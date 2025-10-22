@@ -28,7 +28,7 @@
         v-html="texts.subtitle"
       ></p>
 
-      <!-- Governance Details -->
+      <!-- Governance Section -->
       <div
         class="bg-white/10 backdrop-blur-xl border border-[#00BFFF]/30 rounded-2xl shadow-[0_0_20px_#00BFFF40] p-8 text-gray-100 text-left space-y-4"
       >
@@ -38,11 +38,15 @@
         <p v-html="texts.sectionGovernance.description"></p>
 
         <ul class="list-disc ml-6 space-y-2">
-          <li v-for="(rule, i) in texts.sectionGovernance.list" :key="i" v-html="rule"></li>
+          <li
+            v-for="(rule, i) in texts.sectionGovernance.list"
+            :key="i"
+            v-html="rule"
+          ></li>
         </ul>
       </div>
 
-      <!-- Staking Info -->
+      <!-- Rewards Section -->
       <div
         class="mt-12 bg-white/10 backdrop-blur-xl border border-[#00BFFF]/30 rounded-2xl shadow-[0_0_20px_#00BFFF40] p-8 text-gray-100 text-left space-y-4"
       >
@@ -52,7 +56,11 @@
         <p v-html="texts.sectionRewards.description"></p>
 
         <ul class="list-disc ml-6 space-y-2">
-          <li v-for="(item, i) in texts.sectionRewards.list" :key="i" v-html="item"></li>
+          <li
+            v-for="(item, i) in texts.sectionRewards.list"
+            :key="i"
+            v-html="item"
+          ></li>
         </ul>
       </div>
     </div>
@@ -65,9 +73,17 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue"
+import { useLanguage } from "../store/useLanguage"
 import { stakingTextsEn } from "../variables/pages/en/staking"
+import { stakingTextsFr } from "../variables/pages/fr/staking"
 
-const { texts } = stakingTextsEn
+const { currentLang } = useLanguage()
+
+// ✅ Sélection automatique de la langue
+const texts = computed(() =>
+  currentLang.value === "en" ? stakingTextsEn.texts : stakingTextsFr.texts
+)
 </script>
 
 <style scoped>

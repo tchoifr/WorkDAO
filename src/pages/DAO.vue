@@ -14,12 +14,12 @@
       <!-- Header -->
       <h1
         class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight text-[#38BDF8] drop-shadow-[0_0_10px_#38BDF8]"
-        v-html="header.title"
+        v-html="texts.header.title"
       ></h1>
 
       <p
         class="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto mb-16 leading-relaxed"
-        v-html="header.description"
+        v-html="texts.header.description"
       ></p>
 
       <!-- Access Rules -->
@@ -27,11 +27,11 @@
         class="bg-white/10 backdrop-blur-xl border border-[#00BFFF]/30 rounded-2xl shadow-[0_0_20px_#00BFFF40] p-8 max-w-3xl mx-auto mb-20 text-gray-100"
       >
         <h2 class="text-2xl font-semibold mb-4 text-[#00BFFF]">
-          {{ accessRules.title }}
+          {{ texts.accessRules.title }}
         </h2>
         <ul class="text-left space-y-3 text-gray-200 leading-relaxed">
           <li
-            v-for="(item, i) in accessRules.list"
+            v-for="(item, i) in texts.accessRules.list"
             :key="i"
             v-html="item"
           ></li>
@@ -43,10 +43,10 @@
         class="bg-white/10 backdrop-blur-lg border border-[#00BFFF]/30 rounded-2xl shadow-[0_0_25px_#00BFFF30] p-8 text-left text-gray-100 space-y-6 mb-20"
       >
         <h2 class="text-3xl font-bold text-[#00BFFF] mb-4 text-center">
-          {{ charter.title }}
+          {{ texts.charter.title }}
         </h2>
 
-        <div v-for="(rule, index) in charter.rules" :key="index" class="space-y-2">
+        <div v-for="(rule, index) in texts.charter.rules" :key="index" class="space-y-2">
           <h3 class="text-xl font-semibold text-[#00BFFF]">
             {{ rule.title }}
           </h3>
@@ -71,16 +71,16 @@
           class="bg-white/10 backdrop-blur-lg border border-[#00BFFF]/30 rounded-2xl p-8 hover:shadow-[0_0_20px_#00BFFF60] transition"
         >
           <h2 class="text-2xl font-semibold text-[#00BFFF] mb-4">
-            {{ proposals.title }}
+            {{ texts.proposals.title }}
           </h2>
           <ul class="text-left space-y-3 text-gray-200">
             <li
-              v-for="(item, i) in proposals.items"
+              v-for="(item, i) in texts.proposals.items"
               :key="i"
               v-html="item"
             ></li>
           </ul>
-          <p class="text-sm text-gray-400 mt-4" v-html="proposals.note"></p>
+          <p class="text-sm text-gray-400 mt-4" v-html="texts.proposals.note"></p>
         </div>
 
         <!-- Voting History -->
@@ -88,17 +88,17 @@
           class="bg-white/10 backdrop-blur-lg border border-[#00BFFF]/30 rounded-2xl p-8 hover:shadow-[0_0_20px_#00BFFF60] transition"
         >
           <h2 class="text-2xl font-semibold text-[#00BFFF] mb-4">
-            {{ votes.title }}
+            {{ texts.votes.title }}
           </h2>
-          <p class="text-gray-300 mb-4">{{ votes.description }}</p>
+          <p class="text-gray-300 mb-4">{{ texts.votes.description }}</p>
           <ul class="text-left space-y-3 text-gray-200">
             <li
-              v-for="(item, i) in votes.list"
+              v-for="(item, i) in texts.votes.list"
               :key="i"
               v-html="item"
             ></li>
           </ul>
-          <p class="text-sm text-gray-400 mt-4">{{ votes.note }}</p>
+          <p class="text-sm text-gray-400 mt-4">{{ texts.votes.note }}</p>
         </div>
       </div>
     </div>
@@ -111,9 +111,17 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue"
+import { useLanguage } from "../store/useLanguage"
 import { daoTextsEn } from "../variables/pages/en/dao"
+import { daoTextsFr } from "../variables/pages/fr/dao"
 
-const { header, accessRules, charter, proposals, votes } = daoTextsEn
+const { currentLang } = useLanguage()
+
+// ✅ Texte dynamique selon la langue sélectionnée
+const texts = computed(() =>
+  currentLang.value === "en" ? daoTextsEn : daoTextsFr
+)
 </script>
 
 <style scoped>

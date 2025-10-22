@@ -8,7 +8,15 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue"
+import { useLanguage } from "../store/useLanguage"
 import { footerTextsEn } from "../variables/components/en/footer"
+import { footerTextsFr } from "../variables/components/fr/footer"
 
-const { footer } = footerTextsEn
+const { currentLang } = useLanguage()
+
+// Sélection dynamique du contenu selon la langue active
+const footer = computed(() =>
+  currentLang.value === "en" ? footerTextsEn.footer : footerTextsFr.footer
+)
 </script>

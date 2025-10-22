@@ -3,20 +3,25 @@
     class="min-h-screen flex flex-col justify-center items-center text-white bg-cover bg-center bg-no-repeat relative"
     :style="{ backgroundImage: `url(${background})` }"
   >
+    <!-- Overlay -->
     <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
 
+    <!-- Login Card -->
     <div
       class="relative z-10 bg-white/10 backdrop-blur-md shadow-xl rounded-2xl p-8 w-80 text-center flex flex-col items-center"
     >
+      <!-- Logo + Header -->
       <div class="flex flex-col items-center mb-6">
         <img :src="logo" alt="Logo" class="w-14 h-14 mb-2" />
-        <h2 class="text-xl font-semibold text-[#00BFFF]">Connexion Web3</h2>
+        <h2 class="text-xl font-semibold text-[#00BFFF]">
+          {{ texts.title }}
+        </h2>
         <p class="text-sm text-white/70 mt-2">
-          Connecte-toi ou crée un compte via ton wallet décentralisé
+          {{ texts.subtitle }}
         </p>
       </div>
 
-      <!-- Bouton unique -->
+      <!-- Bouton de connexion -->
       <button
         @click="connectWallet"
         class="w-full flex items-center justify-center gap-2 border border-[#00BFFF]/40 py-2 rounded-md hover:bg-[#00BFFF]/10 transition"
@@ -30,17 +35,17 @@
                 d="M18 10.5h1.5a1.5 1.5 0 0 1 0 3H18v-3z" />
         </svg>
         <span>
-          {{ walletAddress ? formatAddress(walletAddress) : "Connecter mon wallet" }}
+          {{ walletAddress ? formatAddress(walletAddress) : texts.walletButton }}
         </span>
       </button>
 
-      <!-- Message si aucun wallet -->
+      <!-- Aucun wallet détecté -->
       <div
         v-if="showNoWallet"
         class="mt-6 text-sm text-center text-white/80 space-y-2"
       >
-        <p>Aucun wallet détecté 🧐</p>
-        <p class="text-[#00BFFF]">Installe un wallet pour continuer :</p>
+        <p>{{ texts.noWallet }}</p>
+        <p class="text-[#00BFFF]">{{ texts.installWallet }}</p>
         <div class="flex justify-center gap-4 mt-2">
           <a
             href="https://metamask.io/download/"
@@ -56,17 +61,21 @@
         </div>
       </div>
 
+      <!-- Adresse connectée -->
       <p v-if="walletAddress" class="text-sm text-[#00BFFF] mt-4">
-        ✅ Connecté : {{ formatAddress(walletAddress) }}
+        ✅ {{ texts.connected }} {{ formatAddress(walletAddress) }}
       </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, computed } from "vue"
 import logo from "../assets/logo.png"
 import background from "../assets/connect.jpg"
+import { useLanguage } from "../store/useLanguage"
+import { loginTextsEn } from "../variables/pages/en/login"
+import { loginTextsFr } from "../variables/pages/fr/login"
 
 declare global {
   interface Window {
@@ -75,11 +84,18 @@ declare global {
   }
 }
 
+const { currentLang } = useLanguage()
+
+// ✅ Texte dynamique selon la langue
+const texts = computed(() =>
+  currentLang.value === "en" ? loginTextsEn.texts : loginTextsFr.texts
+)
+
 const walletAddress = ref<string | null>(null)
 const showNoWallet = ref(false)
 
 /**
- * Détection et connexion automatique (MetaMask ou Phantom)
+ * Détection et connexion (MetaMask ou Phantom)
  */
 const connectWallet = async () => {
   showNoWallet.value = false
@@ -87,7 +103,6 @@ const connectWallet = async () => {
   const hasMetaMask = window.ethereum && window.ethereum.isMetaMask
   const hasPhantom = window.solana && window.solana.isPhantom
 
-  // Aucun wallet détecté → affiche le message d’installation
   if (!hasMetaMask && !hasPhantom) {
     showNoWallet.value = true
     return
@@ -105,7 +120,7 @@ const connectWallet = async () => {
 }
 
 /**
- * 🔹 MetaMask
+ * 🔹 Connexion MetaMask
  */
 const connectMetaMask = async () => {
   const provider = window.ethereum
@@ -124,7 +139,7 @@ const connectMetaMask = async () => {
 }
 
 /**
- * 🔹 Phantom
+ * 🔹 Connexion Phantom
  */
 const connectPhantom = async () => {
   const provider = window.solana
