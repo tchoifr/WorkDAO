@@ -2,22 +2,21 @@ export const stakingTextsFr = {
   texts: {
     title: "💎 Staking & Gouvernance WorkDAO",
     subtitle: `
-      Le système de <b>staking $WORK</b> est le pilier de l’écosystème WorkDAO.  
-      En plaçant vos tokens en staking, vous contribuez à sécuriser le protocole, 
-      bénéficiez d’un rendement annuel fixe de 5 %, 
-      et obtenez le droit de participer activement à la gouvernance du DAO.`,
+      Le système de <b>staking $WORK</b> renforce la stabilité et la sécurité de l’écosystème WorkDAO.  
+      En plaçant vos tokens en staking, vous contribuez à la protection du protocole, 
+      recevez des <b>récompenses régulières</b> et soutenez la gouvernance communautaire du DAO.`,
     
     sectionGovernance: {
       title: "⚖️ Intégration à la Gouvernance",
       description: `
-        Chaque utilisateur ayant effectué un staking devient un membre reconnu de la 
-        <b>structure de gouvernance WorkDAO</b>.  
-        Votre mise définit votre éligibilité à voter, proposer et arbitrer au sein de l’écosystème.`,
+        Le staking n’accorde pas directement un pouvoir de vote, mais il renforce 
+        la crédibilité et l’influence des membres détenant un <b>Jeton Soulbound (SBT)</b>.  
+        Chaque utilisateur possédant un SBT et un staking actif peut participer pleinement à la gouvernance WorkDAO.`,
       list: [
-        "🔹 <b>Pouvoir de vote :</b> Les tokens mis en staking octroient des droits de vote proportionnels sur toutes les propositions du DAO.",
-        "🔹 <b>Éligibilité à l’arbitrage :</b> Seuls les utilisateurs ayant un staking actif peuvent être sélectionnés comme arbitres de litiges.",
-        "🔹 <b>Droit de proposition :</b> Un seuil minimum de staking est requis pour soumettre de nouvelles propositions de gouvernance.",
-        "🔹 <b>Confiance collective :</b> Les stakers garantissent la transparence, l’équité et la stabilité à long terme du protocole."
+        "🔹 <b>Participation aux votes :</b> Le droit de vote est accordé aux détenteurs d’un SBT. Un staking actif renforce la légitimité et la réputation du membre.",
+        "🔹 <b>Éligibilité à l’arbitrage :</b> Les utilisateurs détenant un SBT et un staking actif peuvent être sélectionnés comme arbitres lors des litiges.",
+        "🔹 <b>Droit de proposition :</b> Un seuil minimal de staking peut être requis pour soumettre de nouvelles propositions de gouvernance.",
+        "🔹 <b>Confiance collective :</b> Les stakers garantissent la transparence, la stabilité et la sécurité du protocole à long terme."
       ]
     },
 
@@ -25,12 +24,12 @@ export const stakingTextsFr = {
       title: "💰 Récompenses et Incitations du Staking",
       description: `
         Le staking de vos tokens <span class='text-[#00BFFF] font-semibold'>$WORK</span> 
-        soutient directement le DAO tout en générant un revenu stable et prévisible.`,
+        soutient directement le DAO tout en générant des récompenses équitables et durables.`,
       list: [
-        "🏆 Rendement annuel fixe de <b>5 % APY</b> distribué en tokens $WORK.",
-        "💎 Bonus de gouvernance supplémentaire pour une participation régulière aux votes du DAO.",
-        "🛡️ Récompenses d’arbitrage versées en <b>stablecoins</b> avec des bonus $WORK selon la performance.",
-        "📈 Les stakers à long terme renforcent leur réputation on-chain et leur influence au sein du DAO."
+        "🏆 <b>Rendement annuel ajusté</b> (vote DAO, base 5 % APY) distribué en tokens $WORK.",
+        "💎 <b>Bonus de gouvernance</b> pour une participation régulière aux votes et aux discussions communautaires.",
+        "🛡️ <b>Récompenses d’arbitrage</b> versées en stablecoins avec des bonus $WORK selon la performance.",
+        "📈 Les stakers à long terme développent leur <b>réputation on-chain</b> et renforcent leur influence au sein du DAO."
       ]
     }
   }

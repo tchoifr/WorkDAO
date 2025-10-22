@@ -2,20 +2,21 @@ export const stakingTextsEn = {
   texts: {
     title: "💎 WorkDAO Staking & Governance",
     subtitle: `
-      The <b>$WORK</b> staking system is the backbone of the WorkDAO ecosystem.  
-      By staking your tokens, you help secure the protocol, earn a fixed 5% annual reward,
-      and gain the right to actively participate in DAO governance.`,
+      The <b>$WORK staking system</b> strengthens the stability and security of the WorkDAO ecosystem.  
+      By staking your tokens, you help protect the protocol, 
+      earn <b>regular rewards</b>, and support the DAO’s community-driven governance.`,
     
     sectionGovernance: {
-      title: "⚖️ Governance Integration",
+      title: "⚖️ Integration with Governance",
       description: `
-        Every staker becomes a recognized member of the <b>WorkDAO governance structure</b>.  
-        Your stake defines your eligibility to vote, propose, and arbitrate within the ecosystem.`,
+        Staking does not directly grant voting power, but it enhances the credibility and influence 
+        of members holding a <b>Soulbound Token (SBT)</b>.  
+        Each user with an active SBT and staking position can fully participate in WorkDAO governance.`,
       list: [
-        "🔹 <b>Voting Power:</b> Staked tokens grant proportional voting rights on all DAO proposals.",
-        "🔹 <b>Arbitration Eligibility:</b> Only users with an active stake can be selected as dispute arbitrators.",
-        "🔹 <b>Proposal Access:</b> A minimum staking threshold is required to submit new governance proposals.",
-        "🔹 <b>Collective Trust:</b> Stakers uphold transparency, fairness, and long-term protocol stability."
+        "🔹 <b>Voting participation:</b> Voting rights are granted to verified members holding a Soulbound Token. Active staking strengthens reputation and credibility.",
+        "🔹 <b>Arbitration eligibility:</b> Members with an SBT and active staking can be selected as arbitrators for dispute resolution.",
+        "🔹 <b>Proposal rights:</b> A minimum staking threshold may be required to submit new governance proposals.",
+        "🔹 <b>Collective trust:</b> Stakers uphold transparency, stability, and long-term security of the protocol."
       ]
     },
 
@@ -23,12 +24,12 @@ export const stakingTextsEn = {
       title: "💰 Staking Rewards & Incentives",
       description: `
         Staking your <span class='text-[#00BFFF] font-semibold'>$WORK</span> tokens directly supports the DAO 
-        while generating a stable and predictable income stream.`,
+        while generating fair and sustainable rewards.`,
       list: [
-        "🏆 Fixed annual yield of <b>5% APY</b> distributed in $WORK tokens.",
-        "💎 Additional governance bonus for consistent participation in DAO votes.",
-        "🛡️ Arbitration rewards paid in <b>stablecoins</b> with performance-based $WORK bonuses.",
-        "📈 Long-term stakers gain enhanced on-chain reputation and higher DAO influence."
+        "🏆 <b>Adjustable annual yield</b> (DAO vote, baseline 5% APY) distributed in $WORK tokens.",
+        "💎 <b>Governance bonuses</b> for consistent participation in votes and community discussions.",
+        "🛡️ <b>Arbitration rewards</b> paid in stablecoins with additional $WORK bonuses based on performance.",
+        "📈 Long-term stakers build strong <b>on-chain reputation</b> and influence within the DAO."
       ]
     }
   }
