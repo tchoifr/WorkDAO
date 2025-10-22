@@ -29,14 +29,14 @@
 
       <div class="flex flex-wrap justify-center gap-4">
         <RouterLink
-          to="/freelance"
+          to="/login"
           class="px-8 py-3 border border-[#00BFFF] text-[#00BFFF] hover:bg-[#00BFFF] hover:text-black font-semibold rounded-full text-lg transition shadow-[0_0_10px_#00BFFF]"
         >
           {{ texts.header.btnFreelancer }}
         </RouterLink>
 
         <RouterLink
-          to="/employer"
+          to="/login"
           class="px-8 py-3 border border-[#00BFFF] text-[#00BFFF] hover:bg-[#00BFFF] hover:text-black font-semibold rounded-full text-lg transition shadow-[0_0_10px_#00BFFF]"
         >
           {{ texts.header.btnEmployer }}
