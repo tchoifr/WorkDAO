@@ -130,8 +130,8 @@ const menu = [
   { key: "projects", label: "Projects", icon: "💼" },
   { key: "payments", label: "Payments", icon: "💰" },
   { key: "nft", label: "NFTs", icon: "🏅" },
-  { key: "settings", label: "Settings", icon: "⚙️" },
   { key: "parcours", label: "Career", icon: "🧭" },
+  { key: "settings", label: "Settings", icon: "⚙️" },
 ]
 
 const activeSection = ref("dashboard")
