@@ -109,6 +109,8 @@
 <script setup lang="ts">
 import { ref, computed, watch, provide } from "vue"
 import avatar from "../assets/avatar.webp"
+
+// ✅ Composants du tableau de bord
 import DashboardStats from "../components/freelanceDashboard/DashboardStats.vue"
 import FindMissions from "../components/freelanceDashboard/FindMissions.vue"
 import Messages from "../components/freelanceDashboard/Messages.vue"
@@ -117,13 +119,17 @@ import Payments from "../components/freelanceDashboard/Payments.vue"
 import BadgesNFT from "../components/freelanceDashboard/BadgesNFT.vue"
 import Settings from "../components/freelanceDashboard/Settings.vue"
 import Parcours from "../components/freelanceDashboard/Parcours.vue"
+
+// ✅ Image utilisée pour les missions
 import crypto from "../assets/crypto.webp"
 
+// --- DARK MODE GESTION ---
 const darkMode = ref(localStorage.getItem("darkMode") === "true")
 provide("darkMode", darkMode)
 watch(darkMode, (v) => localStorage.setItem("darkMode", v ? "true" : "false"))
 
-const menu = [
+// --- MENU LATÉRAL / NAVIGATION MOBILE ---
+const menu = ref([
   { key: "dashboard", label: "Dashboard", icon: "🏠" },
   { key: "find", label: "Find", icon: "🔍" },
   { key: "messages", label: "Messages", icon: "💬" },
@@ -132,15 +138,19 @@ const menu = [
   { key: "nft", label: "NFTs", icon: "🏅" },
   { key: "parcours", label: "Career", icon: "🧭" },
   { key: "settings", label: "Settings", icon: "⚙️" },
-]
+])
 
+// --- ÉTAT ACTIF ---
 const activeSection = ref("dashboard")
 const balance = ref(1420.75)
 
+// --- DONNÉES DYNAMIQUES ---
 const missions = ref([
-  { id: 1, title: "Smart Contract ERC-721", price: 320, status: "Terminé", image: crypto },
-  { id: 2, title: "Intégration Wallet", price: 180, status: "En cours", image: crypto },
-  { id: 3, title: "Audit Solidity", price: 500, status: "En attente", image: crypto },
+  { id: 1, title: "Smart Contract ERC-721", description: "Développement de contrats NFT WorkDAO.", price: 320, status: "Terminé", image: crypto },
+  { id: 2, title: "Intégration Wallet", description: "Connexion WalletConnect et MetaMask pour la dApp.", price: 180, status: "En cours", image: crypto },
+  { id: 3, title: "Audit Solidity", description: "Analyse de sécurité des smart contracts ERC-20.", price: 500, status: "En attente", image: crypto },
+  { id: 4, title: "UI/UX Designer Web3", description: "Conception d’interfaces futuristes pour le DAO.", price: 260, status: "Disponible", image: crypto },
+  { id: 5, title: "Traducteur Technique", description: "Traduction EN → FR des documents de gouvernance.", price: 120, status: "Disponible", image: crypto },
 ])
 
 const payments = ref([
@@ -158,9 +168,10 @@ const nfts = ref([
   { id: 2, name: "Full-Stack Web3", image: crypto },
 ])
 
+// --- SÉLECTION DYNAMIQUE DES COMPOSANTS ---
 const currentComponent = computed(() => {
   switch (activeSection.value) {
-    case "find": return FindMissions
+    case "find": return FindMissions // ✅ le filtre de métiers WorkDAO
     case "messages": return Messages
     case "projects": return MyProjects
     case "payments": return Payments
@@ -171,8 +182,9 @@ const currentComponent = computed(() => {
   }
 })
 
+// --- TITRE DYNAMIQUE EN ENTÊTE ---
 const currentTitle = computed(() => {
-  const item = menu.find(m => m.key === activeSection.value)
+  const item = menu.value.find((m) => m.key === activeSection.value)
   return item ? `${item.icon} ${item.label}` : "🏠 Dashboard"
 })
 </script>
