@@ -4,6 +4,7 @@ import { useRouter, useRoute } from 'vue-router'
 import Navbar from '../src/components/Navbar.vue'
 import Footer from '../src/components/Footer.vue'
 import Loader from '../src/components/Loader.vue'
+import R2D2 from '../src/components/R2D2.vue' // ✅ ton assistant global
 
 const loading = ref(true)
 const router = useRouter()
@@ -33,7 +34,7 @@ const isDashboardPage = computed(() =>
     <!-- Loader global -->
     <Loader :visible="loading" />
 
-    <!-- Navbar : passe la position dynamique -->
+    <!-- Navbar -->
     <Navbar :is-relative="isDashboardPage" />
 
     <!-- Contenu principal -->
@@ -41,6 +42,10 @@ const isDashboardPage = computed(() =>
       <router-view />
     </main>
 
+    <!-- Footer -->
     <Footer />
+
+    <!-- 🤖 Assistant global -->
+    <R2D2 />
   </div>
 </template>
