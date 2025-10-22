@@ -2,122 +2,126 @@ export const daoTextsFr = {
   header: {
     title: "🏛️ Gouvernance WorkDAO",
     description: `
-      Le <b>WorkDAO</b> est l’organe décisionnel décentralisé qui gouverne,
-      sécurise et fait évoluer l’ensemble de l’écosystème Work.  
-      Chaque vote, mission et
-      <span class="text-[#00BFFF] font-semibold">$WORK</span> contribue
-      à construire une économie transparente, autonome et dirigée par sa communauté.`
+      Le <b>WorkDAO</b> est une organisation décentralisée qui donne du pouvoir aux freelances du monde entier.  
+      Il gouverne, sécurise et fait évoluer l’ensemble de l’écosystème Work grâce à des décisions collectives,  
+      un vote transparent on-chain et une participation communautaire équitable.
+    `
   },
 
   accessRules: {
     title: "⚖️ Règles de participation à la gouvernance",
     list: [
-      "✅ L’accès à la gouvernance est accordé uniquement après la signature d’un <b>contrat intelligent vérifié</b> entre deux utilisateurs.",
-      "💎 Pour voter ou soumettre des propositions, les membres doivent avoir effectué au moins une opération de <b>staking $WORK</b>.",
-      "⚔️ En cas de litige, <b>15 % des $WORK mis en staking</b> sont redistribués entre les arbitres votants.",
-      "🚫 Toute activité frauduleuse ou illégale entraîne la <b>suspension du compte</b> et le <b>gel des fonds $WORK</b>."
+      "✅ L’accès à la gouvernance est accordé via un <b>Jeton Soulbound (SBT)</b> non transférable délivré aux utilisateurs vérifiés.",
+      "💎 Le jeton <b>$WORK</b> est utilisé pour le staking, les récompenses et la participation à l’écosystème.",
+      "🗳️ Chaque membre vérifié dispose d’un droit de vote égal (1 membre = 1 voix).",
+      "🚫 Toute activité frauduleuse ou malveillante entraîne une <b>exclusion temporaire</b> du DAO."
     ]
   },
 
   charter: {
-    title: "📜 Charte de Gouvernance WorkDAO",
+    title: "📜 Charte de Gouvernance du WorkDAO",
     rules: [
       {
-        title: "1. Principes généraux",
-        text: "Le DAO administre l’écosystème décentralisé des freelances, en gérant son évolution, la résolution des litiges et les mises à jour via des contrats intelligents transparents et on-chain."
-      },
-      {
-        title: "2. Adhésion",
-        text: "Tout utilisateur vérifié peut rejoindre le DAO. Les modes d’entrée incluent : (A) un jeton Soulbound obtenu après une transaction validée, ou (B) la détention d’au moins 100 $WORK. Un modèle hybride peut combiner les deux pour plus d’inclusivité."
-      },
-      {
-        title: "3. Droits et responsabilités des membres",
-        list: [
-          "Soumettre des propositions pour les mises à jour du protocole, les règles de gouvernance ou les nouvelles fonctionnalités de la plateforme.",
-          "Voter sur les paramètres clés tels que la répartition de la trésorerie, les élections d’arbitres ou les politiques du système.",
-          "Accéder à une transparence totale sur les budgets du DAO, les votes et les rapports de gouvernance.",
-          "Agir de manière éthique et signaler toute fraude, abus ou activité malveillante."
-        ]
-      },
-      {
-        title: "4. Mécanisme de vote",
+        title: "1. Mission",
         text: `
-          Tous les votes sont effectués <b>on-chain</b> afin de garantir l’équité et la transparence.  
-          - Modèles de gouvernance : 1 membre = 1 vote (Soulbound) ou vote pondéré selon les avoirs en $WORK (avec un plafond).  
-          - Quorum : 20 % des membres actifs ou 10 % de l’offre totale de jetons.  
-          - Durée standard d’un vote : 7 jours.  
-          - Votes d’urgence : possibilité de suspendre un contrat intelligent jusqu’à 72 heures.`
-      },
-      {
-        title: "5. Résolution des litiges",
-        text: `
-          Les litiges sont gérés par un <b>pool d’arbitrage décentralisé</b> selon des procédures vérifiables on-chain :<br><br>
-          <ol class='list-decimal ml-6 space-y-1'>
-            <li>Dépôt du dossier de litige par un utilisateur.</li>
-            <li>Sélection aléatoire d’un <b>jury de 5 arbitres</b>.</li>
-            <li>Analyse des preuves soumises (stockées on-chain ou via IPFS).</li>
-            <li>Le vote majoritaire détermine la répartition des fonds ou les sanctions.</li>
-          </ol>
-          <br />
-          <b>Récompenses des arbitres :</b><br />
-          - Paiement en stablecoins + <b>bonus en $WORK</b> pour la participation active.<br />
-          - Les arbitres malhonnêtes ou inactifs subissent une <b>pénalité (slashing)</b> et perdent une partie de leur mise ou de leur réputation.
+          Le <b>WorkDAO</b> est un écosystème décentralisé conçu pour les freelances.  
+          Chaque membre contribue à sa croissance, à sa sécurité et à son évolution  
+          par des décisions collectives, équitables et transparentes, directement sur la blockchain.
         `
       },
       {
-        title: "6. Trésorerie et répartition des fonds",
+        title: "2. Adhésion",
         text: `
-          La trésorerie du DAO reçoit <b>1 % de toutes les transactions</b> effectuées sur la plateforme.  
-          Répartition des fonds :  
-          - 50 % → Arbitrage & Sécurité  
-          - 30 % → Développement technique  
-          - 20 % → Croissance & Communauté  
-          Toute dépense supérieure à <b>5 000 $WORK</b> nécessite une approbation via vote DAO.`
+          Chaque membre vérifié reçoit un <b>Jeton Soulbound (SBT)</b> comme preuve unique d’identité  
+          et de droit de vote au sein du DAO.  
+          Le jeton <b>$WORK</b> soutient l’économie du réseau — utilisé pour le staking, les récompenses  
+          et le financement des propositions.
+        `
       },
       {
-        title: "7. Transparence et audit",
-        text: "Chaque décision, vote et mouvement de fonds du DAO est enregistré de manière permanente on-chain. Tous les contrats intelligents sont audités, et des rapports de transparence trimestriels sont publiés publiquement via IPFS."
-      },
-      {
-        title: "8. Scalabilité et évolution continue",
+        title: "3. Gouvernance",
         text: `
-          Le DAO évolue grâce à des <b>propositions formelles (DIP)</b> pouvant inclure :  
-          - Transition entre la gouvernance Soulbound et celle basée sur $WORK  
-          - Déploiement multi-chaîne  
-          - Création de sous-DAO  
-          - Amélioration des mécanismes de vote ou de staking`
+          - <b>1 membre = 1 voix</b>, garanti par le SBT.  
+          - Les membres peuvent <b>déléguer leur vote</b> à un représentant de confiance.  
+          - Quorum minimal : <b>10 % des membres actifs</b>.  
+          - Durée standard d’un vote : <b>7 jours</b> (ou <b>72h</b> pour les urgences).
+        `
       },
       {
-        title: "9. Accessibilité et inclusion mondiale",
-        text: "Toute la documentation du DAO et les interfaces de vote sont disponibles en anglais, français et espagnol. Des sous-DAO régionaux garantissent une représentation équitable et une participation juste à travers le monde."
-      },
-      {
-        title: "10. Conclusion",
+        title: "4. Propositions (DIP)",
         text: `
-          La <b>Charte WorkDAO</b> établit les fondations d’un modèle de gouvernance transparent, décentralisé et collaboratif.  
-          Elle permet aux membres de façonner collectivement l’avenir de l’écosystème Work.  
-          <br><br><i>“Un Work. Un Réseau. Un DAO.”</i>`
+          Les membres peuvent soumettre des <b>DAO Improvement Proposals (DIP)</b> pour proposer des mises à jour ou des améliorations.  
+          Chaque proposition doit obtenir au moins <b>60 % d’approbation</b> pour être adoptée par le DAO.
+        `
+      },
+      {
+        title: "5. Arbitrage & Sécurité",
+        text: `
+          Les litiges sont résolus par un <b>jury aléatoire de 5 membres vérifiés</b> détenant un SBT  
+          et une petite mise en staking de $WORK comme garantie de bonne foi.  
+          Les décisions sont publiques, enregistrées on-chain et appliquées via des contrats intelligents.  
+          Les arbitres honnêtes sont récompensés, tandis que les comportements abusifs sont sanctionnés.
+        `
+      },
+      {
+        title: "6. Trésorerie",
+        text: `
+          Le DAO reçoit <b>1 % de toutes les transactions</b> effectuées dans l’écosystème Work.  
+          L’utilisation des fonds est décidée collectivement par la communauté via un vote on-chain,  
+          garantissant une flexibilité totale durant la phase de lancement du projet.
+        `
+      },
+      {
+        title: "7. Transparence",
+        text: `
+          Toutes les décisions, votes et transactions du DAO sont <b>publiques et vérifiables on-chain</b>.  
+          Des <b>rapports trimestriels</b> seront publiés via IPFS afin de garantir une transparence financière  
+          et organisationnelle complète.
+        `
+      },
+      {
+        title: "8. Évolution",
+        text: `
+          Le DAO évolue continuellement grâce aux propositions de la communauté (DIP),  
+          permettant d’introduire des améliorations telles que le déploiement multi-chaîne,  
+          de nouveaux modèles de staking ou la création de sous-DAO spécialisés.
+        `
+      },
+      {
+        title: "9. Inclusion",
+        text: `
+          Le WorkDAO est un <b>réseau mondial et inclusif</b>.  
+          Toute la documentation et les interfaces sont disponibles en <b>anglais, français et espagnol</b>.  
+          Les sous-DAO régionaux assurent une participation équitable et une représentation locale.
+        `
+      },
+      {
+        title: "10. Esprit du WorkDAO",
+        text: `
+          Plus qu’un protocole, le WorkDAO est une <b>communauté d’indépendants</b>  
+          unie par la transparence, la collaboration et la liberté.  
+          <br><br><i>« Un Work. Un Réseau. Un DAO. »</i>
+        `
       }
     ]
   },
 
   proposals: {
-    title: "📢 Propositions de gouvernance actives",
+    title: "📢 Propositions de Gouvernance Actives",
     items: [
-      "🕒 Proposition #32 : Ajustement de la répartition des fonds de la trésorerie (se termine dans 3 jours)",
-      "🕒 Proposition #31 : Mise en place d’un nouveau système décentralisé de sélection des arbitres (se termine dans 2 jours)"
+      "🕒 Proposition #03 : Lancer un cadre de gestion de trésorerie initial (se termine dans 4 jours)",
+      "🕒 Proposition #02 : Introduire des récompenses de staking pour les membres vérifiés (se termine dans 2 jours)"
     ],
-    note: "Seuls les membres disposant d’un staking actif ou d’un jeton Soulbound peuvent créer ou voter des propositions."
+    note: "Seuls les membres disposant d’un Jeton Soulbound (SBT) actif peuvent créer ou voter sur les propositions."
   },
 
   votes: {
-    title: "🗳️ Résultats récents des votes",
-    description: "Résultats validés des votes des membres actifs du DAO, après vérification on-chain et respect du quorum.",
+    title: "🗳️ Résultats Récents des Votes",
+    description: "Derniers résultats de vote vérifiés on-chain et validés par la communauté.",
     list: [
-      "✔️ Proposition #30 : Augmentation des récompenses de staking → <span class='text-[#00BFFF]'>Approuvée (128 votes valides)</span>",
-      "❌ Proposition #29 : Réduction du seuil de quorum → <span class='text-red-400'>Rejetée (42 votes valides)</span>",
-      "🕒 Proposition #28 : Intégration du réseau Base → <span class='text-yellow-400'>En attente (vote en cours)</span>"
+      "✔️ Proposition #01 : Adoption de la Charte officielle du WorkDAO → <span class='text-[#00BFFF]'>Approuvée (142 votes valides)</span>",
+      "🕒 Proposition #02 : Modèle de récompenses de staking → <span class='text-yellow-400'>En cours (clôture prochaine)</span>"
     ],
-    note: "Un quorum minimum de 20 % est requis pour la validation d’une proposition. Tous les résultats sont enregistrés de manière permanente on-chain."
+    note: "Un quorum minimal de 10 % des membres actifs est requis pour valider une proposition. Tous les résultats sont enregistrés de manière permanente on-chain."
   }
 }
