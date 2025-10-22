@@ -103,23 +103,23 @@ export const daoTextsEn = {
       }
     ]
   },
+proposals: {
+  title: "📢 Active Governance Proposals",
+  items: [
+    "🕒 Proposal #02: Launch the initial treasury management framework (ends in 4 days)",
+    "🕒 Proposal #03: Implement staking rewards for verified members (ends in 2 days)"
+  ],
+  note: "Only members with an active Soulbound Token (SBT) can create or vote on proposals."
+},
 
-  proposals: {
-    title: "📢 Active Governance Proposals",
-    items: [
-      "🕒 Proposal #03: Launch early-stage treasury management framework (ends in 4 days)",
-      "🕒 Proposal #02: Introduce staking rewards for verified members (ends in 2 days)"
-    ],
-    note: "Only members with an active Soulbound Token (SBT) can create or vote on proposals."
-  },
+votes: {
+  title: "🗳️ Recent Voting Results",
+  description: "Latest DAO voting outcomes verified on-chain and validated by the community.",
+  list: [
+    "✔️ Proposal #01: Adopt the official WorkDAO Governance Charter → <span class='text-[#00BFFF]'>Approved (142 valid votes)</span>",
+    "🕒 Proposal #02: Treasury management framework → <span class='text-yellow-400'>Pending (voting ends soon)</span>"
+  ],
+  note: "A minimum quorum of 10% of active members is required for proposal validation. All results are permanently recorded on-chain."
+}
 
-  votes: {
-    title: "🗳️ Recent Voting Results",
-    description: "Latest DAO voting outcomes verified on-chain and approved by the community.",
-    list: [
-      "✔️ Proposal #01: Adopt the official WorkDAO Charter → <span class='text-[#00BFFF]'>Approved (142 valid votes)</span>",
-      "🕒 Proposal #02: Staking rewards model → <span class='text-yellow-400'>Pending (voting ends soon)</span>"
-    ],
-    note: "A minimum quorum of 10% of active members is required for proposal validation. All results are permanently recorded on-chain."
-  }
 }

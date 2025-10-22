@@ -106,22 +106,23 @@ export const daoTextsFr = {
     ]
   },
 
-  proposals: {
-    title: "📢 Propositions de Gouvernance Actives",
-    items: [
-      "🕒 Proposition #03 : Lancer un cadre de gestion de trésorerie initial (se termine dans 4 jours)",
-      "🕒 Proposition #02 : Introduire des récompenses de staking pour les membres vérifiés (se termine dans 2 jours)"
-    ],
-    note: "Seuls les membres disposant d’un Jeton Soulbound (SBT) actif peuvent créer ou voter sur les propositions."
-  },
+proposals: {
+  title: "📢 Propositions de Gouvernance Actives",
+  items: [
+    "🕒 Proposition #02 : Lancer le cadre initial de gestion de trésorerie (se termine dans 4 jours)",
+    "🕒 Proposition #03 : Mettre en place des récompenses de staking pour les membres vérifiés (se termine dans 2 jours)"
+  ],
+  note: "Seuls les membres disposant d’un Jeton Soulbound (SBT) actif peuvent créer ou voter sur les propositions."
+},
 
-  votes: {
-    title: "🗳️ Résultats Récents des Votes",
-    description: "Derniers résultats de vote vérifiés on-chain et validés par la communauté.",
-    list: [
-      "✔️ Proposition #01 : Adoption de la Charte officielle du WorkDAO → <span class='text-[#00BFFF]'>Approuvée (142 votes valides)</span>",
-      "🕒 Proposition #02 : Modèle de récompenses de staking → <span class='text-yellow-400'>En cours (clôture prochaine)</span>"
-    ],
-    note: "Un quorum minimal de 10 % des membres actifs est requis pour valider une proposition. Tous les résultats sont enregistrés de manière permanente on-chain."
-  }
+votes: {
+  title: "🗳️ Résultats Récents des Votes",
+  description: "Derniers résultats de vote vérifiés on-chain et validés par la communauté.",
+  list: [
+    "✔️ Proposition #01 : Adoption de la Charte officielle de Gouvernance du WorkDAO → <span class='text-[#00BFFF]'>Approuvée (142 votes valides)</span>",
+    "🕒 Proposition #02 : Cadre de gestion de trésorerie → <span class='text-yellow-400'>En cours (clôture prochaine)</span>"
+  ],
+  note: "Un quorum minimal de 10 % des membres actifs est requis pour valider une proposition. Tous les résultats sont enregistrés de manière permanente on-chain."
+}
+
 }
