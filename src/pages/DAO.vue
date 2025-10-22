@@ -118,8 +118,24 @@ import { daoTextsFr } from "../variables/pages/fr/dao"
 
 const { currentLang } = useLanguage()
 
-// ✅ Texte dynamique selon la langue sélectionnée
-const texts = computed(() =>
+interface CharterRule {
+  title: string
+  text?: string
+  list?: string[]
+}
+
+interface DaoTexts {
+  header: any
+  accessRules: any
+  charter: {
+    title: string
+    rules: CharterRule[]
+  }
+  proposals: any
+  votes: any
+}
+
+const texts = computed<DaoTexts>(() =>
   currentLang.value === "en" ? daoTextsEn : daoTextsFr
 )
 </script>
