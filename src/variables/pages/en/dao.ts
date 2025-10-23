@@ -11,14 +11,14 @@ export const daoTextsEn = {
   accessRules: {
     title: "⚖️ Governance Participation Rules",
     list: [
-      "✅ Membership is granted via a non-transferable <b>Soulbound Token (SBT)</b> issued to verified users.",
+      "✅ Governance access is granted through a non-transferable <b>Soulbound Token (SBT)</b> issued to verified users.",
       "💎 The <b>$WORK token</b> is used for staking, rewards, and participation in the ecosystem.",
-      "🗳️ <b>Voting is only allowed in case of disputes</b> between members to ensure fair arbitration.",
-      "👑 To become a <b>Governor</b>, members must <b>stake at least $10 in $WORK</b> and have successfully completed <b>one mission</b>.",
-      "🚫 Any fraudulent or malicious activity leads to <b>temporary exclusion</b> from the DAO."
+      "🗳️ <b>Voting is only allowed in case of disputes</b> between members to ensure fair and community-driven arbitration.",
+      "👑 To become a <b>Governor</b>, a member must <b>stake at least $10 in $WORK</b> and have successfully <b>completed at least one mission</b> within the ecosystem.",
+      "⚖️ In the event of a <b>dispute</b>, <b>15% of the $WORK</b> from the mission — <b>previously held in escrow</b> — is automatically allocated to compensate the arbitrators. A <b>jury of 5 Governors</b> is randomly selected from eligible members. Upon resolution, these <b>15% are evenly distributed</b>, granting <b>3% of the total amount to each Governor</b> as a reward for their role in maintaining fairness and network integrity.",
+      "🚫 Any fraudulent or malicious activity results in a <b>temporary exclusion</b> from the DAO and may lead to the loss of associated staking."
     ]
   },
-
   charter: {
     title: "📜 WorkDAO Governance Charter",
     rules: [

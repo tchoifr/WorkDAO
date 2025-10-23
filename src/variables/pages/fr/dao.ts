@@ -13,12 +13,12 @@ export const daoTextsFr = {
     list: [
       "✅ L’accès à la gouvernance est accordé via un <b>Jeton Soulbound (SBT)</b> non transférable délivré aux utilisateurs vérifiés.",
       "💎 Le <b>jeton $WORK</b> est utilisé pour le staking, les récompenses et la participation à l’écosystème.",
-      "🗳️ Le <b>vote n’est autorisé qu’en cas de litige</b> entre membres afin d’assurer un arbitrage équitable.",
-      "👑 Pour devenir <b>Gouverneur</b>, un membre doit <b>staker au moins 10 $ en $WORK</b> et avoir <b>réussi au moins une mission</b>.",
-      "🚫 Toute activité frauduleuse ou malveillante entraîne une <b>exclusion temporaire</b> du DAO."
+      "🗳️ Le <b>vote n’est autorisé qu’en cas de litige</b> entre membres afin d’assurer un arbitrage équitable et communautaire.",
+      "👑 Pour devenir <b>Gouverneur</b>, un membre doit <b>staker au moins 10 $ en $WORK</b> et avoir <b>réussi au moins une mission</b> au sein de l’écosystème.",
+      "⚖️ En cas de <b>litige</b>, <b>15 % des $WORK</b> de la mission, <b>bloqués préalablement sous séquestre</b>, sont automatiquement réservés pour rémunérer les arbitres. Un <b>jury de 5 gouverneurs</b> est sélectionné aléatoirement parmi les membres éligibles. À la fin du jugement, ces <b>15 % sont redistribués à parts égales</b>, soit <b>3 % du montant pour chaque gouverneur</b>, en reconnaissance de leur rôle dans la résolution du conflit et la protection de l’intégrité du réseau.",
+      "🚫 Toute activité frauduleuse ou malveillante entraîne une <b>exclusion temporaire</b> du DAO et la perte éventuelle du staking associé."
     ]
   },
-
   charter: {
     title: "📜 Charte de Gouvernance du WorkDAO",
     rules: [
