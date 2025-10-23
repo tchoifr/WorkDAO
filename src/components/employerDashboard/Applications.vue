@@ -1,6 +1,6 @@
 <template>
   <section class="p-6 transition-colors duration-500">
-       <div v-for="job in jobs" :key="job.id" class="mb-10">
+    <div v-for="job in jobs" :key="job.id" class="mb-10">
       <h3
         class="text-lg font-semibold mb-3"
         :class="darkMode ? 'text-gray-100' : 'text-gray-800'"
@@ -11,6 +11,7 @@
         </span>
       </h3>
 
+      <!-- ✅ Liste des candidatures -->
       <div v-if="filteredApplications(job.id).length" class="space-y-4">
         <div
           v-for="app in filteredApplications(job.id)"
@@ -20,6 +21,7 @@
             ? 'bg-[#0a2431] border border-[#00BFFF]/30 hover:border-[#00BFFF]/60'
             : 'bg-white hover:shadow-lg border-gray-200'"
         >
+          <!-- 👤 Infos candidat -->
           <div class="flex items-center mb-3">
             <img
               :src="app.avatar"
@@ -43,6 +45,7 @@
             </div>
           </div>
 
+          <!-- 📝 Texte proposition -->
           <p
             class="text-sm mb-3"
             :class="darkMode ? 'text-gray-300' : 'text-gray-600'"
@@ -50,6 +53,7 @@
             {{ app.proposal }}
           </p>
 
+          <!-- ✅ Statut + Boutons -->
           <div class="flex justify-between items-center">
             <span
               class="text-sm font-semibold"
@@ -66,6 +70,17 @@
             </span>
 
             <div class="space-x-2">
+              <!-- ✅ Bouton "Démarrer une conversation" -->
+              <button
+                class="px-3 py-1 text-sm rounded transition font-medium"
+                :class="darkMode
+                  ? 'bg-[#00BFFF]/20 text-[#00BFFF] hover:bg-[#00BFFF]/30'
+                  : 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200'"
+                @click="startConversation(app)"
+              >
+                💬 Démarrer une conversation
+              </button>
+
               <button
                 class="px-3 py-1 text-sm rounded transition"
                 :class="darkMode
@@ -89,10 +104,11 @@
         </div>
       </div>
 
+      <!-- ⚠️ Aucun candidat -->
       <p
+        v-else
         class="text-sm"
         :class="darkMode ? 'text-gray-400' : 'text-gray-400'"
-        v-else
       >
         Aucune candidature pour ce job.
       </p>
@@ -102,8 +118,8 @@
 
 <script setup lang="ts">
 import { inject } from "vue"
+import { openConversation } from "../../store/conversationStore"
 
-// ✅ On récupère la variable darkMode du EmployerDashboard.vue
 const darkMode = inject("darkMode", false)
 
 const props = defineProps<{
@@ -111,12 +127,22 @@ const props = defineProps<{
   applications: any[]
 }>()
 
+// 🔍 Filtrer les candidatures par job
 const filteredApplications = (jobId: number) => {
   return props.applications.filter((a) => a.jobId === jobId)
 }
 
+// ✅ Mettre à jour le statut
 const updateStatus = (id: number, newStatus: string) => {
   const app = props.applications.find((a) => a.id === id)
   if (app) app.status = newStatus
+}
+
+// 💬 Démarrer une conversation
+const startConversation = (app: any) => {
+  // Ici on simule l’ouverture de la conversation
+  // → tu peux directement appeler ton store "openConversation"
+  openConversation(app.id, "employer")
+  console.log(`Conversation démarrée avec ${app.freelancer}`)
 }
 </script>

@@ -1,91 +1,81 @@
 <template>
   <section class="p-6 transition-colors duration-500">
-    <div
-      class="rounded-lg shadow divide-y transition"
-      :class="darkMode
-        ? 'bg-[#0a2431] divide-gray-700 border border-[#00BFFF]/30'
-        : 'bg-white divide-gray-200 border border-gray-200'"
+    <h2
+      class="text-xl font-semibold mb-6"
+      :class="darkMode ? 'text-[#00BFFF]' : 'text-gray-800'"
     >
+      📬 Vos conversations
+    </h2>
+
+    <div
+      v-for="conv in conversations"
+      :key="conv.id"
+      class="relative rounded-lg shadow p-5 mb-4 border-l-4 transition"
+      :class="[
+        darkMode
+          ? 'bg-[#0a2431] border border-[#00BFFF]/30 hover:border-[#00BFFF]/60'
+          : 'bg-white border-gray-200',
+        conv.active ? 'border-l-green-500' : 'border-l-yellow-500'
+      ]"
+    >
+      <!-- 🔵 Bulle visible si non lu par freelance -->
       <div
-        v-for="msg in messages"
-        :key="msg.id"
-        class="flex items-start justify-between p-4 transition"
-        :class="darkMode
-          ? 'hover:bg-[#09202c]'
-          : 'hover:bg-gray-50'"
+        v-if="hasUnreadFor(conv, 'freelancer')"
+        class="absolute -top-2 -right-2 bg-[#00BFFF] text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow"
       >
-        <div class="flex space-x-3">
-          <img
-            :src="msg.avatar"
-            alt="avatar"
-            class="w-12 h-12 rounded-full border shadow-sm"
-            :class="darkMode ? 'border-[#00BFFF]/40' : 'border-indigo-200'"
-          />
+        1
+      </div>
 
-          <div>
-            <h3
-              class="font-semibold"
-              :class="darkMode ? 'text-[#00BFFF]' : 'text-gray-800'"
-            >
-              {{ msg.from }}
-            </h3>
-
-            <p
-              class="text-sm"
-              :class="darkMode ? 'text-gray-300' : 'text-gray-600'"
-            >
-              {{ msg.text }}
-            </p>
-
-            <span
-              class="text-xs"
-              :class="darkMode ? 'text-gray-400' : 'text-gray-400'"
-            >
-              {{ msg.time }}
-            </span>
-          </div>
+      <div class="flex justify-between items-center">
+        <div>
+          <h3
+            class="font-semibold"
+            :class="darkMode ? 'text-[#00BFFF]' : 'text-gray-800'"
+          >
+            {{ conv.company }}
+          </h3>
+          <p class="text-sm" :class="darkMode ? 'text-gray-300' : 'text-gray-600'">
+            Projet : <b>{{ conv.project }}</b>
+          </p>
         </div>
 
         <button
-          class="text-sm font-medium transition"
-          :class="darkMode
-            ? 'text-[#00BFFF] hover:text-[#38BDF8]'
-            : 'text-indigo-600 hover:text-indigo-800'"
+          @click="openConversation(conv.id, 'freelancer')"
+          :disabled="!conv.active"
+          class="px-3 py-2 rounded-md text-sm font-semibold transition"
+          :class="conv.active
+            ? darkMode
+              ? 'bg-[#00BFFF]/20 text-[#00BFFF] hover:bg-[#00BFFF]/30'
+              : 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200'
+            : 'bg-gray-200 text-gray-400 cursor-not-allowed'"
         >
-          Répondre
+          {{ conv.active ? 'Ouvrir' : 'En attente' }}
         </button>
       </div>
+
+      <div class="mt-3 text-sm" :class="darkMode ? 'text-gray-200' : 'text-gray-700'">
+        <b>{{ conv.company }}</b> :
+        {{ conv.messages[conv.messages.length - 1].text }}
+      </div>
     </div>
+
+    <ChatWindow v-if="activeConversation" :conversation="activeConversation" />
   </section>
 </template>
 
 <script setup lang="ts">
-import { inject } from "vue"
+import { inject, computed } from "vue"
+import ChatWindow from "../ChatWindow.vue"
+import {
+  conversations,
+  activeConversationId,
+  openConversation,
+} from "../../store/conversationStore"
+import { hasUnreadFor } from "../../utlis/messageHelpers"
 
-// ✅ Récupère le mode sombre depuis FreelanceDashboard
-const darkMode = inject("darkMode", false)
+const darkMode = inject<boolean>("darkMode", false)
 
-const messages = [
-  {
-    id: 1,
-    from: "DevCorp Agency",
-    text: "Bonjour Lisa, pouvez-vous livrer la mise à jour du smart contract avant mardi ?",
-    time: "Il y a 2h",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    id: 2,
-    from: "Polygon Team",
-    text: "Merci pour votre travail sur le déploiement — excellent rendu ! 🎉",
-    time: "Hier",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-  },
-  {
-    id: 3,
-    from: "DAO Collective",
-    text: "Votre proposition de contrat DAO est validée. On passe au vote !",
-    time: "Il y a 3 jours",
-    avatar: "https://randomuser.me/api/portraits/men/57.jpg",
-  },
-]
+const activeConversation = computed(() =>
+  conversations.value.find((c) => c.id === activeConversationId.value) || null
+)
 </script>

@@ -127,6 +127,7 @@ import Applications from "../components/employerDashboard/Applications.vue"
 import Payments from "../components/employerDashboard/Payments.vue"
 import Messages from "../components/employerDashboard/Messages.vue"
 import Settings from "../components/employerDashboard/Settings.vue"
+import GestionContract from "../components/employerDashboard/GestionContract.vue"
 
 // 🌗 DARK MODE
 const darkMode = ref(localStorage.getItem("darkMode") === "true")
@@ -137,11 +138,14 @@ const menu = [
   { key: "dashboard", label: "Overview", icon: "🏠" },
   { key: "post", label: "Create Job", icon: "📝" },
   { key: "jobs", label: "Posted Jobs", icon: "📋" },
-  { key: "apps", label: "Applications", icon: "👥" },
+  { key: "apps", label: "Candidatures", icon: "👥" },
   { key: "payments", label: "Payments", icon: "💰" },
   { key: "messages", label: "Messages", icon: "💬" },
   { key: "settings", label: "Settings", icon: "⚙️" },
+  { key: "contracts", label: "Contract Management", icon: "📜" },
+
 ]
+
 
 
 const activeSection = ref("dashboard")
@@ -201,9 +205,11 @@ const currentComponent = computed(() => {
     case "payments": return Payments
     case "messages": return Messages
     case "settings": return Settings
+    case "contracts": return GestionContract
     default: return DashboardOverview
   }
 })
+
 
 const currentTitle = computed(() => {
   const item = menu.find((m) => m.key === activeSection.value)
