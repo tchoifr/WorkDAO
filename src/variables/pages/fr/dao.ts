@@ -24,7 +24,7 @@ export const daoTextsFr = {
     rules: [
       // 🧩 Bloc 1
       {
-        title: "1. Mission",
+        title: "Mission",
         text: `
           Le <b>WorkDAO</b> est un écosystème décentralisé conçu pour les freelances.  
           Chaque membre contribue à sa croissance et à sa sécurité à travers un  
@@ -34,7 +34,7 @@ export const daoTextsFr = {
 
       // 🧩 Bloc 2
       {
-        title: "2. Adhésion",
+        title: "Adhésion",
         text: `
           Chaque membre vérifié reçoit un <b>Jeton Soulbound (SBT)</b> comme preuve unique  
           d’identité et d’appartenance au DAO.  
@@ -43,7 +43,7 @@ export const daoTextsFr = {
         `
       },
       {
-        title: "3. Propositions (DIP)",
+        title: "Propositions (DIP)",
         text: `
           Durant la première phase, les <b>DAO Improvement Proposals (DIP)</b> sont gérées  
           par l’équipe fondatrice.  
@@ -54,7 +54,7 @@ export const daoTextsFr = {
       },
 
       {
-        title: "4. Arbitrage & Sécurité",
+        title: "Arbitrage & Sécurité",
         text: `
           Les litiges sont résolus par un <b>jury aléatoire de 5 membres vérifiés</b> détenant un SBT  
           et ayant misé une petite quantité de $WORK en garantie de bonne foi.  
@@ -65,7 +65,7 @@ export const daoTextsFr = {
       },
 
       {
-        title: "5. Transparence",
+        title: "Transparence",
         text: `
           Toutes les décisions et arbitrages du DAO sont <b>publiquement enregistrés on-chain</b>.  
           Des <b>rapports trimestriels</b> publiés via IPFS garantissent une transparence  
@@ -74,7 +74,7 @@ export const daoTextsFr = {
       },
 
       {
-        title: "6. Évolution",
+        title: "Évolution",
         text: `
           Le DAO évolue progressivement grâce aux <b>propositions validées</b>  
           et aux retours de la communauté.  
@@ -84,7 +84,7 @@ export const daoTextsFr = {
       },
 
       {
-        title: "7. Esprit du WorkDAO",
+        title: "Esprit du WorkDAO",
         text: `
           Plus qu’un protocole, le <b>WorkDAO</b> est une communauté d’indépendants  
           unie par la transparence, la collaboration et la liberté.  

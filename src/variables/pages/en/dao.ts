@@ -23,7 +23,7 @@ export const daoTextsEn = {
     title: "📜 WorkDAO Governance Charter",
     rules: [
       {
-        title: "1. Mission",
+        title: "Mission",
         text: `
           The <b>WorkDAO</b> is a decentralized ecosystem built for freelancers.  
           Every member contributes to its growth and security through a  
@@ -32,7 +32,7 @@ export const daoTextsEn = {
       },
 
       {
-        title: "2. Membership",
+        title: "Membership",
         text: `
           Each verified member receives a <b>Soulbound Token (SBT)</b> as a unique proof of identity  
           and belonging within the DAO.  
@@ -41,7 +41,7 @@ export const daoTextsEn = {
         `
       },
       {
-        title: "3. Proposals (DIP)",
+        title: "Proposals (DIP)",
         text: `
           During the initial phase, <b>DAO Improvement Proposals (DIPs)</b> are managed by the core team.  
           Community members may submit <b>suggestions</b> for improving dispute resolution mechanisms  
@@ -51,7 +51,7 @@ export const daoTextsEn = {
       },
 
       {
-        title: "4. Arbitration & Security",
+        title: "Arbitration & Security",
         text: `
           Disputes are resolved by a <b>random jury of 5 verified members</b> holding an SBT  
           and staking a small amount of $WORK as a good faith guarantee.  
@@ -60,7 +60,7 @@ export const daoTextsEn = {
         `
       },
       {
-        title: "5. Transparency",
+        title: "Transparency",
         text: `
           All arbitration results and DAO actions are <b>publicly recorded on-chain</b>.  
           <b>Quarterly reports</b> published via IPFS ensure complete financial  
@@ -69,7 +69,7 @@ export const daoTextsEn = {
       },
 
       {
-        title: "6. Evolution",
+        title: "Evolution",
         text: `
           The DAO progressively evolves through <b>validated proposals</b> and  
           community feedback.  
@@ -79,7 +79,7 @@ export const daoTextsEn = {
       },
 
       {
-        title: "7. Spirit of WorkDAO",
+        title: "Spirit of WorkDAO",
         text: `
           More than a protocol, WorkDAO is a <b>community of independents</b>  
           united by transparency, collaboration, and freedom.  
