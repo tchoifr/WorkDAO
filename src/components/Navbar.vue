@@ -1,7 +1,7 @@
 <template>
   <header
     id="navBar"
-    :class="[
+    :class="[ 
       'w-full z-50 py-4 px-6 shadow-md flex justify-between items-center transition-all duration-300 backdrop-blur-lg',
       isRelative ? 'relative bg-white/5' : 'fixed top-0 left-0 bg-white/10'
     ]"
@@ -14,8 +14,8 @@
       <img :src="logo" alt="Logo" class="h-10" />
     </RouterLink>
 
-    <!-- Desktop Navigation -->
-    <nav class="hidden md:flex space-x-4 items-center">
+    <!-- Desktop Navigation (visible après 1024px) -->
+    <nav class="hidden lg:flex space-x-4 items-center">
       <RouterLink
         v-for="(item, i) in navItems"
         :key="i"
@@ -36,15 +36,15 @@
       </select>
     </nav>
 
-    <!-- Mobile Menu Button -->
+    <!-- Hamburger (visible jusqu'à 1024px inclus) -->
     <button
       @click="menuOpen = !menuOpen"
-      class="md:hidden text-[#00BFFF] focus:outline-none text-2xl"
+      class="lg:hidden text-[#00BFFF] focus:outline-none text-2xl"
     >
       ☰
     </button>
 
-    <!-- Mobile Menu -->
+    <!-- Menu mobile -->
     <transition name="fade">
       <div
         v-if="menuOpen"
@@ -75,6 +75,7 @@
     </transition>
   </header>
 </template>
+
 
 <script setup lang="ts">
 import { ref, computed } from "vue"

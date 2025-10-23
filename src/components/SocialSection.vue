@@ -20,7 +20,7 @@
           v-if="post.image"
           :src="post.image"
           alt="Post"
-          class="w-full h-48 object-cover"
+          class="w-full h-96 object-cover"
         />
         <div class="p-6">
           <h3
