@@ -5,6 +5,7 @@ import EmployerDashboard from '../../src/pages/EmployerDashboard.vue'
 import DAO from '../../src/pages/DAO.vue'
 import Staking from '../../src/pages/Staking.vue'
 import Login from '../../src/pages/Login.vue'
+import FacebookPosts from '../pages/SocialHub.vue' 
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
@@ -12,6 +13,7 @@ const routes = [
   { path: '/employer', name: 'EmployerDashboard', component: EmployerDashboard },
   { path: '/dao', name: 'DAO', component: DAO },
   { path: '/staking', name: 'Staking', component: Staking },
+  { path: '/facebook-posts', name: 'FacebookPosts', component: FacebookPosts },
   { path: '/login', name: 'Login', component: Login },
 ]
 
