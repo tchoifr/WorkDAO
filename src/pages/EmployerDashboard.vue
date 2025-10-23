@@ -128,6 +128,7 @@ import Payments from "../components/employerDashboard/Payments.vue"
 import Messages from "../components/employerDashboard/Messages.vue"
 import Settings from "../components/employerDashboard/Settings.vue"
 import GestionContract from "../components/employerDashboard/GestionContract.vue"
+import WalletManager from "../components/WalletManager.vue"
 
 // 🌗 DARK MODE
 const darkMode = ref(localStorage.getItem("darkMode") === "true")
@@ -141,8 +142,10 @@ const menu = [
   { key: "apps", label: "Candidatures", icon: "👥" },
   { key: "payments", label: "Payments", icon: "💰" },
   { key: "messages", label: "Messages", icon: "💬" },
-  { key: "settings", label: "Settings", icon: "⚙️" },
   { key: "contracts", label: "Contract Management", icon: "📜" },
+  {key: "wallet", label: "Wallet", icon: "💼" },
+  { key: "settings", label: "Settings", icon: "⚙️" },
+ 
 
 ]
 
@@ -204,8 +207,9 @@ const currentComponent = computed(() => {
     case "apps": return Applications
     case "payments": return Payments
     case "messages": return Messages
-    case "settings": return Settings
+    case "wallet": return WalletManager
     case "contracts": return GestionContract
+    case "settings": return Settings
     default: return DashboardOverview
   }
 })
