@@ -22,10 +22,11 @@ onMounted(() => {
   })
 })
 
-// ✅ Vérifie si la page actuelle est un dashboard
-const isDashboardPage = computed(() =>
-  ['EmployerDashboard', 'FreelanceDashboard'].includes(route.name as string)
-)
+// ✅ Masquer Navbar/Footer sur certaines routes
+const hideLayout = computed(() => {
+  const hiddenRoutes = ['/freelance', '/employer']
+  return hiddenRoutes.includes(route.path)
+})
 </script>
 
 <template>
@@ -34,7 +35,7 @@ const isDashboardPage = computed(() =>
     <Loader :visible="loading" />
 
     <!-- Navbar -->
-    <Navbar :is-relative="isDashboardPage" />
+    <Navbar v-if="!hideLayout" :is-relative="false" />
 
     <!-- Contenu principal -->
     <main class="flex-1 relative overflow-hidden">
@@ -42,8 +43,6 @@ const isDashboardPage = computed(() =>
     </main>
 
     <!-- Footer -->
-    <Footer />
-
-    <!-- 🤖 Assistant global -->
+    <Footer v-if="!hideLayout" />
   </div>
 </template>
