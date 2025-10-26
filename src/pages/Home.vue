@@ -50,44 +50,61 @@
     ></div>
   </section>
 
-  <!-- Features Section -->
-  <section class="bg-[#031d28] text-white py-20">
-    <div class="container mx-auto px-6 text-center">
-      <h2
-        class="text-3xl font-bold mb-12 text-[#38BDF8] drop-shadow-[0_0_6px_#38BDF8]"
-      >
-        {{ texts.features.title }}
-      </h2>
+ <!-- Features Section -->
+<section id="features" class="bg-[#031d28] text-white py-20">
+  <div class="container mx-auto px-6 text-center">
+    <h2
+      class="text-3xl font-bold mb-12 text-[#38BDF8] drop-shadow-[0_0_6px_#38BDF8]"
+    >
+      {{ texts.features.title }}
+    </h2>
 
-      <div class="grid md:grid-cols-3 gap-10">
-        <div
-          v-for="(item, i) in texts.features.cards"
-          :key="i"
-          class="bg-[#0a2431] p-6 rounded-xl shadow-lg border border-[#00BFFF]/30 hover:border-[#00BFFF]/60 transition"
-        >
-          <h3 class="text-xl font-bold mb-2 text-[#00BFFF]">
-            {{ item.title }}
-          </h3>
-          <p>{{ item.text }}</p>
-        </div>
-      </div>
+    <div class="grid md:grid-cols-3 gap-10">
+      <!-- Cartes dynamiques -->
+      <RouterLink
+        v-for="(item, i) in texts.features.cards"
+        :key="i"
+        :to="featureLinks[i]"
+        class="bg-[#0a2431] p-6 rounded-xl shadow-lg border border-[#00BFFF]/30 hover:border-[#00BFFF]/60 hover:shadow-[0_0_20px_#00BFFF80] transition block"
+      >
+        <h3 class="text-xl font-bold mb-2 text-[#00BFFF]">
+          {{ item.title }}
+        </h3>
+        <p>{{ item.text }}</p>
+      </RouterLink>
     </div>
-  </section>
+  </div>
+</section>
+
 </template>
 
 <script setup lang="ts">
 import { RouterLink } from "vue-router"
-import { computed } from "vue"
+import { computed, Ref } from "vue"
 import { useLanguage } from "../store/useLanguage"
 import { homeTextsEn } from "../variables/pages/en/home"
 import { homeTextsFr } from "../variables/pages/fr/home"
 
-const { currentLang } = useLanguage()
+const { currentLang } = useLanguage() as { currentLang: Ref<"en" | "fr"> }
 
-// ✅ Texte dynamique selon la langue sélectionnée
+// ✅ Texte dynamique selon la langue
 const texts = computed(() =>
   currentLang.value === "en" ? homeTextsEn : homeTextsFr
 )
+
+// 🔗 Correspondance des 10 cartes avec les routes
+const featureLinks = [
+  "/whychoose/decentralized",
+  "/whychoose/securedByBlockchain",
+  "/whychoose/rewarding",
+  "/whychoose/daoGovernance",
+  "/whychoose/noMiddlemen",
+  "/whychoose/sovereignIdentity",
+  "/whychoose/globalMarketplace",
+  "/whychoose/totalFreedom",
+  "/whychoose/maximumSecurity",
+  "/whychoose/communityRevolution"
+]
 </script>
 
 <style scoped>

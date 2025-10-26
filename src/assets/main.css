@@ -4,15 +4,49 @@
 
 /* ---------- Thème global ---------- */
 body {
-  @apply bg-gray-100 text-gray-800 font-sans;
+  @apply text-gray-100 font-sans relative overflow-x-hidden;
+  /* Le fond animé */
+  background: linear-gradient(-45deg,
+    #38BDF8, /* sky-400 */
+    #0EA5E9, /* sky-500 */
+    #0369A1, /* sky-700 */
+    #0284C7  /* sky-600 */
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+/* ---------- Animation ---------- */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ---------- Effet lumineux DAO ---------- */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 30% 30%, rgba(56,189,248,0.12), transparent 60%),
+              radial-gradient(circle at 70% 70%, rgba(14,165,233,0.12), transparent 60%);
+  animation: gradientShift 25s ease-in-out infinite;
+  mix-blend-mode: overlay;
+  z-index: 0;
 }
 
 /* ---------- Scrollbars personnalisées ---------- */
-/* ⚙️ Variables globales */
 :root {
   --scroll-thumb: rgba(56, 189, 248, 0.55); /* Bleu sky-400 (#38BDF8) */
   --scroll-thumb-hover: rgba(56, 189, 248, 0.9);
-  --scroll-track: #000; /* 🖤 Fond noir */
+  --scroll-track: #000;
 }
 
 /* Firefox */
@@ -21,7 +55,7 @@ body {
   scrollbar-color: var(--scroll-thumb) var(--scroll-track);
 }
 
-/* WebKit (Chrome, Edge, Safari) */
+/* WebKit */
 *::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -30,7 +64,7 @@ body {
 *::-webkit-scrollbar-thumb {
   background-color: var(--scroll-thumb);
   border-radius: 9999px;
-  border: 2px solid #000; /* contour noir intégré */
+  border: 2px solid #000;
 }
 
 *::-webkit-scrollbar-thumb:hover {
@@ -38,18 +72,16 @@ body {
 }
 
 *::-webkit-scrollbar-track {
-  background: #000; /* 🖤 piste noire */
+  background: #000;
 }
 
-/* ---------- Utilitaires Tailwind ---------- */
+/* ---------- Utilitaires supplémentaires ---------- */
 @layer utilities {
-  /* Scrollbar fine */
   .scroll-thin::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
 
-  /* Scroll bleu néon */
   .scroll-blue::-webkit-scrollbar-thumb {
     background-color: rgba(56, 189, 248, 0.6);
   }
@@ -60,7 +92,6 @@ body {
     background: #000;
   }
 
-  /* Scroll invisible */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
