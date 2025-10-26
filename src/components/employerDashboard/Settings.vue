@@ -23,6 +23,7 @@
         </h3>
 
         <div v-if="currentUser" class="grid md:grid-cols-2 gap-4">
+          <!-- Nom -->
           <label class="block">
             <span
               class="font-medium"
@@ -31,14 +32,14 @@
             >
             <input
               type="text"
-              v-model="currentUser.username"
-              placeholder="Nom utilisateur"
+              :value="currentUser.username"
               class="mt-1 block w-full rounded px-3 py-2 border transition"
               :class="inputClass"
               readonly
             />
           </label>
 
+          <!-- Rôle -->
           <label class="block">
             <span
               class="font-medium"
@@ -47,14 +48,14 @@
             >
             <input
               type="text"
-              v-model="currentUser.role"
-              placeholder="Rôle"
+              :value="currentUser.role"
               class="mt-1 block w-full rounded px-3 py-2 border transition"
               :class="inputClass"
               readonly
             />
           </label>
         </div>
+
         <p v-else class="text-gray-400">Chargement des informations...</p>
       </div>
 
@@ -87,8 +88,8 @@
               class="text-xs mt-1"
               :class="darkMode ? 'text-gray-400' : 'text-gray-500'"
             >
-              💰 SolBalance : {{ currentUser.solBalance || '0.00' }} — 
-              Ξ EthBalance : {{ currentUser.ethBalance || '0.00' }} — 
+              💰 SolBalance : {{ currentUser.solBalance || '0.00' }} —
+              Ξ EthBalance : {{ currentUser.ethBalance || '0.00' }} —
               ⚙ WorkBalance : {{ currentUser.workBalance || '0.00' }}
             </p>
           </div>
@@ -104,6 +105,58 @@
               📋 Copier
             </button>
           </div>
+        </div>
+      </div>
+
+      <hr :class="darkMode ? 'border-[#00BFFF]/20' : 'border-gray-200'" />
+
+      <!-- 🏛 Section DAO -->
+      <div>
+        <h3
+          class="text-lg font-semibold mb-3"
+          :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-700'"
+        >
+          🏛 Espace DAO
+        </h3>
+
+        <!-- Si le user est déjà DAO -->
+        <div v-if="currentUser?.role === 'DAO'">
+          <p
+            class="text-sm"
+            :class="darkMode ? 'text-gray-300' : 'text-gray-700'"
+          >
+            ✅ Vous êtes membre de la DAO ! Vous pouvez participer aux votes et à la gouvernance.
+          </p>
+
+          <button
+            class="mt-3 px-4 py-2 rounded font-semibold text-sm transition"
+            :class="darkMode
+              ? 'bg-[#00BFFF]/20 border border-[#00BFFF]/40 text-[#00BFFF] hover:bg-[#00BFFF]/30'
+              : 'bg-indigo-100 text-indigo-700 border border-indigo-300 hover:bg-indigo-200'"
+          >
+            🗳 Accéder aux votes
+          </button>
+        </div>
+
+        <!-- Si le user n’est PAS encore DAO -->
+        <div v-else>
+          <p
+            class="text-sm mb-3"
+            :class="darkMode ? 'text-gray-300' : 'text-gray-700'"
+          >
+            🚀 Vous n'êtes pas encore membre de la DAO. Activez votre compte pour rejoindre la
+            gouvernance communautaire.
+          </p>
+
+          <button
+            @click="activateDAO"
+            class="px-4 py-2 rounded font-semibold text-sm transition"
+            :class="darkMode
+              ? 'bg-[#00BFFF]/20 border border-[#00BFFF]/40 text-[#00BFFF] hover:bg-[#00BFFF]/30'
+              : 'bg-indigo-100 text-indigo-700 border border-indigo-300 hover:bg-indigo-200'"
+          >
+            ⚡ Activer mon compte DAO
+          </button>
         </div>
       </div>
 
@@ -144,30 +197,38 @@
 import { inject, computed, onMounted } from 'vue'
 import { UsersStore } from '../../store/usersStore'
 
-// 🧩 Store
 const usersStore = UsersStore()
 const darkMode = inject('darkMode', false)
 
-// Charger les utilisateurs au montage
 onMounted(() => {
-  usersStore.fetchUsers()
+  usersStore.loadFromStorage()
 })
 
-// Sélection du premier utilisateur (exemple)
-const currentUser = computed(() => usersStore.users[0])
+const currentUser = computed(() => usersStore.currentUser)
 
-// ✅ Classes dynamiques pour les inputs
 const inputClass = computed(() =>
   darkMode
     ? 'bg-[#0d2f42] border-[#00BFFF]/30 text-gray-100 placeholder-gray-400 focus:border-[#00BFFF]/60'
     : 'bg-white border-gray-300 text-gray-800 placeholder-gray-400 focus:border-indigo-500'
 )
 
-// Copier le wallet
+// Copier l’adresse du wallet
 const copyWallet = async () => {
   if (currentUser.value?.walletAddress) {
     await navigator.clipboard.writeText(currentUser.value.walletAddress)
     alert('Adresse copiée dans le presse-papiers ✅')
+  }
+}
+
+// ⚡ Activer le compte DAO
+const activateDAO = async () => {
+  if (!currentUser.value?.id) return
+
+  try {
+    await usersStore.updateUserInfo({ role: 'DAO' })
+    alert('🎉 Votre compte DAO a été activé avec succès !')
+  } catch (e: any) {
+    alert('❌ Erreur lors de l’activation du compte DAO.')
   }
 }
 </script>

@@ -18,13 +18,35 @@ const routes = [
   { path: '/login', name: 'Login', component: Login },
 ]
 
+
 // ✅ Création du router avec le scroll automatique
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior(to, from, savedPosition) {
-    return savedPosition || { top: 0, behavior: 'smooth' } // 👈 remonte en haut à chaque navigation
+    return savedPosition || { top: 0, behavior: 'smooth' }
   },
+})
+
+/* ✅ Garde de navigation :
+   - Empêche l’accès à /freelance et /employer si non connecté
+   - Redirige selon le rôle du user */
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/', '/login']
+  const user = JSON.parse(localStorage.getItem('currentUser') || 'null')
+
+  // Accès public → OK
+  if (publicPages.includes(to.path)) return next()
+
+  // Non connecté → vers /login
+  if (!user) return next('/login')
+
+  // ✅ Vérifie le rôle pour accéder aux bons dashboards
+  if (to.path === '/freelance' && user.role !== 'freelance') return next('/')
+  if (to.path === '/employer' && user.role !== 'recruteur') return next('/')
+
+  // ✅ Tout va bien
+  next()
 })
 
 export default router

@@ -1,173 +1,181 @@
 <template>
   <section class="p-6 transition-colors duration-500">
-    <div class="grid auto-rows-fr sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- 🧩 Carte d’offre -->
+    <div
+      class="rounded-lg shadow-lg p-6 border transition space-y-6"
+      :class="darkMode
+        ? 'bg-[#0a2431] border border-[#00BFFF]/30 hover:border-[#00BFFF]/60 hover:shadow-[#00BFFF]/20'
+        : 'bg-white border border-gray-200 hover:shadow-xl'"
+    >
+      <!-- 🧾 Header -->
+      <div class="flex justify-between items-center">
+        <h2
+          class="text-xl font-semibold"
+          :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-700'"
+        >
+          📋 Mes Jobs publiés
+        </h2>
+
+        <button
+          @click="refreshJobs"
+          class="px-4 py-2 rounded font-semibold flex items-center gap-2 transition"
+          :class="darkMode
+            ? 'bg-[#00BFFF]/10 border border-[#00BFFF]/40 text-[#00BFFF] hover:bg-[#00BFFF]/20'
+            : 'bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100'"
+        >
+          🔄 Rafraîchir
+        </button>
+      </div>
+
+      <!-- ⏳ Loading -->
+      <div v-if="jobsStore.loading" class="text-center py-6 text-gray-500 animate-pulse">
+        Chargement des jobs...
+      </div>
+
+      <!-- ❌ Erreur -->
+      <div v-if="jobsStore.error" class="text-center py-4 text-red-500 font-semibold">
+        ❌ {{ jobsStore.error }}
+      </div>
+
+      <!-- 🧠 Liste des jobs -->
       <div
-        v-for="job in jobs"
-        :key="job.id"
-        class="shadow-lg rounded-lg p-6 border transition flex flex-col justify-between min-w-[300px]"
-        :class="darkMode
-          ? 'bg-[#0a2431] border border-[#00BFFF]/30 hover:border-[#00BFFF]/60 hover:shadow-[#00BFFF]/20'
-          : 'bg-white hover:shadow-xl border-gray-200'"
+        v-if="!jobsStore.loading && myJobs.length"
+        class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
-        <!-- Titre + Statut -->
-        <div class="flex justify-between items-start mb-3">
-          <h3
-            class="text-lg font-semibold"
-            :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-700'"
-          >
-            {{ job.title }}
-          </h3>
-          <span
-            class="px-3 py-1 text-xs rounded-full font-semibold uppercase"
-            :class="{
-              'bg-green-100 text-green-700': !darkMode && job.status === 'Ouverte',
-              'bg-yellow-100 text-yellow-700': !darkMode && job.status === 'En cours',
-              'bg-red-100 text-red-700': !darkMode && job.status === 'Fermée',
-              'bg-gray-100 text-gray-600': !darkMode && job.status === 'En attente',
-              'bg-[#00BFFF]/10 text-[#00BFFF] border border-[#00BFFF]/30': darkMode
-            }"
-          >
-            {{ job.status }}
-          </span>
-        </div>
-
-        <!-- Description -->
-        <p
-          class="text-sm mb-4 line-clamp-3"
-          :class="darkMode ? 'text-gray-300' : 'text-gray-600'"
-        >
-          {{ job.description }}
-        </p>
-
-        <!-- Détails -->
         <div
-          class="text-sm space-y-1 mb-4"
-          :class="darkMode ? 'text-gray-400' : 'text-gray-500'"
+          v-for="job in myJobs"
+          :key="job.id"
+          class="rounded-lg border shadow-md p-5 flex flex-col justify-between transition hover:scale-[1.01]"
+          :class="darkMode
+            ? 'bg-[#0d2f42] border-[#00BFFF]/30 hover:border-[#00BFFF]/50'
+            : 'bg-white border-gray-200 hover:border-indigo-200'"
         >
-          <p>📅 <b>Publié le :</b> {{ job.postedAt }}</p>
-          <p>⏱️ <b>Durée estimée :</b> {{ job.duration }}</p>
-          <p>💼 <b>Type :</b> {{ job.contractType }}</p>
-        </div>
+          <div>
+            <h3 class="text-lg font-semibold mb-2 truncate" :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-700'">
+              {{ job.title }}
+            </h3>
 
-        <!-- Compétences -->
-        <div class="flex flex-wrap gap-2 mb-4">
-          <span
-            v-for="skill in job.skills"
-            :key="skill"
-            class="text-xs font-medium px-2 py-1 rounded"
-            :class="darkMode
-              ? 'bg-[#00BFFF]/10 text-[#00BFFF]'
-              : 'bg-indigo-50 text-indigo-700'"
-          >
-            {{ skill }}
-          </span>
-        </div>
+            <p class="text-sm mb-3 line-clamp-3" :class="darkMode ? 'text-gray-300' : 'text-gray-700'">
+              {{ job.description }}
+            </p>
 
-        <!-- 💬 Candidatures (compteur uniquement) -->
-        <div
-          class="mt-4 mb-2 flex items-center justify-start"
-          :class="darkMode ? 'text-gray-300' : 'text-gray-700'"
-        >
-          <p class="font-semibold">
-            👥 {{ job.applications.length }}
-            candidature<span v-if="job.applications.length > 1">s</span>
-          </p>
-        </div>
+            <!-- 💰 Budget + Statut -->
+            <div class="text-xs flex flex-wrap gap-2 mb-2">
+              <span
+                class="px-2 py-1 rounded font-medium"
+                :class="darkMode
+                  ? 'bg-[#00BFFF]/10 text-[#00BFFF]'
+                  : 'bg-indigo-50 text-indigo-700'"
+              >
+                💰 {{ job.budget }} {{ job.currency }}
+              </span>
+              <select
+                v-model="job.status"
+                @change="updateStatus(job.id, job.status)"
+                class="text-xs font-medium px-2 py-1 border rounded focus:outline-none transition"
+                :class="darkMode
+                  ? 'bg-[#0d2f42] border-[#00BFFF]/40 text-[#00BFFF]'
+                  : 'bg-white border-gray-300 text-indigo-700'"
+              >
+                <option value="open">Ouvert</option>
+                <option value="in_progress">En cours</option>
+                <option value="closed">Fermé</option>
+              </select>
+            </div>
 
-        <!-- Budget + Hash -->
-        <div class="flex justify-between items-center mt-auto pt-4 border-t">
-          <p
-            class="font-bold text-lg"
-            :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-600'"
-          >
-            {{ job.budget }} $WORK
-          </p>
-          <p
-            class="text-[11px] font-mono truncate w-32"
-            :class="darkMode ? 'text-gray-400' : 'text-gray-400'"
-            title="Hash blockchain"
-          >
-            {{ job.hash }}
-          </p>
+            <!-- 📅 Infos -->
+            <div class="text-xs" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">
+              📅 {{ formatDate(job.createdAt) }}
+            </div>
+
+            <div v-if="job.category" class="mt-2 text-xs" :class="darkMode ? 'text-gray-400' : 'text-gray-600'">
+              🏷️ Catégorie : <b>{{ job.category }}</b>
+            </div>
+
+            <div v-if="job.duration" class="mt-1 text-xs" :class="darkMode ? 'text-gray-400' : 'text-gray-600'">
+              ⏱️ Durée : {{ job.duration }}
+            </div>
+
+            <div v-if="job.skills && job.skills.length" class="mt-3 flex flex-wrap gap-2">
+              <span
+                v-for="(skill, i) in job.skills"
+                :key="i"
+                class="text-xs px-2 py-1 rounded"
+                :class="darkMode
+                  ? 'bg-[#00BFFF]/10 text-[#00BFFF]'
+                  : 'bg-indigo-50 text-indigo-700'"
+              >
+                {{ skill }}
+              </span>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- 📭 Aucun job -->
+      <div
+        v-else-if="!jobsStore.loading && !myJobs.length"
+        class="text-center py-10 text-gray-500 italic"
+      >
+        Aucun job publié pour le moment.
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, inject } from "vue"
+import { onMounted, inject, computed } from 'vue'
+import { useJobsStore } from '../../store/jobsStore'
+import { UsersStore } from '../../store/usersStore'
 
-interface Candidate {
-  id: number
-  name: string
-  experience: string
-  avatar: string
-  appliedAt: string
+const jobsStore = useJobsStore()
+const usersStore = UsersStore()
+const darkMode = inject<boolean>('darkMode', false)
+
+// Charger les infos du user connecté depuis le localStorage
+onMounted(async () => {
+  usersStore.loadFromStorage()
+  await refreshJobs()
+})
+
+// 🔁 Rafraîchir les jobs
+const refreshJobs = async (): Promise<void> => {
+  await jobsStore.fetchJobs()
 }
 
-interface Job {
-  id: number
-  title: string
-  description: string
-  postedAt: string
-  duration: string
-  contractType: string
-  status: "Ouverte" | "En cours" | "Fermée" | "En attente"
-  budget: number
-  hash: string
-  skills: string[]
-  applications: Candidate[]
+// ✅ Jobs du recruteur connecté uniquement
+const myJobs = computed(() => {
+  const currentUser = usersStore.currentUser || JSON.parse(localStorage.getItem('currentUser') || 'null')
+  if (!currentUser?.id) return []
+  return jobsStore.jobs.filter((job) => job.recruiterId === currentUser.id)
+})
+
+// 🔄 Mettre à jour le statut d’un job
+const updateStatus = async (id: string, newStatus: string) => {
+  try {
+    await jobsStore.updateJobStatus(id, newStatus)
+    console.log(`✅ Statut du job ${id} mis à jour en "${newStatus}"`)
+  } catch (e) {
+    console.error('❌ Erreur mise à jour statut :', e)
+  }
 }
 
-const darkMode = inject("darkMode", false)
-
-const jobs = ref<Job[]>([
-  {
-    id: 1,
-    title: "Développeur Smart Contract Solidity",
-    description: "Développement d’un smart contract ERC-721 pour la marketplace NFT.",
-    postedAt: "2025-10-15",
-    duration: "2 semaines",
-    contractType: "Freelance",
-    status: "Ouverte",
-    budget: 500,
-    hash: "0xa12b...93f9",
-    skills: ["Solidity", "Hardhat", "Ethers.js"],
-    applications: Array.from({ length: 18 }).map((_, i) => ({
-      id: i + 100,
-      name: `Candidat ${i + 1}`,
-      experience: `${Math.floor(Math.random() * 5) + 1} ans - Dev Web3`,
-      avatar: `https://randomuser.me/api/portraits/${i % 2 ? "men" : "women"}/${i + 20}.jpg`,
-      appliedAt: `2025-10-${String(i + 1).padStart(2, "0")}`,
-    })),
-  },
-  {
-    id: 2,
-    title: "UI/UX Designer Web3",
-    description: "Création d’interfaces responsives pour dApps.",
-    postedAt: "2025-10-20",
-    duration: "1 mois",
-    contractType: "Freelance",
-    status: "En cours",
-    budget: 350,
-    hash: "0xc77a...e11a",
-    skills: ["Figma", "Tailwind", "UX Research"],
-    applications: [],
-  },
-])
+// 🕓 Format date lisible
+const formatDate = (isoString: string | null): string => {
+  if (!isoString) return 'Date inconnue'
+  const date = new Date(isoString)
+  return date.toLocaleDateString('fr-FR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  })
+}
 </script>
 
 <style scoped>
 .line-clamp-3 {
   display: -webkit-box;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-/* Responsive cards */
-section > .grid > div {
-  min-width: 300px;
 }
 </style>
