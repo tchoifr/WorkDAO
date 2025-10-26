@@ -22,18 +22,20 @@
           👤 Informations personnelles
         </h3>
 
-        <div class="grid md:grid-cols-2 gap-4">
+        <div v-if="currentUser" class="grid md:grid-cols-2 gap-4">
           <label class="block">
             <span
               class="font-medium"
               :class="darkMode ? 'text-gray-300' : 'text-gray-700'"
-            >Nom complet</span>
+              >Nom d'utilisateur</span
+            >
             <input
               type="text"
-              v-model="user.name"
-              placeholder="Jean Dupont"
+              v-model="currentUser.username"
+              placeholder="Nom utilisateur"
               class="mt-1 block w-full rounded px-3 py-2 border transition"
               :class="inputClass"
+              readonly
             />
           </label>
 
@@ -41,22 +43,25 @@
             <span
               class="font-medium"
               :class="darkMode ? 'text-gray-300' : 'text-gray-700'"
-            >Email</span>
+              >Rôle</span
+            >
             <input
-              type="email"
-              v-model="user.email"
-              placeholder="jean@entreprise.io"
+              type="text"
+              v-model="currentUser.role"
+              placeholder="Rôle"
               class="mt-1 block w-full rounded px-3 py-2 border transition"
               :class="inputClass"
+              readonly
             />
           </label>
         </div>
+        <p v-else class="text-gray-400">Chargement des informations...</p>
       </div>
 
       <hr :class="darkMode ? 'border-[#00BFFF]/20' : 'border-gray-200'" />
 
       <!-- 💼 Wallet -->
-      <div>
+      <div v-if="currentUser">
         <h3
           class="text-lg font-semibold mb-3"
           :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-700'"
@@ -64,21 +69,27 @@
           💼 Mon wallet
         </h3>
 
-        <div
-          class="flex flex-col md:flex-row md:items-center justify-between gap-3"
-        >
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
             <p
               class="font-mono text-sm truncate"
               :class="darkMode ? 'text-gray-300' : 'text-gray-800'"
             >
-              {{ walletAddress || 'Aucun wallet connecté' }}
+              {{ currentUser.walletAddress || 'Aucun wallet connecté' }}
             </p>
             <p
               class="text-xs"
               :class="darkMode ? 'text-gray-400' : 'text-gray-500'"
             >
-              Réseau : Ethereum Mainnet
+              Réseau : {{ currentUser.network || 'Non spécifié' }}
+            </p>
+            <p
+              class="text-xs mt-1"
+              :class="darkMode ? 'text-gray-400' : 'text-gray-500'"
+            >
+              💰 SolBalance : {{ currentUser.solBalance || '0.00' }} — 
+              Ξ EthBalance : {{ currentUser.ethBalance || '0.00' }} — 
+              ⚙ WorkBalance : {{ currentUser.workBalance || '0.00' }}
             </p>
           </div>
 
@@ -91,24 +102,6 @@
                 : 'bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100'"
             >
               📋 Copier
-            </button>
-            <button
-              @click="reconnectWallet"
-              class="px-3 py-1 rounded font-medium text-sm transition"
-              :class="darkMode
-                ? 'bg-[#00BFFF] text-black hover:bg-[#33cfff]'
-                : 'bg-indigo-600 text-white hover:bg-indigo-700'"
-            >
-              🔄 Reconnecter
-            </button>
-            <button
-              @click="disconnectWallet"
-              class="px-3 py-1 rounded font-medium text-sm transition"
-              :class="darkMode
-                ? 'bg-red-600/80 text-white hover:bg-red-600'
-                : 'bg-red-500 text-white hover:bg-red-600'"
-            >
-              ❌ Déconnecter
             </button>
           </div>
         </div>
@@ -126,13 +119,12 @@
         </h3>
 
         <div class="flex items-center gap-3">
-          <span class="text-sm font-medium"
-            >Mode actuel :
-            <span
-              :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-600'"
-              >{{ darkMode ? 'Dark' : 'Light' }}</span
-            ></span
-          >
+          <span class="text-sm font-medium">
+            Mode actuel :
+            <span :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-600'">
+              {{ darkMode ? 'Dark' : 'Light' }}
+            </span>
+          </span>
           <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" v-model="darkMode" class="sr-only peer" />
             <div
@@ -144,55 +136,38 @@
           </label>
         </div>
       </div>
-
-      <div class="pt-6">
-        <button
-          class="px-5 py-2 rounded font-semibold transition"
-          :class="darkMode
-            ? 'bg-[#00BFFF] text-black hover:bg-[#33cfff]'
-            : 'bg-indigo-600 text-white hover:bg-indigo-700'"
-        >
-          💾 Sauvegarder les modifications
-        </button>
-      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, inject, computed } from "vue"
+import { inject, computed, onMounted } from 'vue'
+import { UsersStore } from '../../store/usersStore'
 
-// ✅ Récupération du mode sombre depuis EmployerDashboard
-const darkMode = inject("darkMode", false)
+// 🧩 Store
+const usersStore = UsersStore()
+const darkMode = inject('darkMode', false)
 
-// 👤 Données utilisateur (mock)
-const user = ref({
-  name: "Jean Dupont",
-  email: "jean@entreprise.io",
+// Charger les utilisateurs au montage
+onMounted(() => {
+  usersStore.fetchUsers()
 })
 
-// 💼 Données du wallet (mock)
-const walletAddress = ref("0x9cF23bA72aDd90F42D48e2c9bB1fE8C2fE8fA123")
+// Sélection du premier utilisateur (exemple)
+const currentUser = computed(() => usersStore.users[0])
 
 // ✅ Classes dynamiques pour les inputs
 const inputClass = computed(() =>
   darkMode
-    ? "bg-[#0d2f42] border-[#00BFFF]/30 text-gray-100 placeholder-gray-400 focus:border-[#00BFFF]/60"
-    : "bg-white border-gray-300 text-gray-800 placeholder-gray-400 focus:border-indigo-500"
+    ? 'bg-[#0d2f42] border-[#00BFFF]/30 text-gray-100 placeholder-gray-400 focus:border-[#00BFFF]/60'
+    : 'bg-white border-gray-300 text-gray-800 placeholder-gray-400 focus:border-indigo-500'
 )
 
-// 🧩 Fonctions simulées (à connecter à ton provider)
+// Copier le wallet
 const copyWallet = async () => {
-  await navigator.clipboard.writeText(walletAddress.value)
-  alert("Adresse copiée dans le presse-papiers ✅")
-}
-
-const reconnectWallet = () => {
-  alert("Tentative de reconnexion au wallet... (à implémenter)")
-}
-
-const disconnectWallet = () => {
-  walletAddress.value = ""
-  alert("Wallet déconnecté ❌")
+  if (currentUser.value?.walletAddress) {
+    await navigator.clipboard.writeText(currentUser.value.walletAddress)
+    alert('Adresse copiée dans le presse-papiers ✅')
+  }
 }
 </script>
