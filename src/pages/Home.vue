@@ -1,81 +1,61 @@
 <template>
   <!-- Hero Section -->
   <section
-    class="relative h-screen flex items-center justify-center text-center text-white overflow-hidden"
+    class="relative h-screen flex items-center justify-center text-center text-white overflow-hidden fade-in"
   >
-    <!-- Background Image -->
+    <!-- Image de fond -->
     <img
       src="../assets/header.jpg"
       alt="WorkDAO Background"
       class="absolute inset-0 w-full h-full object-cover object-center"
     />
 
-    <!-- Blue Neon Overlay -->
-    <div
-      class="absolute inset-0 bg-gradient-to-b from-black/70 via-[#031d28]/80 to-[#0a2431]/90"
-    ></div>
+    <!-- Overlay fixe sombre -->
+    <div class="absolute inset-0 hero-overlay"></div>
 
-    <!-- Main Content -->
+    <!-- Contenu principal -->
     <div class="relative z-10 px-6 max-w-5xl">
-      <h1
-        class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight text-[#38BDF8] drop-shadow-[0_0_10px_#38BDF8]"
-        v-html="texts.header.title"
-      ></h1>
+      <h1 v-html="texts.header.title"></h1>
 
-      <p
-        class="text-lg md:text-2xl text-gray-200 mb-10 leading-relaxed"
-        v-html="texts.header.subtitle"
-      ></p>
+      <p class="mb-10" v-html="texts.header.subtitle"></p>
 
       <div class="flex flex-wrap justify-center gap-4">
-        <RouterLink
-          to="/login"
-          class="px-8 py-3 border border-[#00BFFF] text-[#00BFFF] hover:bg-[#00BFFF] hover:text-black font-semibold rounded-full text-lg transition shadow-[0_0_10px_#00BFFF]"
-        >
+        <RouterLink to="/login" class="btn-primary">
           {{ texts.header.btnFreelancer }}
         </RouterLink>
 
-        <RouterLink
-          to="/login"
-          class="px-8 py-3 border border-[#00BFFF] text-[#00BFFF] hover:bg-[#00BFFF] hover:text-black font-semibold rounded-full text-lg transition shadow-[0_0_10px_#00BFFF]"
-        >
+        <RouterLink to="/login" class="btn-primary">
           {{ texts.header.btnEmployer }}
         </RouterLink>
       </div>
     </div>
 
-    <!-- Bottom Gradient -->
+    <!-- Dégradé inférieur -->
     <div
-      class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#031d28] to-transparent"
+      class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[var(--color-bg)] to-transparent"
     ></div>
   </section>
 
- <!-- Features Section -->
-<section id="features" class="bg-[#031d28] text-white py-20">
-  <div class="container mx-auto px-6 text-center">
-    <h2
-      class="text-3xl font-bold mb-12 text-[#38BDF8] drop-shadow-[0_0_6px_#38BDF8]"
-    >
-      {{ texts.features.title }}
-    </h2>
+  <!-- Features Section -->
+  <section id="features" class="py-20 bg-[var(--color-bg)] text-white">
+    <div class="container mx-auto px-6 text-center">
+      <h2>{{ texts.features.title }}</h2>
 
-    <div class="grid md:grid-cols-3 gap-10">
-      <!-- Cartes dynamiques -->
-      <RouterLink
-        v-for="(item, i) in texts.features.cards"
-        :key="i"
-        :to="featureLinks[i]"
-        class="bg-[#0a2431] p-6 rounded-xl shadow-lg border border-[#00BFFF]/30 hover:border-[#00BFFF]/60 hover:shadow-[0_0_20px_#00BFFF80] transition block"
-      >
-        <h3 class="text-xl font-bold mb-2 text-[#00BFFF]">
-          {{ item.title }}
-        </h3>
-        <p>{{ item.text }}</p>
-      </RouterLink>
+      <div class="grid md:grid-cols-3 gap-10">
+        <RouterLink
+          v-for="(item, i) in texts.features.cards"
+          :key="i"
+          :to="featureLinks[i]"
+          class="card-glow"
+        >
+          <h3 class="text-xl font-bold mb-2 text-[var(--color-secondary)]">
+            {{ item.title }}
+          </h3>
+          <p>{{ item.text }}</p>
+        </RouterLink>
+      </div>
     </div>
-  </div>
-</section>
-
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -92,7 +72,7 @@ const texts = computed(() =>
   currentLang.value === "en" ? homeTextsEn : homeTextsFr
 )
 
-// 🔗 Correspondance des 10 cartes avec les routes
+// 🔗 Routes des cartes
 const featureLinks = [
   "/whychoose/decentralized",
   "/whychoose/securedByBlockchain",
@@ -108,17 +88,6 @@ const featureLinks = [
 </script>
 
 <style scoped>
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 section:first-of-type {
   animation: fadeIn 1s ease-out;
 }

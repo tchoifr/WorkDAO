@@ -1,40 +1,38 @@
 <template>
-  <main class="min-h-screen bg-[#031d28] text-white">
+  <main class="min-h-screen bg-[var(--color-bg)] text-white fade-in">
     <!-- 🌐 HEADER -->
     <section
       class="relative h-screen flex items-center justify-center text-center text-white overflow-hidden"
     >
+      <!-- Image de fond -->
       <img
         :src="Reseaux"
         alt="WorkDAO Background"
         class="absolute inset-0 w-full h-full object-cover object-center"
       />
 
-      <div
-        class="absolute inset-0 bg-gradient-to-b from-black/70 via-[#031d28]/80 to-[#0a2431]/90"
-      ></div>
+      <!-- Overlay global -->
+      <div class="absolute inset-0 hero-overlay"></div>
 
+      <!-- Contenu principal -->
       <div class="relative z-10 px-6 max-w-5xl">
-        <h1
-          class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight text-[#38BDF8] drop-shadow-[0_0_10px_#38BDF8]"
-        >
-          🌍 DAO Social Hub
-        </h1>
+        <h1>🌍 DAO Social Hub</h1>
 
-        <p class="text-lg md:text-2xl text-gray-200 mb-10 leading-relaxed">
+        <p class="text-lg md:text-2xl text-[var(--color-text-dim)] mb-10 leading-relaxed">
           Retrouvez toutes les actualités WorkDAO sur Facebook, Instagram, X et Telegram.
         </p>
 
         <button
           @click="fetchAllPosts"
-          class="px-8 py-3 border border-[#00BFFF] text-[#00BFFF] hover:bg-[#00BFFF] hover:text-black font-semibold rounded-full text-lg transition shadow-[0_0_10px_#00BFFF]"
+          class="btn-primary"
         >
           🔄 Actualiser les publications
         </button>
       </div>
 
+      <!-- Dégradé bas -->
       <div
-        class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#031d28] to-transparent"
+        class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[var(--color-bg)] to-transparent"
       ></div>
     </section>
 
@@ -48,28 +46,25 @@
     <SocialSection title="🐦 X (Twitter)" :posts="xPosts" :loading="loading" />
 
     <!-- 💬 TELEGRAM -->
-    <section class="py-16 px-6 md:px-12 max-w-6xl mx-auto">
-      <h2
-        class="text-3xl font-bold mb-8 text-[#38BDF8] drop-shadow-[0_0_8px_#38BDF8] text-center"
-      >
-        💬 Telegram — Communautés DAO dans le monde
-      </h2>
+    <section class="py-16 px-6 md:px-12 max-w-6xl mx-auto text-center">
+      <h2>💬 Telegram — Communautés DAO dans le monde</h2>
 
-      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6 text-gray-200">
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6 text-[var(--color-text-dim)] mt-10">
         <div
           v-for="group in telegramGroups"
           :key="group.country"
-          class="bg-[#0a2431] border border-[#00BFFF]/30 rounded-lg p-5 hover:border-[#00BFFF]/60 transition"
+          class="card-glow p-6 transition hover:shadow-[var(--glow-secondary)]"
         >
-          <h3 class="text-lg font-semibold mb-2 text-[#00BFFF]">
+          <h3 class="text-lg font-semibold mb-2 text-[var(--color-secondary)]">
             {{ group.country }}
           </h3>
+
           <ul class="space-y-1 text-sm">
             <li v-for="link in group.links" :key="link">
               <a
                 :href="link"
                 target="_blank"
-                class="text-[#38BDF8] hover:underline"
+                class="text-[var(--color-primary)] hover:underline"
               >
                 🔗 {{ link }}
               </a>
