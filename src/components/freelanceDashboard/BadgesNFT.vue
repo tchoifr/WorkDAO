@@ -34,8 +34,7 @@
 
 <script setup lang="ts">
 import { inject } from "vue"
-import nft from "../../assets/nft.webp"
-import nft2 from "../../assets/nft2.jpg"
+import nft from "../../assets/nft.jpg"
 
 // ✅ Récupération du dark mode depuis FreelanceDashboard
 const darkMode = inject("darkMode", false)
@@ -51,7 +50,7 @@ const nfts = [
     id: 2,
     name: "Full-Stack Web3",
     description: "Projets complets livrés",
-    image: nft2,
+    image: nft,
   },
 ]
 </script>

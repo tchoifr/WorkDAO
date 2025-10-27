@@ -36,15 +36,10 @@
       ></div>
     </section>
 
-    <!-- 🟦 FACEBOOK -->
-    <SocialSection title="📘 Facebook" :posts="facebookPosts" :loading="loading" />
+    <!--  Reseaux -->
+    <SocialSection title="📰 Nos publications" :posts="facebookPosts" :loading="loading" />
 
-    <!-- 🟪 INSTAGRAM -->
-    <SocialSection title="📸 Instagram" :posts="instagramPosts" :loading="loading" />
-
-    <!-- 🖤 X (Twitter) -->
-    <SocialSection title="🐦 X (Twitter)" :posts="xPosts" :loading="loading" />
-
+ 
     <!-- 💬 TELEGRAM -->
     <section class="py-16 px-6 md:px-12 max-w-6xl mx-auto text-center">
       <h2>💬 Telegram — Communautés DAO dans le monde</h2>
@@ -81,11 +76,22 @@ import { ref, onMounted } from "vue"
 import Reseaux from "../assets/reseaux.jpg"
 import dao from "../assets/dao.jpg"
 import staking from "../assets/staking.jpg"
-import nft from "../assets/nft.webp"
+import nft from "../assets/nft.jpg"
 import connect from "../assets/connect.jpg"
-import wallet from "../assets/wallet.jpg"
+import wallet from "../assets/postes/wallet.jpg"
 import logo from "../assets/logo.png"
 import SocialSection from "../../src/components/SocialSection.vue"
+
+import decentralise from "../assets/postes/decentraliser.jpg";
+import blockchain from "../assets/postes/blockchain.jpg";
+import recompensant from "../assets/postes/recompenses.jpg";
+import gouvernance from "../assets/postes/gouvernance.jpg";
+import intermediaires from "../assets/postes/intermediaires.jpg";
+import identite from "../assets/postes/identite.jpg";
+import marche from "../assets/postes/marche.jpg";
+import liberte from "../assets/postes/liberty.jpg";
+import securite from "../assets/postes/security.jpg"
+import communaute from "../assets/postes/communaute.jpg";
 
 interface SocialPost {
   id: string
@@ -116,14 +122,28 @@ const fetchAllPosts = async () => {
   loading.value = true
   await new Promise((r) => setTimeout(r, 800))
 
-  facebookPosts.value = [
-    { id: "1", author: "WorkDAO", content: "🚀 Nouvelle fonctionnalité : création automatique de smart contracts !", image: dao, likes: 230, comments: 45, shares: 20, date: "2025-10-21" },
-    { id: "2", author: "StakingDAO", content: "💎 Staking $WORK ouvert — soutenez la gouvernance du DAO.", image: staking, likes: 310, comments: 52, shares: 28, date: "2025-10-18" },
-    { id: "3", author: "NFTDAO", content: "🖼️ Une nouvelle série de NFT utilitaires vient de sortir.", image: nft, likes: 180, comments: 19, shares: 12, date: "2025-10-14" },
-    { id: "4", author: "WalletConnect", content: "🔗 Connectez votre wallet pour accéder au dashboard.", image: connect, likes: 205, comments: 26, shares: 15, date: "2025-10-12" },
-    { id: "5", author: "DecentralWallet", content: "🌐 Vos actifs, votre contrôle. Découvrez notre wallet décentralisé.", image: wallet, likes: 150, comments: 15, shares: 9, date: "2025-10-09" },
-    { id: "6", author: "WorkDAO Labs", content: "⚙️ WorkDAO Labs dévoile son nouveau programme d’incubation Web3.", image: logo, likes: 175, comments: 24, shares: 11, date: "2025-10-05" },
-  ]
+facebookPosts.value = [
+  // --- NOUVEAUX POSTS (ordre inversé) ---
+  { id: "16", author: "WorkDAO", content: "🔥 WorkDAO, c’est plus qu’une plateforme : c’est une révolution. Ensemble, nous reprenons le contrôle du travail et des règles du jeu.", image: communaute, likes: 420, comments: 65, shares: 38, date: "2025-10-26" },
+  { id: "15", author: "CyberSecure Labs", content: "🔒 Vos paiements et contrats sont garantis par des smart contracts vérifiables. La sécurité maximale n’est pas un luxe, c’est la base.", image: securite, likes: 310, comments: 43, shares: 25, date: "2025-10-25" },
+  { id: "14", author: "Freedom Network", content: "🕊️ Fini les restrictions. Votre réputation blockchain devient votre carte d’identité professionnelle — la liberté totale enfin réelle.", image: liberte, likes: 355, comments: 50, shares: 30, date: "2025-10-24" },
+  { id: "13", author: "GlobalMarket DAO", content: "💼 Un marché global où les talents du monde entier collaborent sans barrières bancaires ni frontières. Bienvenue dans le travail sans limites.", image: marche, likes: 265, comments: 34, shares: 19, date: "2025-10-23" },
+  { id: "12", author: "IDNFT Labs", content: "🧠 Votre identité numérique vous appartient. Grâce aux NFTs d’identité, vos compétences et réalisations ne dépendent d’aucune plateforme.", image: identite, likes: 295, comments: 44, shares: 21, date: "2025-10-22" },
+  { id: "11", author: "FreeLancers DAO", content: "🚫 Plus d’intermédiaires, plus de commissions injustes. Vous gardez 100% de vos gains. Le travail libre, c’est maintenant.", image: intermediaires, likes: 340, comments: 59, shares: 32, date: "2025-10-21" },
+  { id: "10", author: "Community Council", content: "⚖️ La gouvernance DAO, c’est le pouvoir au peuple. Chaque vote compte pour décider du futur de WorkDAO.", image: gouvernance, likes: 310, comments: 48, shares: 26, date: "2025-10-20" },
+  { id: "9", author: "WorkDAO", content: "🪙 Vos contributions, vos récompenses. Chaque action dans l’écosystème est gratifiée par des tokens $WORK. Engagez-vous, gagnez, influencez.", image: recompensant, likes: 280, comments: 39, shares: 24, date: "2025-10-19" },
+  { id: "8", author: "ChainTrust", content: "💰 Chaque contrat et chaque transaction sont inscrits sur la blockchain. La transparence devient la norme, pas l’exception.", image: blockchain, likes: 320, comments: 47, shares: 20, date: "2025-10-18" },
+  { id: "7", author: "WorkDAO", content: "🌐 Aucun gouvernement, aucune entreprise centrale : la communauté fixe ses propres règles. Le futur est décentralisé.", image: decentralise, likes: 250, comments: 40, shares: 28, date: "2025-10-17" },
+
+  // --- TES ANCIENS POSTS (avec ajustements et ordre inversé) ---
+  { id: "6", author: "WorkDAO Labs", content: "⚙️ WorkDAO Labs lance un nouveau programme d’incubation Web3 pour soutenir les créateurs et les développeurs de demain.", image: logo, likes: 175, comments: 24, shares: 11, date: "2025-10-16" },
+  { id: "5", author: "DecentralWallet", content: "🌐 Prenez le contrôle de vos actifs numériques avec notre wallet décentralisé. Votre argent, vos règles.", image: wallet, likes: 150, comments: 15, shares: 9, date: "2025-10-09" },
+  { id: "4", author: "WalletConnect", content: "🔗 Connectez facilement votre wallet et explorez votre tableau de bord WorkDAO en toute sécurité.", image: connect, likes: 205, comments: 26, shares: 15, date: "2025-10-12" },
+  { id: "3", author: "NFTDAO", content: "🖼️ Nouvelle collection de NFTs utilitaires disponible ! Débloquez des avantages uniques au sein de la DAO.", image: nft, likes: 180, comments: 19, shares: 12, date: "2025-10-14" },
+  { id: "2", author: "StakingDAO", content: "💎 Le staking $WORK est maintenant ouvert. Soutenez la gouvernance et gagnez des récompenses exclusives.", image: staking, likes: 310, comments: 52, shares: 28, date: "2025-10-18" },
+  { id: "1", author: "WorkDAO", content: "🚀 Lancement de la création automatique de smart contracts ! Une avancée majeure pour la communauté.", image: dao, likes: 230, comments: 45, shares: 20, date: "2025-10-21" },
+];
+
 
   instagramPosts.value = facebookPosts.value.map((p) => ({
     ...p,
