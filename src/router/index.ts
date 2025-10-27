@@ -45,7 +45,8 @@ router.beforeEach((to, from, next) => {
     '/login', 
     '/dao', 
     '/staking', 
-    '/facebook-posts'
+    '/facebook-posts',
+    '/freelance',
   ]
 
   // 🔓 Toutes les pages /whychoose/... sont publiques
@@ -60,7 +61,7 @@ router.beforeEach((to, from, next) => {
   if (!user) return next('/login')
 
   // 🧠 Redirection selon le rôle
-  if (to.path === '/freelance' && user.role !== 'freelance') return next('/')
+  // if (to.path === '/freelance' && user.role !== 'freelance') return next('/')
   if (to.path === '/employer' && user.role !== 'recruteur') return next('/')
 
   next()

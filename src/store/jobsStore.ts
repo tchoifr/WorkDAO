@@ -43,8 +43,17 @@ export const useJobsStore = defineStore('jobs', {
     error: null as string | null,
   }),
 
+  getters: {
+    // 🔹 Récupérer uniquement les jobs du recruteur connecté
+    recruiterJobs: (state) => {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
+      if (!currentUser?.id) return []
+      return state.jobs.filter((job) => job.recruiterId === currentUser.id)
+    },
+  },
+
   actions: {
-    // 🟢 Récupération des jobs
+    // 🟢 Récupération de tous les jobs
     async fetchJobs() {
       this.loading = true
       this.error = null
@@ -90,7 +99,7 @@ export const useJobsStore = defineStore('jobs', {
           { headers: { 'Content-Type': 'application/json' } }
         )
 
-        // ✅ Mise à jour du statut localement
+        // ✅ Met à jour dans le store
         const index = this.jobs.findIndex((job) => job.id === id)
         if (index !== -1) {
           this.jobs[index] = { ...this.jobs[index], status: res.data.status }
@@ -102,6 +111,41 @@ export const useJobsStore = defineStore('jobs', {
         this.error = e.response?.data?.error || e.message
         console.error('❌ Erreur updateJobStatus:', e)
         throw e
+      } finally {
+        this.loading = false
+      }
+    },
+
+    // 🔴 Suppression d’un job
+    async deleteJob(id: string) {
+      this.loading = true
+      this.error = null
+      try {
+        await axios.delete(`${API_URL}/${id}`)
+        this.jobs = this.jobs.filter((job) => job.id !== id)
+        console.log(`🗑️ Job ${id} supprimé avec succès`)
+      } catch (e: any) {
+        this.error = e.response?.data?.error || e.message
+        console.error('❌ Erreur deleteJob:', e)
+      } finally {
+        this.loading = false
+      }
+    },
+
+    // 🔵 Charger uniquement les jobs du recruteur connecté
+    async fetchRecruiterJobs() {
+      this.loading = true
+      this.error = null
+      try {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
+        if (!currentUser?.id) throw new Error('Utilisateur non connecté')
+
+        const res = await axios.get<Job[]>(`${API_URL}?recruiterId=${currentUser.id}`)
+        this.jobs = res.data
+        console.log('✅ Jobs du recruteur chargés :', res.data)
+      } catch (e: any) {
+        this.error = e.message
+        console.error('❌ Erreur fetchRecruiterJobs:', e)
       } finally {
         this.loading = false
       }

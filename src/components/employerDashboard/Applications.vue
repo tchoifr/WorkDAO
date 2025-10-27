@@ -1,13 +1,29 @@
 <template>
   <section class="p-6 transition-colors duration-500">
-    <div v-for="job in jobs" :key="job.id" class="mb-10">
+    <!-- 🔄 Loading -->
+    <div v-if="jobsStore.loading" class="text-center py-6 text-gray-500 animate-pulse">
+      Chargement des jobs...
+    </div>
+
+    <!-- ❌ Erreur -->
+    <div v-if="jobsStore.error" class="text-center py-4 text-red-500 font-semibold">
+      ❌ {{ jobsStore.error }}
+    </div>
+
+    <!-- 🧠 Liste des jobs avec candidatures -->
+    <div
+      v-if="!jobsStore.loading && jobsStore.recruiterJobs.length"
+      v-for="job in jobsStore.recruiterJobs"
+      :key="job.id"
+      class="mb-10"
+    >
       <h3
         class="text-lg font-semibold mb-3"
         :class="darkMode ? 'text-gray-100' : 'text-gray-800'"
       >
-        {{ job.title }} —
+        {{ job.title }} — 
         <span :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-600'">
-          {{ job.budget }} $WORK
+          {{ job.budget }} {{ job.currency }}
         </span>
       </h3>
 
@@ -19,8 +35,8 @@
           class="rounded-lg p-5 border transition shadow-md"
           :class="darkMode
             ? 'bg-[#0a2431] border border-[#00BFFF]/30 hover:border-[#00BFFF]/60'
-            : 'bg-white hover:shadow-lg border-gray-200'"
-        >
+            : 'bg-white hover:shadow-lg border-gray-200'">
+          
           <!-- 👤 Infos candidat -->
           <div class="flex items-center mb-3">
             <img
@@ -70,7 +86,6 @@
             </span>
 
             <div class="space-x-2">
-              <!-- ✅ Bouton "Démarrer une conversation" -->
               <button
                 class="px-3 py-1 text-sm rounded transition font-medium"
                 :class="darkMode
@@ -90,6 +105,7 @@
               >
                 ✅ Accepter
               </button>
+
               <button
                 class="px-3 py-1 text-sm rounded transition"
                 :class="darkMode
@@ -108,40 +124,77 @@
       <p
         v-else
         class="text-sm"
-        :class="darkMode ? 'text-gray-400' : 'text-gray-400'"
-      >
+        :class="darkMode ? 'text-gray-400' : 'text-gray-400'">
         Aucune candidature pour ce job.
       </p>
     </div>
+
+    <!-- 📭 Aucun job -->
+    <p
+      v-else-if="!jobsStore.loading && !jobsStore.recruiterJobs.length"
+      class="text-center text-gray-500 italic py-6">
+      Aucun job publié pour le moment.
+    </p>
   </section>
 </template>
 
 <script setup lang="ts">
-import { inject } from "vue"
+import { inject, onMounted } from "vue"
+import { useJobsStore } from "../../store/jobsStore"
 import { openConversation } from "../../store/conversationStore"
 
 const darkMode = inject("darkMode", false)
+const jobsStore = useJobsStore()
 
-const props = defineProps<{
-  jobs: any[]
-  applications: any[]
-}>()
+// 💼 Exemple local d’applications (à remplacer plus tard par un store ou une API)
+const applications = [
+  {
+    id: 1,
+    jobId: "1",
+    freelancer: "Lucas Bernard",
+    avatar: "https://i.pravatar.cc/100?img=11",
+    bid: 780,
+    proposal: "Je peux livrer un smart contract complet avec audit en 8 jours.",
+    status: "En attente",
+  },
+  {
+    id: 2,
+    jobId: "1",
+    freelancer: "Emma Laurent",
+    avatar: "https://i.pravatar.cc/100?img=12",
+    bid: 800,
+    proposal: "Audit du code Solidity et intégration front-end React.",
+    status: "Acceptée",
+  },
+  {
+    id: 3,
+    jobId: "2",
+    freelancer: "Paul Martin",
+    avatar: "https://i.pravatar.cc/100?img=13",
+    bid: 420,
+    proposal: "Je m'occupe du design responsive sous Figma.",
+    status: "En attente",
+  },
+]
+
+// 🔄 Charger les jobs du recruteur connecté
+onMounted(async () => {
+  await jobsStore.fetchRecruiterJobs()
+})
 
 // 🔍 Filtrer les candidatures par job
-const filteredApplications = (jobId: number) => {
-  return props.applications.filter((a) => a.jobId === jobId)
+const filteredApplications = (jobId: string) => {
+  return applications.filter((a) => a.jobId === jobId)
 }
 
-// ✅ Mettre à jour le statut
+// ✅ Mettre à jour le statut d'une candidature
 const updateStatus = (id: number, newStatus: string) => {
-  const app = props.applications.find((a) => a.id === id)
+  const app = applications.find((a) => a.id === id)
   if (app) app.status = newStatus
 }
 
 // 💬 Démarrer une conversation
 const startConversation = (app: any) => {
-  // Ici on simule l’ouverture de la conversation
-  // → tu peux directement appeler ton store "openConversation"
   openConversation(app.id, "employer")
   console.log(`Conversation démarrée avec ${app.freelancer}`)
 }
