@@ -1,75 +1,62 @@
-export interface WhyChooseSection {
-  header: {
-    title: string
-    description: string
-  }
-  card: {
-    title: string
-    points: string[]
-    note: string
-  }
-}
-
-// ✅ On ajoute un typage strict avec index signature pour TypeScript
-export const whyChooseTextsEn: Record<string, WhyChooseSection> = {
+export const whyChooseTextsEn = {
   decentralized: {
     header: {
       title: "🌍 Decentralized Freedom",
       description: `
-        In WorkDAO, no corporation or government dictates your work.
-        All interactions, contracts, and payments are handled by smart contracts,
-        ensuring total transparency and equality.`
+        In WorkDAO, no company or government controls your work.
+        All interactions, contracts, and payments are managed by 
+        smart contracts — ensuring total transparency and equality.`
     },
     card: {
-      title: "How Decentralization Empowers You",
+      title: "How Decentralization Sets You Free",
       points: [
-        "Each contract is stored and verified on the blockchain — no manual oversight.",
-        "You connect directly with clients and collaborators, no intermediaries.",
-        "DAO rules are written in code, not controlled by companies.",
-        "Payments are automatic, unstoppable once terms are met.",
-        "Anyone, anywhere can join and participate freely."
+        "Every contract is recorded and verified on the blockchain — no manual intervention.",
+        "You collaborate directly with your clients, without intermediaries.",
+        "WorkDAO’s rules are written in code, not enforced by corporations.",
+        "Payments are automatic and cannot be blocked once conditions are met.",
+        "Anyone, anywhere, can freely join and participate."
       ],
-      note: "Your freedom is coded — not granted. No one can take it away."
+      note: "Your freedom is coded — it cannot be taken away."
     }
   },
 
   securedByBlockchain: {
     header: {
-      title: "💰 Secured by Blockchain",
+      title: "💰 Secured by the Blockchain",
       description: `
         Every transaction in WorkDAO is immutable, traceable, and verified.
-        The blockchain ensures trust without needing a central authority.`
+        The blockchain ensures trust without any central authority.`
     },
     card: {
-      title: "Security at the Core",
+      title: "Security at the Core of the System",
       points: [
-        "Smart contracts guarantee payment once milestones are reached.",
-        "No risk of fraud — everything is cryptographically recorded.",
-        "Your data and identity remain under your control.",
-        "Audits and open-source code ensure transparency.",
-        "Security isn’t a feature — it’s the foundation of WorkDAO."
+        "Smart contracts guarantee payment once objectives are achieved.",
+        "Zero risk of fraud — everything is cryptographically recorded.",
+        "Your data and identity remain fully under your control.",
+        "Open-source code and audits ensure complete transparency.",
+        "Security isn’t optional — it’s the foundation of WorkDAO."
       ],
-      note: "Immutable, transparent, unstoppable — that’s real trust."
+      note: "Immutable, transparent, tamper-proof — real trust."
     }
   },
 
   rewarding: {
     header: {
-      title: "🪙 Rewarding Ecosystem",
+      title: "🪙 A Rewarding Ecosystem",
       description: `
-        WorkDAO values contribution. Every completed task, idea, or vote
+        WorkDAO values contribution. Every mission, idea, or vote
         earns you $WORK tokens — your share of the ecosystem.`
     },
     card: {
-      title: "Earning Beyond Money",
+      title: "Earn More Than Money",
       points: [
-        "Earn $WORK tokens for work, proposals, and governance participation.",
-        "Stake tokens to access premium missions or DAO rights.",
+        "Earn $WORK tokens for your missions, proposals, and participation.",
+        "Stake your tokens to access premium missions or governance rights.",
         "Contribute to the community and earn reputation NFTs.",
-        "Collaborate, build, and grow with other skilled members.",
-        "Value is shared, not extracted."
+        "Collaborate, build, and grow with talented people worldwide.",
+        "Value is shared — never extracted."
       ],
-      note: "$WORK is more than a token — it’s your voice and your power."
+      note: "$WORK isn’t just a token — it’s your voice and your power."
     }
   },
 
@@ -77,17 +64,17 @@ export const whyChooseTextsEn: Record<string, WhyChooseSection> = {
     header: {
       title: "⚖️ DAO Governance",
       description: `
-        Decisions at WorkDAO are made by its members. Through token-weighted
-        voting, proposals, and transparency, you help shape the future of work.`
+        Decisions in WorkDAO are made by its members. 
+        Through voting, transparency, and decentralization, everyone helps shape the future of work.`
     },
     card: {
       title: "Transparent Collective Power",
       points: [
         "Every member can create or vote on proposals.",
-        "Voting power scales with contribution and $WORK staking.",
-        "Community-driven arbitration replaces centralized judgment.",
-        "All decisions are recorded publicly on-chain.",
-        "Governance is not bureaucracy — it’s democracy powered by code."
+        "Voting power depends on contributions and $WORK staking.",
+        "Disputes are resolved by the community through DAO arbitration.",
+        "All decisions are publicly recorded on the blockchain.",
+        "Governance here isn’t bureaucracy — it’s coded democracy."
       ],
       note: "You don’t work for WorkDAO — you are WorkDAO."
     }
@@ -97,19 +84,19 @@ export const whyChooseTextsEn: Record<string, WhyChooseSection> = {
     header: {
       title: "🚫 No Middlemen",
       description: `
-        Forget traditional freelancing platforms taking cuts and control.
-        WorkDAO connects freelancers and clients directly, peer to peer.`
+        No more traditional platforms taking fees and control.
+        WorkDAO connects freelancers and recruiters directly — no intermediaries.`
     },
     card: {
       title: "Fair Work, Fair Pay",
       points: [
-        "Zero platform fees — 100% of what you earn is yours.",
-        "Smart contracts automate trust without intermediaries.",
+        "Zero platform fees — you keep 100% of your earnings.",
+        "Smart contracts ensure trust without intermediaries.",
         "Work relationships are transparent and verifiable.",
-        "The DAO doesn’t own your labor — you do.",
+        "The DAO doesn’t own your work — you are the sole owner.",
         "A global network built on fairness, not fees."
       ],
-      note: "You earn it, you keep it — that’s true decentralization."
+      note: "You earn it, you keep it — that’s decentralization."
     }
   },
 
@@ -117,17 +104,17 @@ export const whyChooseTextsEn: Record<string, WhyChooseSection> = {
     header: {
       title: "🧠 Sovereign Digital Identity",
       description: `
-        Your profile, reputation, and skills exist on-chain through
-        identity NFTs — owned by you, portable across the Web3 world.`
+        Your profile, reputation, and skills live on the blockchain 
+        through identity NFTs — fully yours and portable across Web3.`
     },
     card: {
-      title: "Identity Reimagined",
+      title: "Reinventing Identity",
       points: [
-        "Your professional history is stored as verifiable credentials.",
-        "NFT-based profiles prevent manipulation and fake resumes.",
-        "No platform can delete or modify your achievements.",
-        "Privacy and transparency coexist through cryptographic proof.",
-        "Your digital identity evolves with your work — forever yours."
+        "Your professional journey is verified through verifiable credentials.",
+        "NFT-based profiles prevent fraud and fake résumés.",
+        "No platform can edit or delete your achievements.",
+        "Privacy and transparency coexist through cryptography.",
+        "Your digital identity grows with you — it’s yours forever."
       ],
       note: "You are not your profile — you are your verified legacy."
     }
@@ -137,19 +124,19 @@ export const whyChooseTextsEn: Record<string, WhyChooseSection> = {
     header: {
       title: "💼 Global Free Marketplace",
       description: `
-        WorkDAO connects talent and opportunity worldwide,
-        without borders, currencies, or intermediaries.`
+        WorkDAO connects talent and opportunities worldwide,
+        without borders, currencies, or barriers.`
     },
     card: {
-      title: "One Planet, One Workforce",
+      title: "One World, One Workforce",
       points: [
-        "Hire or collaborate with anyone, anywhere in seconds.",
-        "Payments and contracts function across borders seamlessly.",
-        "No banks, no conversion fees — just value exchange.",
-        "Open to all languages, skills, and cultures.",
-        "A borderless, unstoppable economy of creators."
+        "Collaborate with anyone, anywhere, in seconds.",
+        "Payments and contracts work seamlessly across borders.",
+        "No banks, no exchange rates — only direct value.",
+        "Open to all languages, cultures, and skills.",
+        "A borderless economy powered by creators."
       ],
-      note: "Talent has no borders — now your work doesn’t either."
+      note: "Talent has no borders — neither should your work."
     }
   },
 
@@ -157,17 +144,17 @@ export const whyChooseTextsEn: Record<string, WhyChooseSection> = {
     header: {
       title: "🕊 Total Freedom to Work",
       description: `
-        WorkDAO gives you complete control — work when you want, with who you want,
-        free from control, censorship, or exploitation.`
+        WorkDAO gives you full control — work whenever you want,
+        with whomever you want, free from oversight or censorship.`
     },
     card: {
-      title: "Work on Your Terms",
+      title: "Work on Your Own Terms",
       points: [
-        "No schedules, no approvals — you define your own mission flow.",
-        "Smart contracts protect both sides without middle management.",
-        "No one can censor your access or participation.",
-        "Freedom to earn and express your creativity globally.",
-        "Autonomy is not a dream — it’s your right."
+        "No imposed schedules, no hierarchical approval.",
+        "Smart contracts protect both parties — no managers needed.",
+        "No censorship or access restrictions.",
+        "Freedom to express and monetize your creativity.",
+        "Autonomy is no longer a dream — it’s your right."
       ],
       note: "Work should be free — not controlled."
     }
@@ -177,19 +164,19 @@ export const whyChooseTextsEn: Record<string, WhyChooseSection> = {
     header: {
       title: "🔐 Maximum Security",
       description: `
-        WorkDAO architecture is designed for resilience, privacy,
-        and fail-safe operations across every layer of the ecosystem.`
+        WorkDAO’s architecture is built for resilience, 
+        privacy, and uncompromising security at every level.`
     },
     card: {
-      title: "Your Safety Comes First",
+      title: "Your Security Comes First",
       points: [
-        "Zero single points of failure — decentralized infrastructure.",
+        "No single point of failure — decentralized infrastructure.",
         "Encrypted communication between members.",
-        "Multi-signature wallets for shared governance funds.",
-        "Smart contracts audited and open-source.",
-        "You own your keys, you own your security."
+        "Multi-signature wallets for governance.",
+        "Audited and open-source smart contracts.",
+        "Your keys, your security, your power."
       ],
-      note: "Security is freedom — and in WorkDAO, you own both."
+      note: "Security is freedom — and WorkDAO gives you both."
     }
   },
 
@@ -197,19 +184,20 @@ export const whyChooseTextsEn: Record<string, WhyChooseSection> = {
     header: {
       title: "🔥 The Community Revolution",
       description: `
-        WorkDAO is not a company — it’s a movement. A collective of creators,
-        developers, and dreamers redefining how humans collaborate.`
+        WorkDAO isn’t a company — it’s a movement. 
+        A union of creators, developers, and dreamers 
+        reinventing human collaboration.`
     },
     card: {
       title: "A New Era of Work",
       points: [
         "Every member is a co-owner of the ecosystem.",
-        "We build tools, not hierarchies.",
-        "Together we design fairer, freer systems of collaboration.",
-        "Innovation comes from the crowd, not the boardroom.",
+        "We build tools — not hierarchies.",
+        "Together, we design a fairer, freer model.",
+        "Innovation comes from the community — not a boardroom.",
         "This isn’t the future of work — it’s the work of the future."
       ],
-      note: "WorkDAO is the rebellion of creators — united by code and purpose."
+      note: "WorkDAO is the creators’ revolt — united by code and vision."
     }
   }
 }

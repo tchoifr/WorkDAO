@@ -1,12 +1,15 @@
-import { ref, computed, type Ref } from "vue"
+import { ref, computed } from "vue"
 
-// Langue par défaut = anglais (avec détection navigateur si FR)
+// 🌐 Détection automatique de la langue du navigateur
 const browserLang = navigator.language.startsWith("fr") ? "fr" : "en"
+
+// 🏁 Langue par défaut (localStorage prioritaire, sinon navigateur)
 const defaultLang = (localStorage.getItem("lang") as "en" | "fr") || browserLang
 
-// ✅ Typage fort : "en" | "fr"
-const currentLang: Ref<"en" | "fr"> = ref(defaultLang)
+// ✅ État global réactif
+const currentLang = ref<"en" | "fr">(defaultLang)
 
+// 💡 Hook réutilisable
 export function useLanguage() {
   const setLanguage = (lang: "en" | "fr") => {
     currentLang.value = lang
@@ -15,5 +18,10 @@ export function useLanguage() {
 
   const isEnglish = computed(() => currentLang.value === "en")
 
-return { currentLang, setLanguage, isEnglish }
+  // 🧠 Retourne les propriétés réactives (sans .value dans le template)
+  return {
+    currentLang,
+    setLanguage,
+    isEnglish,
+  }
 }

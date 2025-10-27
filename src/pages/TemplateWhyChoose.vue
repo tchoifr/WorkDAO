@@ -62,8 +62,8 @@
       <button
         @click="goBackToFeatures"
         class="mt-12 px-8 py-3 border border-[#00BFFF]/60 text-[#00BFFF] rounded-full font-semibold hover:bg-[#00BFFF] hover:text-black transition-all duration-300 hover:shadow-[0_0_25px_#00BFFF80] hover:-translate-y-1"
-      >
-        ← {{ currentLang.value === 'fr' ? 'Retour aux fonctionnalités' : 'Back to Features' }}
+      > 
+        ← {{ currentLang === 'fr' ? 'Retour aux fonctionnalités' : 'Back to Features' }}
       </button>
     </div>
 
@@ -85,8 +85,8 @@ const route = useRoute()
 const router = useRouter()
 
 // ✅ On garde l'objet entier pour éviter les soucis d'inférence
-const langStore = useLanguage()
-const currentLang = langStore.currentLang as Ref<"en" | "fr">
+const { currentLang } = useLanguage()
+
 
 // 🌍 Texte dynamique selon la langue
 const allTexts = computed(() =>
