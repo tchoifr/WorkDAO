@@ -6,7 +6,7 @@ export interface User {
   id: string
   walletAddress: string | null
   username: string | null
-  role: string | null
+  roles: string[] 
   network: string | null
   solBalance: string | null
   ethBalance: string | null
@@ -24,40 +24,40 @@ export const UsersStore = defineStore('users', {
   }),
 
   actions: {
-    // 🔹 Charger tous les utilisateurs (si besoin admin)
+    // 🟦 Récupérer tous les utilisateurs (admin)
     async fetchUsers() {
       this.loading = true
-      this.error = null
-
       try {
-        const response = await axios.get<User[]>('http://localhost:8000/api/users')
-        this.users = response.data
-      } catch (error: any) {
-        this.error = error.message || 'Erreur lors du chargement des utilisateurs'
+        const res = await axios.get<User[]>('http://localhost:8000/api/users')
+        this.users = res.data
+      } catch (e: any) {
+        this.error = e.message || 'Erreur lors du chargement des utilisateurs'
       } finally {
         this.loading = false
       }
     },
 
-    // 🔹 Charger un utilisateur connecté via wallet
+    // 🟨 Vérifier si un wallet existe (connexion)
     async fetchUserByWallet(walletAddress: string) {
       this.loading = true
+      this.error = null
       try {
-        const response = await axios.post('http://localhost:8000/api/login', { walletAddress })
-        if (response.data.exists && response.data.user) {
-          this.currentUser = response.data.user
+        const res = await axios.post('http://localhost:8000/api/login', { walletAddress })
+        if (res.data.exists && res.data.user) {
+          this.currentUser = res.data.user
           localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
-        } else {
-          this.currentUser = null
+          return this.currentUser
         }
+        return null
       } catch (e: any) {
         this.error = e.response?.data?.error || e.message
+        return null
       } finally {
         this.loading = false
       }
     },
 
-    // 🔹 Enregistrement d’un nouveau user
+    // 🟩 Créer un utilisateur (inscription)
     async registerUser(payload: { walletAddress: string; username: string; role: string }) {
       this.loading = true
       this.error = null
@@ -69,23 +69,23 @@ export const UsersStore = defineStore('users', {
         localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
         return this.currentUser
       } catch (e: any) {
+        console.error('❌ Erreur registerUser:', e)
         this.error = e.response?.data?.error || e.message
-        throw e
+        return null
       } finally {
         this.loading = false
       }
     },
 
-    // 🔹 Charger depuis le localStorage
+    // 🟧 Charger le user depuis le localStorage
     loadFromStorage() {
       const data = localStorage.getItem('currentUser')
       if (data) this.currentUser = JSON.parse(data)
     },
 
-    // 🔹 Mettre à jour les infos utilisateur (par ex. username ou soldes)
+    // 🟪 Mettre à jour un utilisateur existant
     async updateUserInfo(updatedData: Partial<User>) {
       if (!this.currentUser) return
-
       this.loading = true
       try {
         const res = await axios.patch(
@@ -102,7 +102,7 @@ export const UsersStore = defineStore('users', {
       }
     },
 
-    // 🔹 Déconnexion
+    // 🟥 Déconnexion
     logout() {
       this.currentUser = null
       localStorage.removeItem('currentUser')
