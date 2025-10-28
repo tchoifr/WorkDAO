@@ -5,7 +5,7 @@
       :class="darkMode
         ? 'bg-[#0a2431] border border-[#00BFFF]/30 hover:border-[#00BFFF]/60 hover:shadow-[#00BFFF]/20'
         : 'bg-white border border-gray-200 hover:shadow-xl'">
-      
+
       <!-- 🧾 Header -->
       <div class="flex justify-between items-center">
         <h2
@@ -38,7 +38,7 @@
       <div
         v-if="!jobsStore.loading && jobsStore.recruiterJobs.length"
         class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        
+
         <div
           v-for="job in jobsStore.recruiterJobs"
           :key="job.id"
@@ -46,7 +46,7 @@
           :class="darkMode
             ? 'bg-[#0d2f42] border-[#00BFFF]/30 hover:border-[#00BFFF]/50'
             : 'bg-white border-gray-200 hover:border-indigo-200'">
-          
+
           <div>
             <h3 class="text-lg font-semibold mb-2 truncate"
               :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-700'">
@@ -59,7 +59,7 @@
             </p>
 
             <!-- 💰 Budget + Statut -->
-            <div class="text-xs flex flex-wrap gap-2 mb-2">
+            <div class="text-xs flex flex-wrap gap-2 mb-3 items-center">
               <span
                 class="px-2 py-1 rounded font-medium"
                 :class="darkMode
@@ -106,6 +106,18 @@
               </span>
             </div>
           </div>
+
+          <!-- 🗑 Bouton Supprimer -->
+          <div class="mt-5 text-right">
+            <button
+              @click="confirmDelete(job.id)"
+              class="px-3 py-1 text-xs font-semibold rounded transition-all"
+              :class="darkMode
+                ? 'bg-red-500/20 border border-red-400/30 text-red-400 hover:bg-red-500/30'
+                : 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100'">
+              🗑 Supprimer
+            </button>
+          </div>
         </div>
       </div>
 
@@ -131,17 +143,31 @@ onMounted(async () => {
   await jobsStore.fetchRecruiterJobs()
 })
 
-// 🔁 Rafraîchir les jobs
+// 🔁 Rafraîchir la liste
 const refreshJobs = async (): Promise<void> => {
   await jobsStore.fetchRecruiterJobs()
 }
 
-// 🔄 Mettre à jour le statut d’un job
+// 🔄 Mettre à jour le statut
 const updateStatus = async (id: string, newStatus: string) => {
   try {
     await jobsStore.updateJobStatus(id, newStatus)
   } catch (e) {
     console.error('❌ Erreur mise à jour statut :', e)
+  }
+}
+
+// 🗑 Supprimer un job avec confirmation
+const confirmDelete = async (id: string) => {
+  const confirm = window.confirm("⚠️ Es-tu sûr de vouloir supprimer cette annonce ?")
+  if (!confirm) return
+
+  try {
+    await jobsStore.deleteJob(id)
+    alert("✅ Annonce supprimée avec succès !")
+  } catch (e) {
+    console.error('❌ Erreur suppression :', e)
+    alert("❌ Erreur lors de la suppression de l'annonce.")
   }
 }
 

@@ -1,4 +1,3 @@
-// 📁 src/stores/jobsStore.ts
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
@@ -33,7 +32,7 @@ export interface CreateJobPayload {
   status: string
 }
 
-// 🌐 URL de l’API Symfony
+// 🌐 URL de ton API Symfony
 const API_URL = 'http://localhost:8000/api/jobs'
 
 export const useJobsStore = defineStore('jobs', {
@@ -136,15 +135,21 @@ export const useJobsStore = defineStore('jobs', {
     async fetchRecruiterJobs() {
       this.loading = true
       this.error = null
+
       try {
+        // ✅ Récupération du user depuis localStorage
         const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
         if (!currentUser?.id) throw new Error('Utilisateur non connecté')
 
-        const res = await axios.get<Job[]>(`${API_URL}?recruiterId=${currentUser.id}`)
+        // ✅ Le backend Symfony attend le paramètre ?userId=
+        const res = await axios.get<Job[]>(API_URL, {
+          params: { userId: currentUser.id },
+        })
+
         this.jobs = res.data
         console.log('✅ Jobs du recruteur chargés :', res.data)
       } catch (e: any) {
-        this.error = e.message
+        this.error = e.response?.data?.error || e.message
         console.error('❌ Erreur fetchRecruiterJobs:', e)
       } finally {
         this.loading = false
