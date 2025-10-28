@@ -17,6 +17,7 @@
         <button
           @click="refreshJobs"
           class="px-4 py-2 rounded font-semibold flex items-center gap-2 transition"
+          :disabled="jobsStore.loading"
           :class="darkMode
             ? 'bg-[#00BFFF]/10 border border-[#00BFFF]/40 text-[#00BFFF] hover:bg-[#00BFFF]/20'
             : 'bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100'">
@@ -112,6 +113,7 @@
             <button
               @click="confirmDelete(job.id)"
               class="px-3 py-1 text-xs font-semibold rounded transition-all"
+              :disabled="jobsStore.loading"
               :class="darkMode
                 ? 'bg-red-500/20 border border-red-400/30 text-red-400 hover:bg-red-500/30'
                 : 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100'">
@@ -134,21 +136,29 @@
 <script setup lang="ts">
 import { onMounted, inject } from 'vue'
 import { useJobsStore } from '../../store/jobsStore'
+import { UsersStore } from '../../store/usersStore'
 
 const jobsStore = useJobsStore()
+const usersStore = UsersStore()
 const darkMode = inject<boolean>('darkMode', false)
 
-// 🌀 Charger les jobs du recruteur connecté
 onMounted(async () => {
+  usersStore.loadFromStorage()
+
+  const currentUser = usersStore.currentUser
+  if (!currentUser?.uuid) {
+    console.warn('⚠️ Aucun utilisateur connecté — UUID manquant.')
+    jobsStore.error = "Utilisateur non connecté. Veuillez vous reconnecter."
+    return
+  }
+
   await jobsStore.fetchRecruiterJobs()
 })
 
-// 🔁 Rafraîchir la liste
 const refreshJobs = async (): Promise<void> => {
   await jobsStore.fetchRecruiterJobs()
 }
 
-// 🔄 Mettre à jour le statut
 const updateStatus = async (id: string, newStatus: string) => {
   try {
     await jobsStore.updateJobStatus(id, newStatus)
@@ -157,11 +167,9 @@ const updateStatus = async (id: string, newStatus: string) => {
   }
 }
 
-// 🗑 Supprimer un job avec confirmation
 const confirmDelete = async (id: string) => {
   const confirm = window.confirm("⚠️ Es-tu sûr de vouloir supprimer cette annonce ?")
   if (!confirm) return
-
   try {
     await jobsStore.deleteJob(id)
     alert("✅ Annonce supprimée avec succès !")
@@ -171,7 +179,6 @@ const confirmDelete = async (id: string) => {
   }
 }
 
-// 🕓 Format date lisible
 const formatDate = (isoString: string | null): string => {
   if (!isoString) return 'Date inconnue'
   const date = new Date(isoString)
@@ -182,6 +189,7 @@ const formatDate = (isoString: string | null): string => {
   })
 }
 </script>
+
 
 <style scoped>
 .line-clamp-3 {

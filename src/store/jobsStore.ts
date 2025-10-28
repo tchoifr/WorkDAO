@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
-// 🔹 Interface Job (mappée sur ton backend Symfony)
+// 🔹 Interface Job
 export interface Job {
   id: string
   title: string
@@ -19,7 +19,7 @@ export interface Job {
   recruiterWalletAddress?: string
 }
 
-// 🔹 Interface de création
+// 🔹 Interface pour la création
 export interface CreateJobPayload {
   recruiterId: string
   title: string
@@ -43,16 +43,16 @@ export const useJobsStore = defineStore('jobs', {
   }),
 
   getters: {
-    // 🔹 Récupérer uniquement les jobs du recruteur connecté
-    recruiterJobs: (state) => {
+    recruiterJobs(state) {
       const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
-      if (!currentUser?.id) return []
-      return state.jobs.filter((job) => job.recruiterId === currentUser.id)
+      const userUuid = currentUser?.uuid
+      if (!userUuid) return []
+      return state.jobs.filter(job => job.recruiterId === userUuid)
     },
   },
 
   actions: {
-    // 🟢 Récupération de tous les jobs
+    // 🟢 Récupère tous les jobs
     async fetchJobs() {
       this.loading = true
       this.error = null
@@ -67,14 +67,20 @@ export const useJobsStore = defineStore('jobs', {
       }
     },
 
-    // 🟣 Création d’un job
+    // 🟣 Crée un nouveau job
     async createJob(payload: CreateJobPayload) {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.post<Job>(API_URL, payload, {
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
+        const recruiterId = currentUser?.uuid
+
+        if (!recruiterId) throw new Error("Impossible de créer le job : recruteur non connecté")
+
+        const res = await axios.post<Job>(API_URL, { ...payload, recruiterId }, {
           headers: { 'Content-Type': 'application/json' },
         })
+
         this.jobs.push(res.data)
         console.log('✅ Job ajouté au store :', res.data)
         return res.data
@@ -87,7 +93,7 @@ export const useJobsStore = defineStore('jobs', {
       }
     },
 
-    // 🟡 Mise à jour du statut
+    // 🟡 Met à jour un job
     async updateJobStatus(id: string, newStatus: string) {
       this.loading = true
       this.error = null
@@ -97,13 +103,10 @@ export const useJobsStore = defineStore('jobs', {
           { status: newStatus },
           { headers: { 'Content-Type': 'application/json' } }
         )
-
-        // ✅ Met à jour dans le store
-        const index = this.jobs.findIndex((job) => job.id === id)
+        const index = this.jobs.findIndex(job => job.id === id)
         if (index !== -1) {
           this.jobs[index] = { ...this.jobs[index], status: res.data.status }
         }
-
         console.log(`✅ Statut du job ${id} mis à jour en "${newStatus}"`)
         return res.data
       } catch (e: any) {
@@ -115,13 +118,13 @@ export const useJobsStore = defineStore('jobs', {
       }
     },
 
-    // 🔴 Suppression d’un job
+    // 🔴 Supprime un job
     async deleteJob(id: string) {
       this.loading = true
       this.error = null
       try {
         await axios.delete(`${API_URL}/${id}`)
-        this.jobs = this.jobs.filter((job) => job.id !== id)
+        this.jobs = this.jobs.filter(job => job.id !== id)
         console.log(`🗑️ Job ${id} supprimé avec succès`)
       } catch (e: any) {
         this.error = e.response?.data?.error || e.message
@@ -131,19 +134,21 @@ export const useJobsStore = defineStore('jobs', {
       }
     },
 
-    // 🔵 Charger uniquement les jobs du recruteur connecté
+    // 🔵 Récupère uniquement les jobs du recruteur connecté
     async fetchRecruiterJobs() {
       this.loading = true
       this.error = null
 
       try {
-        // ✅ Récupération du user depuis localStorage
         const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
-        if (!currentUser?.id) throw new Error('Utilisateur non connecté')
+        const userUuid = currentUser?.uuid
 
-        // ✅ Le backend Symfony attend le paramètre ?userId=
+        if (!userUuid) throw new Error('Utilisateur non connecté (UUID manquant dans localStorage)')
+
+        console.log(`📡 Chargement des jobs du recruteur UUID=${userUuid}`)
+
         const res = await axios.get<Job[]>(API_URL, {
-          params: { userId: currentUser.id },
+          params: { userId: userUuid },
         })
 
         this.jobs = res.data

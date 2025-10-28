@@ -3,7 +3,8 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 
 export interface User {
-  id: string
+  id?: string          // 🔹 parfois "id" (dans le futur si backend uniformisé)
+  uuid?: string        
   walletAddress: string | null
   username: string | null
   roles: string[] 
@@ -102,23 +103,25 @@ export const UsersStore = defineStore('users', {
     },
 
     // 🟪 Mettre à jour un utilisateur existant
-    async updateUserInfo(updatedData: Partial<User>) {
-      if (!this.currentUser) return
-      this.loading = true
-      try {
-        const res = await axios.patch(
-          `http://localhost:8000/api/users/${this.currentUser.id}`,
-          updatedData,
-          { headers: { 'Content-Type': 'application/json' } }
-        )
-        this.currentUser = res.data
-        localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
-      } catch (e: any) {
-        this.error = e.response?.data?.error || e.message
-      } finally {
-        this.loading = false
-      }
-    },
+   async updateUserInfo(updatedData: Partial<User>) {
+  if (!this.currentUser) return
+  this.loading = true
+  try {
+    const res = await axios.patch(
+      `http://localhost:8000/api/users/${this.currentUser.id}`,
+      updatedData,
+      { headers: { 'Content-Type': 'application/json' } }
+    )
+
+    // ✅ Correction ici
+    this.currentUser = res.data.user || res.data
+    localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
+  } catch (e: any) {
+    this.error = e.response?.data?.error || e.message
+  } finally {
+    this.loading = false
+  }
+},
 
     // 🟥 Déconnexion
     logout() {

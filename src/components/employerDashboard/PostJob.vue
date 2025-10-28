@@ -213,13 +213,15 @@ const submitJob = async (): Promise<void> => {
   try {
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
 
-    if (!currentUser || !currentUser.id) {
+    // ✅ On vérifie que le user a un uuid (et pas id)
+    const recruiterId = currentUser?.uuid || currentUser?.id
+    if (!recruiterId) {
       error.value = '❌ Impossible de publier : utilisateur non connecté.'
       return
     }
 
     const payload = {
-      recruiterId: currentUser.id,
+      recruiterId, // ✅ UUID envoyé au backend
       title: form.value.title.trim(),
       description: form.value.description.trim(),
       budget: String(form.value.budget ?? '0'),
@@ -235,11 +237,12 @@ const submitJob = async (): Promise<void> => {
     console.log('📤 Envoi du payload à l’API :', payload)
 
     const job = await jobsStore.createJob(payload)
-
     console.log('✅ Job créé depuis le backend :', job)
+
     message.value = `✅ Job "${job.title}" créé avec succès !`
     error.value = null
 
+    // 🧹 Réinitialise le formulaire
     form.value = {
       title: '',
       category: '',
