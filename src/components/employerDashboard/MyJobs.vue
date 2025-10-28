@@ -146,9 +146,11 @@ onMounted(async () => {
   usersStore.loadFromStorage()
 
   const currentUser = usersStore.currentUser
-  if (!currentUser?.uuid) {
-    console.warn('⚠️ Aucun utilisateur connecté — UUID manquant.')
-    jobsStore.error = "Utilisateur non connecté. Veuillez vous reconnecter."
+
+  // ✅ Correction : on utilise `id` au lieu de `uuid`
+  if (!currentUser?.id) {
+    console.warn('⚠️ Aucun utilisateur connecté — ID manquant.')
+    jobsStore.error = 'Utilisateur non connecté. Veuillez vous reconnecter.'
     return
   }
 
@@ -168,11 +170,11 @@ const updateStatus = async (id: string, newStatus: string) => {
 }
 
 const confirmDelete = async (id: string) => {
-  const confirm = window.confirm("⚠️ Es-tu sûr de vouloir supprimer cette annonce ?")
+  const confirm = window.confirm('⚠️ Es-tu sûr de vouloir supprimer cette annonce ?')
   if (!confirm) return
   try {
     await jobsStore.deleteJob(id)
-    alert("✅ Annonce supprimée avec succès !")
+    alert('✅ Annonce supprimée avec succès !')
   } catch (e) {
     console.error('❌ Erreur suppression :', e)
     alert("❌ Erreur lors de la suppression de l'annonce.")
@@ -190,11 +192,9 @@ const formatDate = (isoString: string | null): string => {
 }
 </script>
 
-
 <style scoped>
 .line-clamp-3 {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

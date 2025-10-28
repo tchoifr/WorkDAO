@@ -1,13 +1,12 @@
-// 📁 src/store/usersStore.ts
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
+// 🔹 Interface User — version uniforme avec le backend Symfony
 export interface User {
-  id?: string          // 🔹 parfois "id" (dans le futur si backend uniformisé)
-  uuid?: string        
+  id: string
   walletAddress: string | null
   username: string | null
-  roles: string[] 
+  roles: string[]
   network: string | null
   solBalance: string | null
   ethBalance: string | null
@@ -16,6 +15,7 @@ export interface User {
   updatedAt: string | null
 }
 
+// 🔹 Store utilisateur
 export const UsersStore = defineStore('users', {
   state: () => ({
     users: [] as User[],
@@ -38,45 +38,39 @@ export const UsersStore = defineStore('users', {
       }
     },
 
-    // 🟨 Vérifier si un wallet existe (connexion)
-   async fetchUserByWallet(walletAddress: string) {
-  this.loading = true
-  this.error = null
+    // 🟨 Connexion via wallet
+    async fetchUserByWallet(walletAddress: string) {
+      this.loading = true
+      this.error = null
+      try {
+        const normalizedWallet = walletAddress.trim().toLowerCase()
 
-  try {
-    const normalizedWallet = walletAddress.trim().toLowerCase()
+        const res = await axios.post('http://localhost:8000/api/login', {
+          walletAddress: normalizedWallet,
+        })
 
-    const res = await axios.post('http://localhost:8000/api/login', {
-      walletAddress: normalizedWallet,
-    })
+        if (res.data.exists && res.data.user) {
+          this.currentUser = res.data.user
+          localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
+          return this.currentUser
+        }
 
-    // ✅ Vérifie la structure
-    if (res.data.exists && res.data.user) {
-      this.currentUser = res.data.user
-      localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
-      return this.currentUser
-    }
+        return null
+      } catch (e: any) {
+        console.error('Erreur login:', e.response?.data || e.message)
 
-    // ❌ Si pas trouvé, retourne null proprement
-    return null
-  } catch (e: any) {
-    // 🔍 Affiche le vrai message backend
-    console.error('Erreur login:', e.response?.data || e.message)
+        if (e.response?.data?.error === 'User not found') {
+          return null
+        }
 
-    // 🔄 Si backend renvoie un "User not found"
-    if (e.response?.data?.error === 'User not found') {
-      return null
-    }
+        this.error = e.response?.data?.error || e.message
+        return null
+      } finally {
+        this.loading = false
+      }
+    },
 
-    this.error = e.response?.data?.error || e.message
-    return null
-  } finally {
-    this.loading = false
-  }
-},
-
-
-    // 🟩 Créer un utilisateur (inscription)
+    // 🟩 Inscription (création d’un nouvel utilisateur)
     async registerUser(payload: { walletAddress: string; username: string; role: string }) {
       this.loading = true
       this.error = null
@@ -96,32 +90,31 @@ export const UsersStore = defineStore('users', {
       }
     },
 
-    // 🟧 Charger le user depuis le localStorage
+    // 🟧 Charger l’utilisateur depuis le localStorage
     loadFromStorage() {
       const data = localStorage.getItem('currentUser')
       if (data) this.currentUser = JSON.parse(data)
     },
 
     // 🟪 Mettre à jour un utilisateur existant
-   async updateUserInfo(updatedData: Partial<User>) {
-  if (!this.currentUser) return
-  this.loading = true
-  try {
-    const res = await axios.patch(
-      `http://localhost:8000/api/users/${this.currentUser.id}`,
-      updatedData,
-      { headers: { 'Content-Type': 'application/json' } }
-    )
+    async updateUserInfo(updatedData: Partial<User>) {
+      if (!this.currentUser) return
+      this.loading = true
+      try {
+        const res = await axios.patch(
+          `http://localhost:8000/api/users/${this.currentUser.id}`,
+          updatedData,
+          { headers: { 'Content-Type': 'application/json' } }
+        )
 
-    // ✅ Correction ici
-    this.currentUser = res.data.user || res.data
-    localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
-  } catch (e: any) {
-    this.error = e.response?.data?.error || e.message
-  } finally {
-    this.loading = false
-  }
-},
+        this.currentUser = res.data.user || res.data
+        localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
+      } catch (e: any) {
+        this.error = e.response?.data?.error || e.message
+      } finally {
+        this.loading = false
+      }
+    },
 
     // 🟥 Déconnexion
     logout() {

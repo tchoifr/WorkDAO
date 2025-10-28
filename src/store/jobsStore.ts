@@ -43,11 +43,12 @@ export const useJobsStore = defineStore('jobs', {
   }),
 
   getters: {
+    // 🔸 Retourne uniquement les jobs du recruteur connecté
     recruiterJobs(state) {
       const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
-      const userUuid = currentUser?.uuid
-      if (!userUuid) return []
-      return state.jobs.filter(job => job.recruiterId === userUuid)
+      const userId = currentUser?.id
+      if (!userId) return []
+      return state.jobs.filter(job => job.recruiterId === userId)
     },
   },
 
@@ -73,9 +74,9 @@ export const useJobsStore = defineStore('jobs', {
       this.error = null
       try {
         const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
-        const recruiterId = currentUser?.uuid
+        const recruiterId = currentUser?.id
 
-        if (!recruiterId) throw new Error("Impossible de créer le job : recruteur non connecté")
+        if (!recruiterId) throw new Error('Impossible de créer le job : recruteur non connecté')
 
         const res = await axios.post<Job>(API_URL, { ...payload, recruiterId }, {
           headers: { 'Content-Type': 'application/json' },
@@ -93,7 +94,7 @@ export const useJobsStore = defineStore('jobs', {
       }
     },
 
-    // 🟡 Met à jour un job
+    // 🟡 Met à jour le statut d’un job
     async updateJobStatus(id: string, newStatus: string) {
       this.loading = true
       this.error = null
@@ -138,19 +139,15 @@ export const useJobsStore = defineStore('jobs', {
     async fetchRecruiterJobs() {
       this.loading = true
       this.error = null
-
       try {
         const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
-        const userUuid = currentUser?.uuid
+        const userId = currentUser?.id
 
-        if (!userUuid) throw new Error('Utilisateur non connecté (UUID manquant dans localStorage)')
+        if (!userId) throw new Error('Utilisateur non connecté (ID manquant dans localStorage)')
 
-        console.log(`📡 Chargement des jobs du recruteur UUID=${userUuid}`)
+        console.log(`📡 Chargement des jobs du recruteur ID=${userId}`)
 
-        const res = await axios.get<Job[]>(API_URL, {
-          params: { userId: userUuid },
-        })
-
+        const res = await axios.get<Job[]>(API_URL, { params: { userId } })
         this.jobs = res.data
         console.log('✅ Jobs du recruteur chargés :', res.data)
       } catch (e: any) {
