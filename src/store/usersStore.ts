@@ -38,24 +38,42 @@ export const UsersStore = defineStore('users', {
     },
 
     // 🟨 Vérifier si un wallet existe (connexion)
-    async fetchUserByWallet(walletAddress: string) {
-      this.loading = true
-      this.error = null
-      try {
-        const res = await axios.post('http://localhost:8000/api/login', { walletAddress })
-        if (res.data.exists && res.data.user) {
-          this.currentUser = res.data.user
-          localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
-          return this.currentUser
-        }
-        return null
-      } catch (e: any) {
-        this.error = e.response?.data?.error || e.message
-        return null
-      } finally {
-        this.loading = false
-      }
-    },
+   async fetchUserByWallet(walletAddress: string) {
+  this.loading = true
+  this.error = null
+
+  try {
+    const normalizedWallet = walletAddress.trim().toLowerCase()
+
+    const res = await axios.post('http://localhost:8000/api/login', {
+      walletAddress: normalizedWallet,
+    })
+
+    // ✅ Vérifie la structure
+    if (res.data.exists && res.data.user) {
+      this.currentUser = res.data.user
+      localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
+      return this.currentUser
+    }
+
+    // ❌ Si pas trouvé, retourne null proprement
+    return null
+  } catch (e: any) {
+    // 🔍 Affiche le vrai message backend
+    console.error('Erreur login:', e.response?.data || e.message)
+
+    // 🔄 Si backend renvoie un "User not found"
+    if (e.response?.data?.error === 'User not found') {
+      return null
+    }
+
+    this.error = e.response?.data?.error || e.message
+    return null
+  } finally {
+    this.loading = false
+  }
+},
+
 
     // 🟩 Créer un utilisateur (inscription)
     async registerUser(payload: { walletAddress: string; username: string; role: string }) {

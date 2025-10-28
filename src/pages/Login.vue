@@ -9,7 +9,6 @@ import { loginTextsFr } from "../variables/pages/fr/login"
 import logo from "../assets/logo.png"
 import background from "../assets/connect.jpg"
 
-// ✅ Types Phantom & MetaMask
 declare global {
   interface Window {
     ethereum?: any
@@ -17,43 +16,47 @@ declare global {
   }
 }
 
-// 🧠 Instances
 const router = useRouter()
 const userStore = UsersStore()
 const { currentLang } = useLanguage()
 
-// 🌐 Texte dynamique
 const texts = computed(() =>
   currentLang.value === "en" ? loginTextsEn.texts : loginTextsFr.texts
 )
 
-// 🌈 États
 const walletAddress = ref<string | null>(null)
 const showNoWallet = ref(false)
 const showCreateForm = ref(false)
 const name = ref("")
 const userRole = ref<"freelance" | "recruteur" | null>(null)
 
-// 🦊 Connexion avec MetaMask
+// 🧭 Détermine le rôle principal
+const getPrimaryRole = (roles?: string[]) => {
+  const list = (roles ?? []).map(r => r.toLowerCase())
+  if (list.includes("freelance")) return "freelance"
+  if (list.includes("employer") || list.includes("recruteur")) return "employer"
+  return "freelance"
+}
+
+// 🦊 Connexion MetaMask
 const connectMetaMask = async () => {
   const provider = window.ethereum
   const accounts = await provider.request({ method: "eth_requestAccounts" })
   const address = accounts[0]
   walletAddress.value = address
 
-  // ✅ Signature pour prouver l’identité
   const message = `Connexion WorkDAO - ${new Date().toISOString()}`
   await provider.request({ method: "personal_sign", params: [message, address] })
 }
 
-// 👻 Connexion avec Phantom
+// 👻 Connexion Phantom
 const connectPhantom = async () => {
   const provider = window.solana
   const resp = await provider.connect()
   walletAddress.value = resp.publicKey.toString()
 }
 
-// ✅ Connexion principale (login)
+// ✅ Connexion principale
 const connectWallet = async () => {
   showNoWallet.value = false
   const hasMetaMask = window.ethereum?.isMetaMask
@@ -65,35 +68,34 @@ const connectWallet = async () => {
   }
 
   try {
-    // ✅ Connexion au wallet (MetaMask ou Phantom)
     if (hasMetaMask) await connectMetaMask()
     else if (hasPhantom) await connectPhantom()
     if (!walletAddress.value) return
 
-    // ✅ Vérifie si l’utilisateur existe déjà
     const loginRes = await axios.post("http://localhost:8000/api/login", {
-      walletAddress: walletAddress.value,
+      walletAddress: walletAddress.value.trim().toLowerCase(),
     })
 
-    // Si trouvé → connexion
     if (loginRes.data.exists && loginRes.data.user) {
       const user = loginRes.data.user
       userStore.currentUser = user
       localStorage.setItem("currentUser", JSON.stringify(user))
-      redirectByRole(user.roles?.[0] || "freelance")
+
+      const mainRole = getPrimaryRole(user.roles)
+      redirectByRole(mainRole)
       return
     }
 
-    // Sinon → affiche le formulaire d’inscription
+    // Sinon, afficher formulaire d'inscription
     showCreateForm.value = true
   } catch (error: any) {
+    console.error("Erreur login:", error.response?.data || error.message)
     userStore.error = error.response?.data?.error || error.message
   }
 }
 
-// 🧾 Création de compte (register)
+// 🧾 Création de compte
 const registerNewUser = async () => {
-  // ✅ Si pas de wallet, on force la connexion avant
   if (!walletAddress.value) {
     const hasMetaMask = window.ethereum?.isMetaMask
     const hasPhantom = window.solana?.isPhantom
@@ -107,19 +109,17 @@ const registerNewUser = async () => {
     try {
       if (hasMetaMask) await connectMetaMask()
       else if (hasPhantom) await connectPhantom()
-    } catch (err) {
+    } catch {
       alert("Échec de la connexion au wallet.")
       return
     }
   }
 
-  // ✅ Vérifie encore qu’on a bien récupéré une adresse
   if (!walletAddress.value) {
     alert("Impossible de récupérer ton adresse de wallet.")
     return
   }
 
-  // ✅ Vérifie les champs du formulaire
   if (!name.value || !userRole.value) {
     alert("Veuillez entrer votre nom et choisir un rôle avant de continuer.")
     return
@@ -127,21 +127,25 @@ const registerNewUser = async () => {
 
   try {
     const user = await userStore.registerUser({
-      walletAddress: walletAddress.value,
+      walletAddress: walletAddress.value.trim().toLowerCase(),
       username: name.value,
       role: userRole.value,
     })
-    if (user) redirectByRole(user.roles?.[0] || "freelance")
+
+    if (user) {
+      const mainRole = getPrimaryRole(user.roles)
+      redirectByRole(mainRole)
+    }
   } catch (error: any) {
+    console.error("Erreur register:", error.response?.data || error.message)
     userStore.error = error.response?.data?.error || error.message
   }
 }
 
-
-// 🔁 Redirection selon le rôle
+// 🔁 Redirection selon rôle
 const redirectByRole = (role: string) => {
   if (role === "freelance") router.push("/freelance")
-  else if (role === "recruteur" || role === "employer") router.push("/employer")
+  else if (role === "employer" || role === "recruteur") router.push("/employer")
   else router.push("/")
 }
 
@@ -149,15 +153,14 @@ const redirectByRole = (role: string) => {
 const formatAddress = (addr: string) => addr.slice(0, 6) + "..." + addr.slice(-4)
 </script>
 
+
 <template>
   <div
     class="min-h-screen flex flex-col justify-center items-center text-white bg-cover bg-center relative fade-in"
     :style="{ backgroundImage: `url(${background})` }"
   >
-    <!-- Overlay -->
     <div class="absolute inset-0 hero-overlay"></div>
 
-    <!-- Carte principale -->
     <div
       class="relative z-10 card-glow backdrop-blur-lg rounded-3xl p-8 w-[90%] max-w-[600px] text-center border border-cyan-500/40 shadow-xl"
     >
@@ -179,7 +182,7 @@ const formatAddress = (addr: string) => addr.slice(0, 6) + "..." + addr.slice(-4
         }}
       </p>
 
-      <!-- Connexion Wallet -->
+      <!-- Connexion -->
       <button
         v-if="!showCreateForm"
         @click="connectWallet"
@@ -188,7 +191,7 @@ const formatAddress = (addr: string) => addr.slice(0, 6) + "..." + addr.slice(-4
         {{ "Connecter mon wallet" }}
       </button>
 
-      <!-- Lien vers création -->
+      <!-- Lien création -->
       <button
         v-if="!showCreateForm"
         @click="showCreateForm = true"
@@ -257,11 +260,7 @@ const formatAddress = (addr: string) => addr.slice(0, 6) + "..." + addr.slice(-4
         </button>
       </form>
 
-      <!-- Message no wallet -->
-      <div
-        v-if="showNoWallet"
-        class="mt-4 text-sm text-center text-gray-400"
-      >
+      <div v-if="showNoWallet" class="mt-4 text-sm text-center text-gray-400">
         <p>Wallet non détecté.</p>
         <p class="text-cyan-400 font-semibold">Installe MetaMask ou Phantom</p>
       </div>
