@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import api from '../services/api' 
 
-// 🔹 Interface Job
 export interface Job {
   id: string
   title: string
@@ -19,7 +18,6 @@ export interface Job {
   recruiterUsername?: string
   recruiterWalletAddress?: string
 
-  // 🧩 Optionnel si le backend renvoie un objet "recruiter"
   recruiter?: {
     id: string
     username?: string
@@ -27,7 +25,6 @@ export interface Job {
   }
 }
 
-// 🔹 Interface pour la création
 export interface CreateJobPayload {
   recruiterId: string
   title: string
@@ -39,9 +36,6 @@ export interface CreateJobPayload {
   currency: string
   status: string
 }
-
-// 🌐 URL de ton API Symfony
-const API_URL = 'http://localhost:8000/api/jobs'
 
 export const useJobsStore = defineStore('jobs', {
   state: () => ({
@@ -60,7 +54,6 @@ export const useJobsStore = defineStore('jobs', {
   },
 
   actions: {
-    // 🟢 Récupère les jobs d’un recruteur
     async fetchRecruiterJobs() {
       this.loading = true
       this.error = null
@@ -69,7 +62,7 @@ export const useJobsStore = defineStore('jobs', {
         const userId = currentUser?.id || currentUser?.uuid
         if (!userId) throw new Error('Utilisateur non connecté')
 
-        const res = await axios.get<Job[]>(API_URL, { params: { userId } })
+        const res = await api.get<Job[]>('/api/jobs', { params: { userId } })
         this.jobs = res.data.map(job => ({
           ...job,
           recruiterId: job.recruiter?.id || job.recruiterId,
@@ -85,41 +78,25 @@ export const useJobsStore = defineStore('jobs', {
       }
     },
 
-    // 🟣 Création d’un job (corrigée)
     async createJob(payload: CreateJobPayload): Promise<Job> {
       this.loading = true
       this.error = null
       try {
-        // ✅ On ne relit plus uniquement depuis localStorage : on fait confiance au payload
         const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
+        const recruiterId = payload.recruiterId || currentUser?.id || currentUser?.uuid
+        if (!recruiterId) throw new Error('Impossible de créer le job : recruteur non connecté')
 
-        const recruiterId =
-          payload.recruiterId ||
-          currentUser?.id ||
-          currentUser?.uuid
-
-        if (!recruiterId) {
-          throw new Error('Impossible de créer le job : recruteur non connecté')
-        }
-
-        const finalPayload = {
-          ...payload,
-          recruiterId,
-        }
+        const finalPayload = { ...payload, recruiterId }
 
         console.log('📤 Envoi au backend:', finalPayload)
 
-        const res = await axios.post<Job>(
-          API_URL,
-          finalPayload,
-          { headers: { 'Content-Type': 'application/json' } }
-        )
+        const res = await api.post<Job>('/api/jobs', finalPayload)
 
         const newJob: Job = {
           ...res.data,
-          recruiterId: (res.data as any).recruiter?.id || (res.data as any).recruiterId,
-          recruiterUsername: (res.data as any).recruiter?.username || (res.data as any).recruiterUsername,
-          recruiterWalletAddress: (res.data as any).recruiter?.walletAddress || (res.data as any).recruiterWalletAddress,
+          recruiterId: res.data.recruiter?.id || res.data.recruiterId,
+          recruiterUsername: res.data.recruiter?.username || res.data.recruiterUsername,
+          recruiterWalletAddress: res.data.recruiter?.walletAddress || res.data.recruiterWalletAddress,
         }
 
         this.jobs.push(newJob)
@@ -134,16 +111,11 @@ export const useJobsStore = defineStore('jobs', {
       }
     },
 
-    // 🟡 Mise à jour du statut
     async updateJobStatus(id: string, newStatus: string): Promise<Job> {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.patch<Job>(
-          `${API_URL}/${id}`,
-          { status: newStatus },
-          { headers: { 'Content-Type': 'application/json' } }
-        )
+        const res = await api.patch<Job>(`/api/jobs/${id}`, { status: newStatus })
 
         const index = this.jobs.findIndex(job => job.id === id)
         if (index !== -1) {
@@ -161,12 +133,11 @@ export const useJobsStore = defineStore('jobs', {
       }
     },
 
-    // 🔴 Suppression
     async deleteJob(id: string): Promise<void> {
       this.loading = true
       this.error = null
       try {
-        await axios.delete(`${API_URL}/${id}`)
+        await api.delete(`/api/jobs/${id}`)
         this.jobs = this.jobs.filter(job => job.id !== id)
         console.log(`🗑️ Job ${id} supprimé avec succès`)
       } catch (e: any) {

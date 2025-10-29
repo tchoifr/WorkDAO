@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import api from '../services/api'  
 
 export interface User {
   id: string
@@ -27,7 +27,7 @@ export const UsersStore = defineStore('users', {
     async fetchUsers() {
       this.loading = true
       try {
-        const res = await axios.get<User[]>('http://localhost:8000/api/users')
+        const res = await api.get<User[]>('/api/users')
         this.users = res.data
       } catch (e: any) {
         this.error = e.message || 'Erreur lors du chargement des utilisateurs'
@@ -36,25 +36,18 @@ export const UsersStore = defineStore('users', {
       }
     },
 
-    // 🟨 Connexion via wallet
     async fetchUserByWallet(walletAddress: string) {
       this.loading = true
       this.error = null
       try {
         const normalizedWallet = walletAddress.trim().toLowerCase()
-        const res = await axios.post('http://localhost:8000/api/login', {
+        const res = await api.post('/api/login', {
           walletAddress: normalizedWallet,
         })
 
         if (res.data.exists && res.data.user) {
           const user = res.data.user
-
-          // 🧠 Corrige : mappe uuid → id
-          this.currentUser = {
-            ...user,
-            id: user.uuid || user.id,
-          }
-
+          this.currentUser = { ...user, id: user.uuid || user.id }
           localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
           return this.currentUser
         }
@@ -69,22 +62,13 @@ export const UsersStore = defineStore('users', {
       }
     },
 
-    // 🟩 Inscription (création d’un nouvel utilisateur)
     async registerUser(payload: { walletAddress: string; username: string; role: string }) {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.post('http://localhost:8000/api/register', payload, {
-          headers: { 'Content-Type': 'application/json' },
-        })
-
+        const res = await api.post('/api/register', payload)
         const user = res.data.user || res.data
-
-        this.currentUser = {
-          ...user,
-          id: user.uuid || user.id,
-        }
-
+        this.currentUser = { ...user, id: user.uuid || user.id }
         localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
         return this.currentUser
       } catch (e: any) {
@@ -96,41 +80,26 @@ export const UsersStore = defineStore('users', {
       }
     },
 
-    // 🟧 Charger l’utilisateur depuis le localStorage
-    loadFromStorage() {
-      const data = localStorage.getItem('currentUser')
-      if (data) {
-        const user = JSON.parse(data)
-
-        // 🧩 Ajout du patch rétroactif pour anciens comptes
-        this.currentUser = {
-          ...user,
-          id: user.id || user.uuid,
-        }
-      }
-    },
-
     async updateUserInfo(updatedData: Partial<User>) {
       if (!this.currentUser) return
       this.loading = true
       try {
-        const res = await axios.patch(
-          `http://localhost:8000/api/users/${this.currentUser.id}`,
-          updatedData,
-          { headers: { 'Content-Type': 'application/json' } }
-        )
-
+        const res = await api.patch(`/api/users/${this.currentUser.id}`, updatedData)
         const user = res.data.user || res.data
-        this.currentUser = {
-          ...user,
-          id: user.uuid || user.id,
-        }
-
+        this.currentUser = { ...user, id: user.uuid || user.id }
         localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
       } catch (e: any) {
         this.error = e.response?.data?.error || e.message
       } finally {
         this.loading = false
+      }
+    },
+
+    loadFromStorage() {
+      const data = localStorage.getItem('currentUser')
+      if (data) {
+        const user = JSON.parse(data)
+        this.currentUser = { ...user, id: user.id || user.uuid }
       }
     },
 
