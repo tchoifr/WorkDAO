@@ -194,7 +194,6 @@ const selectClass = computed(() =>
     : 'bg-white text-gray-800 border border-gray-300 focus:border-indigo-500'
 )
 
-// ➕ Ajouter compétence
 const addSkill = (): void => {
   const skill = newSkill.value.trim()
   if (skill && !form.value.skills.includes(skill)) {
@@ -203,7 +202,6 @@ const addSkill = (): void => {
   }
 }
 
-// ❌ Supprimer compétence
 const removeSkill = (index: number): void => {
   form.value.skills.splice(index, 1)
 }
@@ -212,16 +210,16 @@ const removeSkill = (index: number): void => {
 const submitJob = async (): Promise<void> => {
   try {
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
+    const recruiterId = currentUser?.id || currentUser?.uuid
 
-    // ✅ On vérifie que le user a un uuid (et pas id)
-    const recruiterId = currentUser?.uuid || currentUser?.id
     if (!recruiterId) {
       error.value = '❌ Impossible de publier : utilisateur non connecté.'
+      message.value = null
       return
     }
 
     const payload = {
-      recruiterId, // ✅ UUID envoyé au backend
+      recruiterId,
       title: form.value.title.trim(),
       description: form.value.description.trim(),
       budget: String(form.value.budget ?? '0'),
@@ -242,7 +240,6 @@ const submitJob = async (): Promise<void> => {
     message.value = `✅ Job "${job.title}" créé avec succès !`
     error.value = null
 
-    // 🧹 Réinitialise le formulaire
     form.value = {
       title: '',
       category: '',
@@ -252,6 +249,9 @@ const submitJob = async (): Promise<void> => {
       budget: null,
       skills: [],
     }
+    newSkill.value = ''
+
+    await jobsStore.fetchRecruiterJobs()
   } catch (e) {
     console.error('❌ Erreur création job :', e)
     error.value = jobsStore.error || 'Erreur lors de la création du job.'

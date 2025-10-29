@@ -6,11 +6,8 @@
         ? 'bg-[#0a2431] border border-[#00BFFF]/30 hover:border-[#00BFFF]/60 hover:shadow-[#00BFFF]/20'
         : 'bg-white border border-gray-200 hover:shadow-xl'">
 
-      <!-- 🧾 Header -->
       <div class="flex justify-between items-center">
-        <h2
-          class="text-xl font-semibold"
-          :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-700'">
+        <h2 class="text-xl font-semibold" :class="darkMode ? 'text-[#00BFFF]' : 'text-indigo-700'">
           📋 Mes Jobs publiés
         </h2>
 
@@ -25,17 +22,14 @@
         </button>
       </div>
 
-      <!-- ⏳ Loading -->
       <div v-if="jobsStore.loading" class="text-center py-6 text-gray-500 animate-pulse">
         Chargement des jobs...
       </div>
 
-      <!-- ❌ Erreur -->
       <div v-if="jobsStore.error" class="text-center py-4 text-red-500 font-semibold">
         ❌ {{ jobsStore.error }}
       </div>
 
-      <!-- 🧠 Liste des jobs -->
       <div
         v-if="!jobsStore.loading && jobsStore.recruiterJobs.length"
         class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -59,7 +53,6 @@
               {{ job.description }}
             </p>
 
-            <!-- 💰 Budget + Statut -->
             <div class="text-xs flex flex-wrap gap-2 mb-3 items-center">
               <span
                 class="px-2 py-1 rounded font-medium"
@@ -82,7 +75,6 @@
               </select>
             </div>
 
-            <!-- 📅 Infos -->
             <div class="text-xs" :class="darkMode ? 'text-gray-400' : 'text-gray-500'">
               📅 {{ formatDate(job.createdAt) }}
             </div>
@@ -95,7 +87,7 @@
               ⏱️ Durée : {{ job.duration }}
             </div>
 
-            <div v-if="job.skills && job.skills.length" class="mt-3 flex flex-wrap gap-2">
+            <div v-if="job.skills?.length" class="mt-3 flex flex-wrap gap-2">
               <span
                 v-for="(skill, i) in job.skills"
                 :key="i"
@@ -108,7 +100,6 @@
             </div>
           </div>
 
-          <!-- 🗑 Bouton Supprimer -->
           <div class="mt-5 text-right">
             <button
               @click="confirmDelete(job.id)"
@@ -123,9 +114,7 @@
         </div>
       </div>
 
-      <!-- 📭 Aucun job -->
-      <div
-        v-else-if="!jobsStore.loading && !jobsStore.recruiterJobs.length"
+      <div v-else-if="!jobsStore.loading && !jobsStore.recruiterJobs.length"
         class="text-center py-10 text-gray-500 italic">
         Aucun job publié pour le moment.
       </div>
@@ -136,28 +125,15 @@
 <script setup lang="ts">
 import { onMounted, inject } from 'vue'
 import { useJobsStore } from '../../store/jobsStore'
-import { UsersStore } from '../../store/usersStore'
 
 const jobsStore = useJobsStore()
-const usersStore = UsersStore()
 const darkMode = inject<boolean>('darkMode', false)
 
 onMounted(async () => {
-  usersStore.loadFromStorage()
-
-  const currentUser = usersStore.currentUser
-
-  // ✅ Correction : on utilise `id` au lieu de `uuid`
-  if (!currentUser?.id) {
-    console.warn('⚠️ Aucun utilisateur connecté — ID manquant.')
-    jobsStore.error = 'Utilisateur non connecté. Veuillez vous reconnecter.'
-    return
-  }
-
   await jobsStore.fetchRecruiterJobs()
 })
 
-const refreshJobs = async (): Promise<void> => {
+const refreshJobs = async () => {
   await jobsStore.fetchRecruiterJobs()
 }
 
@@ -170,8 +146,7 @@ const updateStatus = async (id: string, newStatus: string) => {
 }
 
 const confirmDelete = async (id: string) => {
-  const confirm = window.confirm('⚠️ Es-tu sûr de vouloir supprimer cette annonce ?')
-  if (!confirm) return
+  if (!window.confirm('⚠️ Es-tu sûr de vouloir supprimer cette annonce ?')) return
   try {
     await jobsStore.deleteJob(id)
     alert('✅ Annonce supprimée avec succès !')
@@ -181,10 +156,9 @@ const confirmDelete = async (id: string) => {
   }
 }
 
-const formatDate = (isoString: string | null): string => {
+const formatDate = (isoString: string | null) => {
   if (!isoString) return 'Date inconnue'
-  const date = new Date(isoString)
-  return date.toLocaleDateString('fr-FR', {
+  return new Date(isoString).toLocaleDateString('fr-FR', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
