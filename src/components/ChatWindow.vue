@@ -8,14 +8,14 @@
     <!-- 🧭 En-tête -->
     <div
       class="flex justify-between items-center px-4 py-3 font-semibold border-b"
-      :class="darkMode ? 'border-gray-700 text-[#00BFFF]' : 'border-gray-200 text-gray-800'"
+      :class="darkMode ? 'border-gray-700 text-[#00BFFF]' : 'border-gray-300 text-gray-800'"
     >
-      💬 Chat
-      <button @click="emit('close')" class="text-sm hover:opacity-70">✖</button>
+      💬 {{ otherUsername }}
+      <button @click="$emit('close')" class="text-sm hover:opacity-70">✖</button>
     </div>
 
     <!-- 💬 Messages -->
-    <div ref="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-3 max-h-80">
+    <div class="flex-1 overflow-y-auto p-4 space-y-3 max-h-80">
       <div
         v-for="msg in conversation"
         :key="msg.id"
@@ -24,8 +24,8 @@
         <div
           class="inline-block px-3 py-2 rounded-lg text-sm"
           :class="msg.senderId === currentUser?.id
-            ? (darkMode ? 'bg-[#00BFFF]/30 text-white' : 'bg-[#00BFFF] text-white')
-            : (darkMode ? 'bg-[#09202c] text-gray-100' : 'bg-gray-200 text-gray-800')"
+            ? (darkMode ? 'bg-[#00BFFF]/30 text-white' : 'bg-indigo-500 text-white')
+            : (darkMode ? 'bg-[#09202c] text-gray-100' : 'bg-gray-100 text-gray-800')"
         >
           {{ msg.content }}
         </div>
@@ -39,20 +39,20 @@
     <div class="p-3 border-t" :class="darkMode ? 'border-gray-700' : 'border-gray-200'">
       <input
         v-model="newMessage"
-        @keyup.enter="sendMessage"
+        @keyup.enter="send"
         type="text"
         placeholder="Écrire un message..."
         class="w-full px-3 py-2 rounded-md text-sm outline-none transition"
         :class="darkMode
           ? 'bg-[#091d2a] text-gray-100 border border-[#00BFFF]/30 focus:border-[#00BFFF]/60'
-          : 'bg-gray-50 border border-gray-300 text-gray-700 focus:border-[#00BFFF]'"
+          : 'bg-gray-50 border border-gray-300 text-gray-700 focus:border-indigo-500'"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, inject, computed, nextTick, watch } from 'vue'
+import { ref, computed, inject } from 'vue'
 import { useConversationStore } from '../store/conversationStore'
 import { UsersStore } from '../store/usersStore'
 
@@ -64,27 +64,47 @@ const props = defineProps<{
 const emit = defineEmits(['close'])
 const darkMode = inject<boolean>('darkMode', false)
 const newMessage = ref('')
-const chatContainer = ref<HTMLDivElement | null>(null)
 
 const store = useConversationStore()
 const usersStore = UsersStore()
+usersStore.loadFromStorage()
+
 const currentUser = computed(() => usersStore.currentUser)
 
-// 📨 Envoi
-const sendMessage = async () => {
+interface ConversationSummary {
+  otherUserId: string
+  username: string
+  lastMessage: string
+}
+
+const otherUsername = computed(() => {
+  const conv = store.conversations.find(
+    (c: ConversationSummary) => c.otherUserId === props.otherUserId
+  )
+  return conv?.username || 'Utilisateur'
+})
+
+// ✅ Envoi d’un message
+const send = async () => {
   if (!newMessage.value.trim() || !currentUser.value) return
   await store.sendMessage(props.otherUserId, newMessage.value)
   newMessage.value = ''
-  await nextTick()
-  chatContainer.value?.scrollTo({ top: chatContainer.value.scrollHeight, behavior: 'smooth' })
 }
-
-// 🔄 Scroll automatique quand les messages changent
-watch(
-  () => props.conversation.length,
-  async () => {
-    await nextTick()
-    chatContainer.value?.scrollTo({ top: chatContainer.value.scrollHeight, behavior: 'smooth' })
-  }
-)
 </script>
+
+<style scoped>
+/* ✅ Animation d’apparition fluide */
+div.fixed {
+  animation: slideUp 0.25s ease-out;
+}
+@keyframes slideUp {
+  from {
+    transform: translateY(15px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+</style>

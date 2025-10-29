@@ -1,5 +1,5 @@
 <template>
-  <section class="p-6">
+  <section class="p-6 relative">
     <h2 class="text-xl font-semibold mb-6 text-[#00BFFF]">💬 Conversations</h2>
 
     <!-- 🕓 Loading -->
@@ -36,47 +36,18 @@
             {{ conv.lastMessage || '...' }}
           </p>
         </div>
-        <button class="text-xs text-gray-400 hover:text-[#00BFFF]">Ouvrir 💬</button>
+        <button class="text-xs text-gray-400 hover:text-[#00BFFF]">
+          Ouvrir 💬
+        </button>
       </div>
     </div>
 
-    <!-- 💬 Messages de la conversation sélectionnée -->
-    <div v-if="store.messages.length > 0" class="space-y-4">
-      <div
-        v-for="msg in store.messages"
-        :key="msg.id"
-        class="p-3 rounded-lg border shadow-sm"
-        :class="msg.senderId === currentUser?.id ? 'bg-blue-100 text-right' : 'bg-gray-100 text-left'"
-      >
-        <p class="text-sm">{{ msg.content }}</p>
-        <span class="text-xs text-gray-500">
-          {{ new Date(msg.createdAt).toLocaleTimeString() }}
-        </span>
-      </div>
-    </div>
-
-    <!-- ✍️ Saisie -->
-    <div v-if="activeUserId" class="mt-6 flex">
-      <input
-        v-model="newMessage"
-        type="text"
-        placeholder="Écrire un message..."
-        class="flex-1 border rounded-l px-3 py-2"
-      />
-      <button
-        @click="send"
-        class="bg-[#00BFFF] text-white px-4 rounded-r hover:bg-[#0099cc]"
-      >
-        Envoyer
-      </button>
-    </div>
-
-    <!-- 💬 Fenêtre flottante (facultative) -->
+    <!-- 💬 Fenêtre flottante du chat -->
     <ChatWindow
-      v-if="showChat"
+      v-if="showChat && activeUserId"
       :conversation="store.messages"
-      :otherUserId="activeUserId!"
-      @close="showChat = false"
+      :otherUserId="activeUserId"
+      @close="closeChat"
     />
   </section>
 </template>
@@ -87,15 +58,19 @@ import { useConversationStore } from '../../store/conversationStore'
 import { UsersStore } from '../../store/usersStore'
 import ChatWindow from '../ChatWindow.vue'
 
+/* 📦 Stores */
 const store = useConversationStore()
 const usersStore = UsersStore()
 usersStore.loadFromStorage()
 
+/* 👤 Utilisateur courant */
 const currentUser = computed(() => usersStore.currentUser)
-const newMessage = ref('')
+
+/* 💬 États du composant */
 const activeUserId = ref<string | null>(null)
 const showChat = ref(false)
 
+/* 🚀 Chargement initial */
 onMounted(async () => {
   if (currentUser.value?.id) {
     await store.fetchInbox(currentUser.value.id)
@@ -104,14 +79,16 @@ onMounted(async () => {
   }
 })
 
+/* 🟦 Ouvrir une conversation */
 const openConversation = async (conv: any) => {
   activeUserId.value = conv.otherUserId
   await store.fetchConversation(conv.otherUserId)
+  showChat.value = true // ✅ ouvre la fenêtre de chat flottante
 }
 
-const send = async () => {
-  if (!newMessage.value.trim() || !currentUser.value || !activeUserId.value) return
-  await store.sendMessage(activeUserId.value, newMessage.value)
-  newMessage.value = ''
+/* ❌ Fermer la fenêtre de chat */
+const closeChat = () => {
+  showChat.value = false
+  activeUserId.value = null
 }
 </script>
