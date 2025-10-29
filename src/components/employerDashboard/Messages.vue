@@ -1,161 +1,117 @@
 <template>
-  <section class="p-6 transition-colors duration-500">
-    <h2
-      class="text-xl font-semibold mb-6"
-      :class="darkMode ? 'text-[#00BFFF]' : 'text-gray-800'"
-    >
-      💬 Conversations
-    </h2>
+  <section class="p-6">
+    <h2 class="text-xl font-semibold mb-6 text-[#00BFFF]">💬 Conversations</h2>
 
-    <!-- 🗂️ Liste des conversations -->
+    <!-- 🕓 Loading -->
+    <div v-if="store.loading" class="text-gray-500 text-center">
+      Chargement...
+    </div>
+
+    <!-- 📭 Aucune conversation -->
     <div
-      v-for="conv in conversations"
-      :key="conv.id"
-      class="relative rounded-lg shadow p-5 mb-4 transition border-l-4 cursor-pointer"
-      @click="openAndMarkAsRead(conv.id)"
-      :class="[
-        darkMode
-          ? 'bg-[#0a2431] border border-[#00BFFF]/30 hover:border-[#00BFFF]/60 hover:bg-[#0d3144]'
-          : 'bg-white border-gray-200 hover:bg-gray-50',
-        hasUnreadFor(conv, 'employer') ? 'border-l-[#00BFFF]' : 'border-l-gray-400'
-      ]"
+      v-else-if="store.conversations.length === 0"
+      class="text-gray-400 text-center"
     >
-      <!-- 🔵 Bulle bleue = messages non lus -->
-      <div
-        v-if="countUnreadFor(conv, 'employer') > 0"
-        class="absolute -top-2 -right-2 bg-[#00BFFF] text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow"
-      >
-        {{ countUnreadFor(conv, 'employer') }}
-      </div>
+      Aucune conversation pour le moment.
+    </div>
 
-      <div class="flex justify-between items-center">
+    <!-- 📋 Liste des conversations -->
+    <div v-else class="space-y-3 mb-6">
+      <div
+        v-for="conv in store.conversations"
+        :key="conv.otherUserId"
+        class="p-4 rounded-lg border cursor-pointer transition flex justify-between items-center"
+        :class="[
+          activeUserId === conv.otherUserId
+            ? 'bg-[#00BFFF]/10 border-[#00BFFF]'
+            : 'bg-[#0a2431] border border-[#00BFFF]/20 hover:bg-[#112d42]'
+        ]"
+        @click="openConversation(conv)"
+      >
         <div>
-          <h3
-            class="font-semibold mb-1"
-            :class="darkMode ? 'text-[#00BFFF]' : 'text-gray-800'"
-          >
-            {{ conv.freelancer }}
-          </h3>
-          <p class="text-sm" :class="darkMode ? 'text-gray-300' : 'text-gray-600'">
-            Projet : <b>{{ conv.project }}</b>
+          <p class="font-semibold text-[#00BFFF]">
+            {{ conv.username || conv.otherUserId }}
+          </p>
+          <p class="text-sm text-gray-300 truncate w-64">
+            {{ conv.lastMessage || '...' }}
           </p>
         </div>
+        <button class="text-xs text-gray-400 hover:text-[#00BFFF]">Ouvrir 💬</button>
       </div>
     </div>
 
-    <!-- 💬 Fenêtre de chat -->
+    <!-- 💬 Messages de la conversation sélectionnée -->
+    <div v-if="store.messages.length > 0" class="space-y-4">
+      <div
+        v-for="msg in store.messages"
+        :key="msg.id"
+        class="p-3 rounded-lg border shadow-sm"
+        :class="msg.senderId === currentUser?.id ? 'bg-blue-100 text-right' : 'bg-gray-100 text-left'"
+      >
+        <p class="text-sm">{{ msg.content }}</p>
+        <span class="text-xs text-gray-500">
+          {{ new Date(msg.createdAt).toLocaleTimeString() }}
+        </span>
+      </div>
+    </div>
+
+    <!-- ✍️ Saisie -->
+    <div v-if="activeUserId" class="mt-6 flex">
+      <input
+        v-model="newMessage"
+        type="text"
+        placeholder="Écrire un message..."
+        class="flex-1 border rounded-l px-3 py-2"
+      />
+      <button
+        @click="send"
+        class="bg-[#00BFFF] text-white px-4 rounded-r hover:bg-[#0099cc]"
+      >
+        Envoyer
+      </button>
+    </div>
+
+    <!-- 💬 Fenêtre flottante (facultative) -->
     <ChatWindow
-      v-if="activeConversation"
-      :conversation="activeConversation"
-      @close="closeConversation"
+      v-if="showChat"
+      :conversation="store.messages"
+      :otherUserId="activeUserId!"
+      @close="showChat = false"
     />
   </section>
 </template>
 
 <script setup lang="ts">
-import { inject, computed, ref } from "vue"
-import ChatWindow from "../ChatWindow.vue"
-import { hasUnreadFor } from "../../utlis/messageHelpers"
+import { ref, onMounted, computed } from 'vue'
+import { useConversationStore } from '../../store/conversationStore'
+import { UsersStore } from '../../store/usersStore'
+import ChatWindow from '../ChatWindow.vue'
 
-type UserRole = "freelancer" | "employer"
+const store = useConversationStore()
+const usersStore = UsersStore()
+usersStore.loadFromStorage()
 
-interface Message {
-  from: UserRole
-  text: string
-  time: string
-  readByEmployer: boolean
-  readByFreelancer: boolean
+const currentUser = computed(() => usersStore.currentUser)
+const newMessage = ref('')
+const activeUserId = ref<string | null>(null)
+const showChat = ref(false)
+
+onMounted(async () => {
+  if (currentUser.value?.id) {
+    await store.fetchInbox(currentUser.value.id)
+  } else {
+    console.warn('⚠️ Aucun utilisateur connecté — impossible de charger la boîte de réception')
+  }
+})
+
+const openConversation = async (conv: any) => {
+  activeUserId.value = conv.otherUserId
+  await store.fetchConversation(conv.otherUserId)
 }
 
-interface Conversation {
-  id: number
-  freelancer: string
-  company: string
-  project: string
-  active: boolean
-  messages: Message[]
-}
-
-const darkMode = inject<boolean>("darkMode", false)
-const activeConversationId = ref<number | null>(null)
-
-// ✅ Conversations d’exemple
-const conversations = ref<Conversation[]>([
-  {
-    id: 1,
-    freelancer: "Emma Laurent",
-    company: "DevCorp",
-    project: "Smart Contract Marketplace",
-    active: true,
-    messages: [
-      {
-        from: "freelancer",
-        text: "Bonjour, j’ai terminé la première version du contrat ✅",
-        time: "2025-10-21 10:30",
-        readByEmployer: false,
-        readByFreelancer: true,
-      },
-      {
-        from: "employer",
-        text: "Super, je regarde ça !",
-        time: "2025-10-21 11:00",
-        readByEmployer: true,
-        readByFreelancer: true,
-      },
-    ],
-  },
-  {
-    id: 2,
-    freelancer: "Noah Dupuis",
-    company: "Polygon Team",
-    project: "Audit Web3",
-    active: true,
-    messages: [
-      {
-        from: "freelancer",
-        text: "Avez-vous pu consulter le rapport d’audit ?",
-        time: "2025-10-22 09:00",
-        readByEmployer: false,
-        readByFreelancer: true,
-      },
-    ],
-  },
-])
-
-// ✅ Conversation active
-const activeConversation = computed(() =>
-  conversations.value.find((c) => c.id === activeConversationId.value) || null
-)
-
-// ✅ Ouvrir conversation + marquer messages du freelance comme lus
-const openAndMarkAsRead = (id: number): void => {
-  const conv = conversations.value.find((c) => c.id === id)
-  if (!conv) return
-
-  conv.messages.forEach((m) => {
-    if (m.from === "freelancer") m.readByEmployer = true
-  })
-  activeConversationId.value = id
-}
-
-// ✅ Fermer conversation
-const closeConversation = (): void => {
-  activeConversationId.value = null
-}
-
-// ✅ Compte les messages non lus côté employeur
-const countUnreadFor = (conv: Conversation, role: UserRole): number => {
-  return conv.messages.filter(
-    (m) => m.from !== role && !m[`readBy${role === "employer" ? "Employer" : "Freelancer"}`]
-  ).length
+const send = async () => {
+  if (!newMessage.value.trim() || !currentUser.value || !activeUserId.value) return
+  await store.sendMessage(activeUserId.value, newMessage.value)
+  newMessage.value = ''
 }
 </script>
-
-<style scoped>
-.cursor-pointer {
-  transition: transform 0.2s ease, background-color 0.3s ease;
-}
-.cursor-pointer:hover {
-  transform: translateY(-2px);
-}
-</style>

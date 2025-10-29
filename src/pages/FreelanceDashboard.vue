@@ -113,7 +113,6 @@ import avatar from "../assets/avatar.webp"
 // ✅ Composants du tableau de bord
 import DashboardStats from "../components/freelanceDashboard/DashboardStats.vue"
 import FindMissions from "../components/freelanceDashboard/FindMissions.vue"
-import Messages from "../components/freelanceDashboard/Messages.vue"
 import MyProjects from "../components/freelanceDashboard/MyProjects.vue"
 import Payments from "../components/freelanceDashboard/Payments.vue"
 import BadgesNFT from "../components/freelanceDashboard/BadgesNFT.vue"
@@ -172,7 +171,6 @@ const nfts = ref([
 const currentComponent = computed(() => {
   switch (activeSection.value) {
     case "find": return FindMissions // ✅ le filtre de métiers WorkDAO
-    case "messages": return Messages
     case "projects": return MyProjects
     case "payments": return Payments
     case "nft": return BadgesNFT

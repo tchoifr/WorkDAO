@@ -141,7 +141,6 @@
 <script setup lang="ts">
 import { inject, onMounted } from "vue"
 import { useJobsStore } from "../../store/jobsStore"
-import { openConversation } from "../../store/conversationStore"
 
 const darkMode = inject("darkMode", false)
 const jobsStore = useJobsStore()
@@ -195,7 +194,6 @@ const updateStatus = (id: number, newStatus: string) => {
 
 // 💬 Démarrer une conversation
 const startConversation = (app: any) => {
-  openConversation(app.id, "employer")
   console.log(`Conversation démarrée avec ${app.freelancer}`)
 }
 </script>

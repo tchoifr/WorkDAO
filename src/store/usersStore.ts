@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
-// 🔹 Interface User — version uniforme avec le backend Symfony
 export interface User {
   id: string
+  uuid?: string
   walletAddress: string | null
   username: string | null
   roles: string[]
@@ -15,7 +15,6 @@ export interface User {
   updatedAt: string | null
 }
 
-// 🔹 Store utilisateur
 export const UsersStore = defineStore('users', {
   state: () => ({
     users: [] as User[],
@@ -25,7 +24,6 @@ export const UsersStore = defineStore('users', {
   }),
 
   actions: {
-    // 🟦 Récupérer tous les utilisateurs (admin)
     async fetchUsers() {
       this.loading = true
       try {
@@ -44,13 +42,19 @@ export const UsersStore = defineStore('users', {
       this.error = null
       try {
         const normalizedWallet = walletAddress.trim().toLowerCase()
-
         const res = await axios.post('http://localhost:8000/api/login', {
           walletAddress: normalizedWallet,
         })
 
         if (res.data.exists && res.data.user) {
-          this.currentUser = res.data.user
+          const user = res.data.user
+
+          // 🧠 Corrige : mappe uuid → id
+          this.currentUser = {
+            ...user,
+            id: user.uuid || user.id,
+          }
+
           localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
           return this.currentUser
         }
@@ -58,11 +62,6 @@ export const UsersStore = defineStore('users', {
         return null
       } catch (e: any) {
         console.error('Erreur login:', e.response?.data || e.message)
-
-        if (e.response?.data?.error === 'User not found') {
-          return null
-        }
-
         this.error = e.response?.data?.error || e.message
         return null
       } finally {
@@ -78,7 +77,14 @@ export const UsersStore = defineStore('users', {
         const res = await axios.post('http://localhost:8000/api/register', payload, {
           headers: { 'Content-Type': 'application/json' },
         })
-        this.currentUser = res.data.user
+
+        const user = res.data.user || res.data
+
+        this.currentUser = {
+          ...user,
+          id: user.uuid || user.id,
+        }
+
         localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
         return this.currentUser
       } catch (e: any) {
@@ -93,10 +99,17 @@ export const UsersStore = defineStore('users', {
     // 🟧 Charger l’utilisateur depuis le localStorage
     loadFromStorage() {
       const data = localStorage.getItem('currentUser')
-      if (data) this.currentUser = JSON.parse(data)
+      if (data) {
+        const user = JSON.parse(data)
+
+        // 🧩 Ajout du patch rétroactif pour anciens comptes
+        this.currentUser = {
+          ...user,
+          id: user.id || user.uuid,
+        }
+      }
     },
 
-    // 🟪 Mettre à jour un utilisateur existant
     async updateUserInfo(updatedData: Partial<User>) {
       if (!this.currentUser) return
       this.loading = true
@@ -107,7 +120,12 @@ export const UsersStore = defineStore('users', {
           { headers: { 'Content-Type': 'application/json' } }
         )
 
-        this.currentUser = res.data.user || res.data
+        const user = res.data.user || res.data
+        this.currentUser = {
+          ...user,
+          id: user.uuid || user.id,
+        }
+
         localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
       } catch (e: any) {
         this.error = e.response?.data?.error || e.message
@@ -116,7 +134,6 @@ export const UsersStore = defineStore('users', {
       }
     },
 
-    // 🟥 Déconnexion
     logout() {
       this.currentUser = null
       localStorage.removeItem('currentUser')
