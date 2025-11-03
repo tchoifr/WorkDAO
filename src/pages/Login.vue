@@ -50,9 +50,9 @@ const connectWallet = async () => {
     else if (hasPhantom) await connectPhantom()
     if (!walletAddress.value) return
 
-const loginRes = await axios.post("https://supreme-lynette-workdao-1926d5de.koyeb.app/api/login", {
-  walletAddress: walletAddress.value,
-});
+    const loginRes = await axios.post("http://localhost:8000/api/login", {
+      walletAddress: walletAddress.value,
+    })
 
     if (loginRes.data.exists) {
       const user = loginRes.data.user
