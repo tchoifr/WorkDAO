@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
 import { useRouter } from "vue-router"
-import axios from "axios"
-import { UsersStore } from "../store/usersStore"
-import { useLanguage } from "../store/useLanguage"
-import { loginTextsEn } from "../variables/pages/en/login"
-import { loginTextsFr } from "../variables/pages/fr/login"
-import logo from "../assets/logo.png"
-import background from "../assets/connect.jpg"
+import { UsersStore } from "@/store/usersStore"
+import { useLanguage } from "@/store/useLanguage"
+import { loginTextsEn } from "@/variables/pages/en/login"
+import { loginTextsFr } from "@/variables/pages/fr/login"
+import logo from "@/assets/logo.png"
+import background from "@/assets/connect.jpg"
+import api from "@/services/api"
 
 declare global {
   interface Window {
@@ -72,8 +72,8 @@ const connectWallet = async () => {
     else if (hasPhantom) await connectPhantom()
     if (!walletAddress.value) return
 
-    const loginRes = await axios.post("http://localhost:8000/api/login", {
-      walletAddress: walletAddress.value.trim().toLowerCase(),
+    const loginRes = await api.post('/api/login', {
+      walletAddress: walletAddress.value,
     })
 
     if (loginRes.data.exists && loginRes.data.user) {
