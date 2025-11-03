@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from "vue"
 import { useRouter } from "vue-router"
-import { UsersStore } from "../store/usersStore"
-import { useLanguage } from "../store/useLanguage"
-import { loginTextsEn } from "../variables/pages/en/login"
-import { loginTextsFr } from "../variables/pages/fr/login"
-import logo from "../assets/logo.png"
-import background from "../assets/connect.jpg"
-import api from "../services/api"
+import { UsersStore } from "@/store/usersStore"
+import { useLanguage } from "@/store/useLanguage"
+import { loginTextsEn } from "@/variables/pages/en/login"
+import { loginTextsFr } from "@/variables/pages/fr/login"
+import logo from "@/assets/logo.png"
+import background from "@/assets/connect.jpg"
+import api from "@/services/api"
 
 declare global {
   interface Window {
