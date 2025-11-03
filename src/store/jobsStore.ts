@@ -1,8 +1,6 @@
-// 📁 src/stores/jobsStore.ts
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import api from '../services/api' 
 
-// 🔹 Interface Job (mappée sur ton backend Symfony)
 export interface Job {
   id: string
   title: string
@@ -15,12 +13,18 @@ export interface Job {
   status: string
   createdAt: string
   updatedAt?: string | null
+
   recruiterId: string
-  recruiterUsername: string
+  recruiterUsername?: string
   recruiterWalletAddress?: string
+
+  recruiter?: {
+    id: string
+    username?: string
+    walletAddress?: string
+  }
 }
 
-// 🔹 Interface de création
 export interface CreateJobPayload {
   recruiterId: string
   title: string
@@ -33,9 +37,6 @@ export interface CreateJobPayload {
   status: string
 }
 
-// 🌐 URL de l’API Symfony
-const API_URL = 'http://localhost:8000/api/jobs'
-
 export const useJobsStore = defineStore('jobs', {
   state: () => ({
     jobs: [] as Job[],
@@ -43,33 +44,64 @@ export const useJobsStore = defineStore('jobs', {
     error: null as string | null,
   }),
 
+  getters: {
+    recruiterJobs(state) {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
+      const userId = currentUser?.id || currentUser?.uuid
+      if (!userId) return []
+      return state.jobs.filter(job => job.recruiterId === userId)
+    },
+  },
+
   actions: {
-    // 🟢 Récupération des jobs
-    async fetchJobs() {
+    async fetchRecruiterJobs() {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.get<Job[]>(API_URL)
-        this.jobs = res.data
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
+        const userId = currentUser?.id || currentUser?.uuid
+        if (!userId) throw new Error('Utilisateur non connecté')
+
+        const res = await api.get<Job[]>('/api/jobs', { params: { userId } })
+        this.jobs = res.data.map(job => ({
+          ...job,
+          recruiterId: job.recruiter?.id || job.recruiterId,
+          recruiterUsername: job.recruiter?.username || job.recruiterUsername,
+          recruiterWalletAddress: job.recruiter?.walletAddress || job.recruiterWalletAddress,
+        }))
+        console.log('✅ Jobs du recruteur chargés :', this.jobs)
       } catch (e: any) {
-        this.error = e.message
-        console.error('❌ Erreur fetchJobs:', e)
+        this.error = e.response?.data?.error || e.message
+        console.error('❌ Erreur fetchRecruiterJobs:', e)
       } finally {
         this.loading = false
       }
     },
 
-    // 🟣 Création d’un job
-    async createJob(payload: CreateJobPayload) {
+    async createJob(payload: CreateJobPayload): Promise<Job> {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.post<Job>(API_URL, payload, {
-          headers: { 'Content-Type': 'application/json' },
-        })
-        this.jobs.push(res.data)
-        console.log('✅ Job ajouté au store :', res.data)
-        return res.data
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null')
+        const recruiterId = payload.recruiterId || currentUser?.id || currentUser?.uuid
+        if (!recruiterId) throw new Error('Impossible de créer le job : recruteur non connecté')
+
+        const finalPayload = { ...payload, recruiterId }
+
+        console.log('📤 Envoi au backend:', finalPayload)
+
+        const res = await api.post<Job>('/api/jobs', finalPayload)
+
+        const newJob: Job = {
+          ...res.data,
+          recruiterId: res.data.recruiter?.id || res.data.recruiterId,
+          recruiterUsername: res.data.recruiter?.username || res.data.recruiterUsername,
+          recruiterWalletAddress: res.data.recruiter?.walletAddress || res.data.recruiterWalletAddress,
+        }
+
+        this.jobs.push(newJob)
+        console.log('✅ Job ajouté au store :', newJob)
+        return newJob
       } catch (e: any) {
         this.error = e.response?.data?.error || e.message
         console.error('❌ Erreur createJob:', e)
@@ -79,19 +111,13 @@ export const useJobsStore = defineStore('jobs', {
       }
     },
 
-    // 🟡 Mise à jour du statut
-    async updateJobStatus(id: string, newStatus: string) {
+    async updateJobStatus(id: string, newStatus: string): Promise<Job> {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.patch<Job>(
-          `${API_URL}/${id}`,
-          { status: newStatus },
-          { headers: { 'Content-Type': 'application/json' } }
-        )
+        const res = await api.patch<Job>(`/api/jobs/${id}`, { status: newStatus })
 
-        // ✅ Mise à jour du statut localement
-        const index = this.jobs.findIndex((job) => job.id === id)
+        const index = this.jobs.findIndex(job => job.id === id)
         if (index !== -1) {
           this.jobs[index] = { ...this.jobs[index], status: res.data.status }
         }
@@ -102,6 +128,21 @@ export const useJobsStore = defineStore('jobs', {
         this.error = e.response?.data?.error || e.message
         console.error('❌ Erreur updateJobStatus:', e)
         throw e
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async deleteJob(id: string): Promise<void> {
+      this.loading = true
+      this.error = null
+      try {
+        await api.delete(`/api/jobs/${id}`)
+        this.jobs = this.jobs.filter(job => job.id !== id)
+        console.log(`🗑️ Job ${id} supprimé avec succès`)
+      } catch (e: any) {
+        this.error = e.response?.data?.error || e.message
+        console.error('❌ Erreur deleteJob:', e)
       } finally {
         this.loading = false
       }

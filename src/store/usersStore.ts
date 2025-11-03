@@ -1,12 +1,12 @@
-// 📁 src/store/usersStore.ts
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import api from '../services/api'  
 
 export interface User {
   id: string
+  uuid?: string
   walletAddress: string | null
   username: string | null
-  role: string | null
+  roles: string[]
   network: string | null
   solBalance: string | null
   ethBalance: string | null
@@ -24,76 +24,69 @@ export const UsersStore = defineStore('users', {
   }),
 
   actions: {
-    // 🔹 Charger tous les utilisateurs (si besoin admin)
     async fetchUsers() {
       this.loading = true
-      this.error = null
-
       try {
-        const response = await axios.get<User[]>('http://localhost:8000/api/users')
-        this.users = response.data
-      } catch (error: any) {
-        this.error = error.message || 'Erreur lors du chargement des utilisateurs'
+        const res = await api.get<User[]>('/api/users')
+        this.users = res.data
+      } catch (e: any) {
+        this.error = e.message || 'Erreur lors du chargement des utilisateurs'
       } finally {
         this.loading = false
       }
     },
 
-    // 🔹 Charger un utilisateur connecté via wallet
     async fetchUserByWallet(walletAddress: string) {
       this.loading = true
+      this.error = null
       try {
-        const response = await axios.post('http://localhost:8000/api/login', { walletAddress })
-        if (response.data.exists && response.data.user) {
-          this.currentUser = response.data.user
+        const normalizedWallet = walletAddress.trim().toLowerCase()
+        const res = await api.post('/api/login', {
+          walletAddress: normalizedWallet,
+        })
+
+        if (res.data.exists && res.data.user) {
+          const user = res.data.user
+          this.currentUser = { ...user, id: user.uuid || user.id }
           localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
-        } else {
-          this.currentUser = null
+          return this.currentUser
         }
+
+        return null
       } catch (e: any) {
+        console.error('Erreur login:', e.response?.data || e.message)
         this.error = e.response?.data?.error || e.message
+        return null
       } finally {
         this.loading = false
       }
     },
 
-    // 🔹 Enregistrement d’un nouveau user
     async registerUser(payload: { walletAddress: string; username: string; role: string }) {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.post('http://localhost:8000/api/register', payload, {
-          headers: { 'Content-Type': 'application/json' },
-        })
-        this.currentUser = res.data.user
+        const res = await api.post('/api/register', payload)
+        const user = res.data.user || res.data
+        this.currentUser = { ...user, id: user.uuid || user.id }
         localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
         return this.currentUser
       } catch (e: any) {
+        console.error('❌ Erreur registerUser:', e)
         this.error = e.response?.data?.error || e.message
-        throw e
+        return null
       } finally {
         this.loading = false
       }
     },
 
-    // 🔹 Charger depuis le localStorage
-    loadFromStorage() {
-      const data = localStorage.getItem('currentUser')
-      if (data) this.currentUser = JSON.parse(data)
-    },
-
-    // 🔹 Mettre à jour les infos utilisateur (par ex. username ou soldes)
     async updateUserInfo(updatedData: Partial<User>) {
       if (!this.currentUser) return
-
       this.loading = true
       try {
-        const res = await axios.patch(
-          `http://localhost:8000/api/users/${this.currentUser.id}`,
-          updatedData,
-          { headers: { 'Content-Type': 'application/json' } }
-        )
-        this.currentUser = res.data
+        const res = await api.patch(`/api/users/${this.currentUser.id}`, updatedData)
+        const user = res.data.user || res.data
+        this.currentUser = { ...user, id: user.uuid || user.id }
         localStorage.setItem('currentUser', JSON.stringify(this.currentUser))
       } catch (e: any) {
         this.error = e.response?.data?.error || e.message
@@ -102,7 +95,14 @@ export const UsersStore = defineStore('users', {
       }
     },
 
-    // 🔹 Déconnexion
+    loadFromStorage() {
+      const data = localStorage.getItem('currentUser')
+      if (data) {
+        const user = JSON.parse(data)
+        this.currentUser = { ...user, id: user.id || user.uuid }
+      }
+    },
+
     logout() {
       this.currentUser = null
       localStorage.removeItem('currentUser')

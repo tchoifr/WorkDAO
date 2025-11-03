@@ -40,28 +40,22 @@ const router = createRouter({
 
 // ✅ Garde de navigation
 router.beforeEach((to, from, next) => {
-  const publicPages = [
-    '/', 
-    '/login', 
-    '/dao', 
-    '/staking', 
-    '/facebook-posts'
-  ]
-
-  // 🔓 Toutes les pages /whychoose/... sont publiques
+  const publicPages = ['/', '/login', '/dao', '/staking', '/facebook-posts', '/freelance']
   const isWhyChoosePage = to.path.startsWith('/whychoose')
-
   const user = JSON.parse(localStorage.getItem('currentUser') || 'null')
 
-  // 🔓 Autoriser les pages publiques et WhyChoose
   if (publicPages.includes(to.path) || isWhyChoosePage) return next()
-
-  // 🔐 Si non connecté → vers /login
   if (!user) return next('/login')
 
-  // 🧠 Redirection selon le rôle
-  if (to.path === '/freelance' && user.role !== 'freelance') return next('/')
-  if (to.path === '/employer' && user.role !== 'recruteur') return next('/')
+  const roles = (user.roles || []).map((r: string) => r.toLowerCase())
+
+  // 🔐 Protection par rôle
+  if (to.path === '/freelance' && !roles.includes('freelance')) {
+    return next('/')
+  }
+  if (to.path === '/employer' && !roles.includes('employer') && !roles.includes('recruteur')) {
+    return next('/')
+  }
 
   next()
 })

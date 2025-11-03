@@ -1,100 +1,130 @@
-// 📁 store/conversationStore.ts
-import { ref } from "vue"
-
-export type UserRole = "freelancer" | "employer"
+import { defineStore } from 'pinia'
+import api from '../services/api' 
+import { UsersStore } from './usersStore'
 
 export interface Message {
-  from: UserRole
-  text: string
-  time: string
-  readByFreelancer: boolean
-  readByEmployer: boolean
+  id: string
+  senderId: string
+  receiverId: string
+  senderWallet: string
+  receiverWallet: string
+  content: string
+  isRead: boolean
+  createdAt: string
 }
 
-export interface Conversation {
-  id: number
-  freelancer: string
-  company: string
-  project: string
-  active: boolean
-  messages: Message[]
+export interface ConversationPreview {
+  otherUserId: string
+  username: string
+  lastMessage: string
 }
 
-export const conversations = ref<Conversation[]>([
-  {
-    id: 1,
-    freelancer: "Emma Laurent",
-    company: "DevCorp Agency",
-    project: "Refonte Dashboard Web3",
-    active: true,
-    messages: [
-      {
-        from: "employer",
-        text: "Bonjour Emma 👋, disponible pour un call ?",
-        time: "Il y a 2h",
-        readByFreelancer: false,
-        readByEmployer: true,
-      },
-    ],
+export const useConversationStore = defineStore('conversationStore', {
+  state: () => ({
+    loading: false,
+    messages: [] as Message[],
+    conversations: [] as ConversationPreview[],
+    unreadCount: 0 as number,
+    error: null as string | null,
+  }),
+
+  actions: {
+    async fetchInbox(userId: string) {
+      this.loading = true
+      try {
+        const res = await api.get(`/api/messages/inbox/${userId}`)
+        const msgs: Message[] = res.data
+
+        if (!msgs.length) {
+          this.conversations = []
+          this.unreadCount = 0
+          return
+        }
+
+        const grouped = new Map<string, ConversationPreview>()
+
+        for (const m of msgs) {
+          const otherUserId = m.senderId === userId ? m.receiverId : m.senderId
+
+          if (!grouped.has(otherUserId)) {
+            let username = ''
+
+            try {
+              const userRes = await api.get(`/api/users/${otherUserId}`)
+              username = userRes.data.username
+            } catch (err) {
+              console.warn(`⚠️ Impossible de récupérer le username pour ${otherUserId}`)
+              username = m.senderId === userId ? m.receiverWallet : m.senderWallet
+            }
+
+            grouped.set(otherUserId, {
+              otherUserId,
+              username,
+              lastMessage: m.content,
+            })
+          }
+        }
+
+        this.conversations = Array.from(grouped.values())
+
+        await this.fetchUnreadCount(userId)
+      } catch (e: any) {
+        console.error('❌ Erreur fetchInbox:', e)
+        this.error = e.message
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async fetchConversation(otherUserId: string) {
+      const usersStore = UsersStore()
+      const currentUser = usersStore.currentUser
+      if (!currentUser?.id) return
+
+      this.loading = true
+      try {
+        const res = await api.get(
+          `/api/messages/conversation/${currentUser.id}/${otherUserId}`
+        )
+        this.messages = res.data
+
+        await this.fetchUnreadCount(currentUser.id)
+      } catch (e: any) {
+        console.error('❌ Erreur fetchConversation:', e)
+        this.error = e.message
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async sendMessage(receiverId: string, content: string) {
+      const usersStore = UsersStore()
+      const currentUser = usersStore.currentUser
+      if (!currentUser?.id) return
+
+      try {
+        const res = await api.post('/api/messages/send', {
+          senderId: currentUser.id,
+          receiverId,
+          content,
+        })
+
+        this.messages.push(res.data)
+      } catch (e: any) {
+        console.error('❌ Erreur sendMessage:', e)
+        this.error = e.message
+      }
+    },
+
+    async fetchUnreadCount(userId: string) {
+      try {
+        const res = await api.get(`/api/messages/unread/${userId}`)
+        this.unreadCount = res.data.unreadCount ?? 0
+        console.log('🔔 Messages non lus:', this.unreadCount)
+      } catch (e: any) {
+        console.error('❌ Erreur fetchUnreadCount:', e)
+        this.unreadCount = 0
+      }
+    },
   },
-  {
-    id: 2,
-    freelancer: "Noah Dupuis",
-    company: "DAO Collective",
-    project: "Audit Smart Contract DAO",
-    active: false,
-    messages: [
-      {
-        from: "employer",
-        text: "Votre proposition est en cours d’examen.",
-        time: "Hier",
-        readByFreelancer: true,
-        readByEmployer: true,
-      },
-    ],
-  },
-])
-
-export const activeConversationId = ref<number | null>(null)
-
-/**
- * Ouvre une conversation et marque les messages comme lus pour le viewer
- */
-export const openConversation = (id: number, viewer: UserRole): void => {
-  activeConversationId.value = id
-  const conv = conversations.value.find((c) => c.id === id)
-  if (conv) {
-    conv.messages.forEach((m) => {
-      if (viewer === "freelancer") m.readByFreelancer = true
-      else m.readByEmployer = true
-    })
-  }
-}
-
-export const closeConversation = (): void => {
-  activeConversationId.value = null
-}
-
-/**
- * Active / désactive une conversation
- */
-export const toggleActivation = (id: number): void => {
-  const conv = conversations.value.find((c) => c.id === id)
-  if (conv) conv.active = !conv.active
-}
-
-/**
- * Ajoute un nouveau message à une conversation
- */
-export const addMessage = (id: number, from: UserRole, text: string): void => {
-  const conv = conversations.value.find((c) => c.id === id)
-  if (!conv) return
-
-  conv.messages.push({
-    from,
-    text,
-    time: "À l’instant",
-    readByFreelancer: from === "freelancer",
-    readByEmployer: from === "employer",
-  })
-}
+})

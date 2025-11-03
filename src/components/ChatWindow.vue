@@ -8,28 +8,30 @@
     <!-- 🧭 En-tête -->
     <div
       class="flex justify-between items-center px-4 py-3 font-semibold border-b"
-      :class="darkMode ? 'border-gray-700 text-[#00BFFF]' : 'border-gray-200 text-gray-800'"
+      :class="darkMode ? 'border-gray-700 text-[#00BFFF]' : 'border-gray-300 text-gray-800'"
     >
-      💬 {{ conversation.freelancer || conversation.company }}
-      <button @click="emit('close')" class="text-sm hover:opacity-70">✖</button>
+      💬 {{ otherUsername }}
+      <button @click="$emit('close')" class="text-sm hover:opacity-70">✖</button>
     </div>
 
     <!-- 💬 Messages -->
     <div class="flex-1 overflow-y-auto p-4 space-y-3 max-h-80">
       <div
-        v-for="(msg, index) in conversation.messages"
-        :key="index"
-        :class="msg.from === 'employer' ? 'text-right' : 'text-left'"
+        v-for="msg in conversation"
+        :key="msg.id"
+        :class="msg.senderId === currentUser?.id ? 'text-right' : 'text-left'"
       >
         <div
           class="inline-block px-3 py-2 rounded-lg text-sm"
-          :class="msg.from === 'employer'
+          :class="msg.senderId === currentUser?.id
             ? (darkMode ? 'bg-[#00BFFF]/30 text-white' : 'bg-indigo-500 text-white')
             : (darkMode ? 'bg-[#09202c] text-gray-100' : 'bg-gray-100 text-gray-800')"
         >
-          {{ msg.text }}
+          {{ msg.content }}
         </div>
-        <p class="text-xs mt-1 text-gray-400">{{ msg.time }}</p>
+        <p class="text-xs mt-1 text-gray-400">
+          {{ new Date(msg.createdAt).toLocaleTimeString() }}
+        </p>
       </div>
     </div>
 
@@ -37,7 +39,7 @@
     <div class="p-3 border-t" :class="darkMode ? 'border-gray-700' : 'border-gray-200'">
       <input
         v-model="newMessage"
-        @keyup.enter="sendMessage"
+        @keyup.enter="send"
         type="text"
         placeholder="Écrire un message..."
         class="w-full px-3 py-2 rounded-md text-sm outline-none transition"
@@ -50,34 +52,51 @@
 </template>
 
 <script setup lang="ts">
-import { ref, inject } from "vue"
-import type { Conversation } from "../store/conversationStore"
-import { addMessage } from "../store/conversationStore"
+import { ref, computed, inject } from 'vue'
+import { useConversationStore } from '../store/conversationStore'
+import { UsersStore } from '../store/usersStore'
 
 const props = defineProps<{
-  conversation: Conversation
+  conversation: any[]
+  otherUserId: string
 }>()
 
-// ✅ On émet un événement "close" vers MessagesEmployer
-const emit = defineEmits(["close"])
+const emit = defineEmits(['close'])
+const darkMode = inject<boolean>('darkMode', false)
+const newMessage = ref('')
 
-const darkMode = inject<boolean>("darkMode", false)
-const newMessage = ref("")
+const store = useConversationStore()
+const usersStore = UsersStore()
+usersStore.loadFromStorage()
 
-// ✅ Envoi d’un message côté employeur
-const sendMessage = (): void => {
-  if (!newMessage.value.trim()) return
-  addMessage(props.conversation.id, "employer", newMessage.value)
-  newMessage.value = ""
+const currentUser = computed(() => usersStore.currentUser)
+
+interface ConversationSummary {
+  otherUserId: string
+  username: string
+  lastMessage: string
+}
+
+const otherUsername = computed(() => {
+  const conv = store.conversations.find(
+    (c: ConversationSummary) => c.otherUserId === props.otherUserId
+  )
+  return conv?.username || 'Utilisateur'
+})
+
+// ✅ Envoi d’un message
+const send = async () => {
+  if (!newMessage.value.trim() || !currentUser.value) return
+  await store.sendMessage(props.otherUserId, newMessage.value)
+  newMessage.value = ''
 }
 </script>
 
 <style scoped>
-/* ✅ Légère animation de la fenêtre */
+/* ✅ Animation d’apparition fluide */
 div.fixed {
   animation: slideUp 0.25s ease-out;
 }
-
 @keyframes slideUp {
   from {
     transform: translateY(15px);
